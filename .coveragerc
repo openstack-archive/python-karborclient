@@ -1,0 +1,7 @@
+[run]
+branch = True
+source = smaugclient
+omit = smaugclient/tests/*,smaug/openstack/*
+
+[report]
+ignore_errors = True
