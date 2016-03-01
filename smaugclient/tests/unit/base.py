@@ -10,9 +10,24 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-from oslotest import base
+import os
+
+import fixtures
+import testtools
 
 
-class TestCase(base.BaseTestCase):
+class TestCaseShell(testtools.TestCase):
+    TEST_REQUEST_BASE = {
+        'verify': True,
+    }
 
-    """Test case base class for all unit tests."""
+    def setUp(self):
+        super(TestCaseShell, self).setUp()
+        if (os.environ.get('OS_STDOUT_CAPTURE') == 'True' or
+                os.environ.get('OS_STDOUT_CAPTURE') == '1'):
+            stdout = self.useFixture(fixtures.StringStream('stdout')).stream
+            self.useFixture(fixtures.MonkeyPatch('sys.stdout', stdout))
+        if (os.environ.get('OS_STDERR_CAPTURE') == 'True' or
+                os.environ.get('OS_STDERR_CAPTURE') == '1'):
+            stderr = self.useFixture(fixtures.StringStream('stderr')).stream
+            self.useFixture(fixtures.MonkeyPatch('sys.stderr', stderr))

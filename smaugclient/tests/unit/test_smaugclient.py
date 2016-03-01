@@ -11,16 +11,13 @@
 # under the License.
 
 """
-test_smaugclient
-----------------------------------
-
 Tests for `smaugclient` module.
 """
 
 from smaugclient.tests.unit import base
 
 
-class TestSmaugclient(base.TestCase):
+class TestSmaugclient(base.TestCaseShell):
 
     def test_something(self):
         pass
