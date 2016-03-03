@@ -14,6 +14,7 @@
 
 from smaugclient.common import http
 from smaugclient.v1 import plans
+from smaugclient.v1 import restores
 
 
 class Client(object):
@@ -29,3 +30,4 @@ class Client(object):
         """Initialize a new client for the Smaug v1 API."""
         self.http_client = http._construct_http_client(*args, **kwargs)
         self.plans = plans.PlanManager(self.http_client)
+        self.restores = restores.RestoreManager(self.http_client)
