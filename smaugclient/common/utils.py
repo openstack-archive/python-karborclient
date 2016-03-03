@@ -16,12 +16,15 @@ import os
 import sys
 
 import six
+import uuid
 
 from oslo_log import log as logging
 from oslo_utils import encodeutils
 from oslo_utils import importutils
 
 import prettytable
+
+from smaugclient.openstack.common.apiclient import exceptions
 
 LOG = logging.getLogger(__name__)
 
@@ -121,3 +124,39 @@ def print_list(objs, fields, exclude_unavailable=False, formatters=None,
     else:
         order_by = fields[sortby_index]
     _print(pt, order_by)
+
+
+def print_dict(d, property="Property"):
+    pt = prettytable.PrettyTable([property, 'Value'], caching=False)
+    pt.aligns = ['l', 'l']
+    for r in six.iteritems(d):
+        r = list(r)
+        if isinstance(r[1], six.string_types) and "\r" in r[1]:
+            r[1] = r[1].replace("\r", " ")
+        pt.add_row(r)
+    _print(pt, property)
+
+
+def find_resource(manager, name_or_id, *args, **kwargs):
+    """Helper for the _find_* methods."""
+    # first try to get entity as integer id
+    try:
+        if isinstance(name_or_id, int) or name_or_id.isdigit():
+            return manager.get(int(name_or_id), *args, **kwargs)
+    except exceptions.NotFound:
+        pass
+
+    # now try to get entity as uuid
+    try:
+        uuid.UUID(str(name_or_id))
+        return manager.get(name_or_id, *args, **kwargs)
+    except (ValueError, exceptions.NotFound):
+        pass
+
+    # finally try to find entity by name
+    try:
+        return manager.find(name=name_or_id)
+    except exceptions.NotFound:
+        msg = "No %s with a name or ID of '%s' exists." % \
+              (manager.resource_class.__name__.lower(), name_or_id)
+        raise exceptions.CommandError(msg)

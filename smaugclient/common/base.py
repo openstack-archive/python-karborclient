@@ -20,6 +20,7 @@ import copy
 import six
 from six.moves.urllib import parse
 
+from smaugclient.common import http
 from smaugclient.openstack.common.apiclient import exceptions
 
 SORT_DIR_VALUES = ('asc', 'desc')
@@ -48,6 +49,10 @@ class Manager(object):
 
     def __init__(self, api):
         self.api = api
+        if isinstance(self.api, http.SessionClient):
+            self.project_id = self.api.get_project_id()
+        else:
+            self.project_id = self.api.project_id
 
     def _list(self, url, response_key=None, obj_class=None,
               data=None, headers=None):
@@ -112,7 +117,7 @@ class Manager(object):
             return self.resource_class(self, body[response_key])
         return self.resource_class(self, body)
 
-    def _build_list_url(self, resource_type, project_id, detailed=False,
+    def _build_list_url(self, resource_type, detailed=False,
                         search_opts=None, marker=None, limit=None,
                         sort_key=None, sort_dir=None, sort=None):
 
@@ -155,7 +160,7 @@ class Manager(object):
 
         return ("/v1/%(project_id)s/%(resource_type)s%(detail)s"
                 "%(query_string)s" %
-                {"project_id": project_id,
+                {"project_id": self.project_id,
                  "resource_type": resource_type, "detail": detail,
                  "query_string": query_string})
 

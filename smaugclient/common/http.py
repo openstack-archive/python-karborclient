@@ -61,6 +61,7 @@ class HTTPClient(object):
         self.password = kwargs.get('password')
         self.region_name = kwargs.get('region_name')
         self.include_pass = kwargs.get('include_pass')
+        self.project_id = kwargs.get('project_id')
         self.endpoint_url = endpoint
 
         self.cert_file = kwargs.get('cert_file')
