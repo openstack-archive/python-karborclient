@@ -327,3 +327,82 @@ def do_restore_show(cs, args):
     """Shows restore details."""
     restore = cs.restores.get(args.restore)
     utils.print_dict(restore.to_dict())
+
+
+def do_protectable_list(cs, args):
+    """Lists all protectables type."""
+
+    protectables = cs.protectables.list()
+
+    key_list = ['Protectable type']
+
+    utils.print_list(protectables, key_list, exclude_unavailable=True)
+
+
+@utils.arg('protectable_type',
+           metavar='<protectable_type>',
+           help='Protectable type.')
+def do_protectable_show(cs, args):
+    """Shows protectable type details."""
+    protectable = cs.protectables.get(args.protectable_type)
+    utils.print_dict(protectable.to_dict())
+
+
+@utils.arg('protectable_type',
+           metavar='<protectable_type>',
+           help='Type of protectable.')
+@utils.arg('--type',
+           metavar='<type>',
+           default=None,
+           help='Filters results by a status. Default=None.')
+@utils.arg('--marker',
+           metavar='<marker>',
+           default=None,
+           help='Begin returning plans that appear later in the plan '
+                'list than that represented by this plan id. '
+                'Default=None.')
+@utils.arg('--limit',
+           metavar='<limit>',
+           default=None,
+           help='Maximum number of volumes to return. Default=None.')
+@utils.arg('--sort_key',
+           metavar='<sort_key>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort_dir',
+           metavar='<sort_dir>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort',
+           metavar='<key>[:<direction>]',
+           default=None,
+           help=(('Comma-separated list of sort keys and directions in the '
+                  'form of <key>[:<asc|desc>]. '
+                  'Valid keys: %s. '
+                  'Default=None.') % ', '.join(base.SORT_KEY_VALUES)))
+def do_protectable_list_instances(cs, args):
+    """Lists all protectable instances."""
+
+    search_opts = {
+        'type': args.type,
+    }
+
+    if args.sort and (args.sort_key or args.sort_dir):
+        raise exceptions.CommandError(
+            'The --sort_key and --sort_dir arguments are deprecated and are '
+            'not supported with --sort.')
+
+    instances = cs.protectables.list_instances(
+        args.protectable_type, search_opts=search_opts,
+        marker=args.marker, limit=args.limit,
+        sort_key=args.sort_key,
+        sort_dir=args.sort_dir, sort=args.sort)
+
+    key_list = ['Id', 'Type', 'Dependent resources']
+
+    if args.sort_key or args.sort_dir or args.sort:
+        sortby_index = None
+    else:
+        sortby_index = 0
+    utils.print_list(instances, key_list, exclude_unavailable=True,
+                     sortby_index=sortby_index)

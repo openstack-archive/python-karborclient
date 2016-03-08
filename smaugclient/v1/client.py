@@ -14,6 +14,7 @@
 
 from smaugclient.common import http
 from smaugclient.v1 import plans
+from smaugclient.v1 import protectables
 from smaugclient.v1 import restores
 
 
@@ -31,3 +32,4 @@ class Client(object):
         self.http_client = http._construct_http_client(*args, **kwargs)
         self.plans = plans.PlanManager(self.http_client)
         self.restores = restores.RestoreManager(self.http_client)
+        self.protectables = protectables.ProtectableManager(self.http_client)

@@ -55,7 +55,7 @@ class Manager(object):
             self.project_id = self.api.project_id
 
     def _list(self, url, response_key=None, obj_class=None,
-              data=None, headers=None):
+              data=None, headers=None, return_raw=False,):
 
         if headers is None:
             headers = {}
@@ -70,6 +70,8 @@ class Manager(object):
             data = body[response_key]
         else:
             data = body
+        if return_raw:
+            return data
         return [obj_class(self, res, loaded=True) for res in data if res]
 
     def _delete(self, url, headers=None):
