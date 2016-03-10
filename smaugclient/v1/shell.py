@@ -406,3 +406,72 @@ def do_protectable_list_instances(cs, args):
         sortby_index = 0
     utils.print_list(instances, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index)
+
+
+@utils.arg('provider_id',
+           metavar='<provider_id>',
+           help='Id of provider.')
+def do_provider_show(cs, args):
+    """Shows provider details."""
+    provider = cs.providers.get(args.provider_id)
+    utils.print_dict(provider.to_dict())
+
+
+@utils.arg('--name',
+           metavar='<name>',
+           default=None,
+           help='Filters results by a name. Default=None.')
+@utils.arg('--description',
+           metavar='<description>',
+           default=None,
+           help='Filters results by a description. Default=None.')
+@utils.arg('--marker',
+           metavar='<marker>',
+           default=None,
+           help='Begin returning plans that appear later in the plan '
+                'list than that represented by this plan id. '
+                'Default=None.')
+@utils.arg('--limit',
+           metavar='<limit>',
+           default=None,
+           help='Maximum number of volumes to return. Default=None.')
+@utils.arg('--sort_key',
+           metavar='<sort_key>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort_dir',
+           metavar='<sort_dir>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort',
+           metavar='<key>[:<direction>]',
+           default=None,
+           help=(('Comma-separated list of sort keys and directions in the '
+                  'form of <key>[:<asc|desc>]. '
+                  'Valid keys: %s. '
+                  'Default=None.') % ', '.join(base.SORT_KEY_VALUES)))
+def do_provider_list(cs, args):
+    """Lists all providers."""
+
+    search_opts = {
+        'name': args.name,
+        'description': args.description,
+    }
+
+    if args.sort and (args.sort_key or args.sort_dir):
+        raise exceptions.CommandError(
+            'The --sort_key and --sort_dir arguments are deprecated and are '
+            'not supported with --sort.')
+
+    providers = cs.providers.list(search_opts=search_opts, marker=args.marker,
+                                  limit=args.limit, sort_key=args.sort_key,
+                                  sort_dir=args.sort_dir, sort=args.sort)
+
+    key_list = ['Id', 'Name', 'Description', 'Extended_info_schema']
+
+    if args.sort_key or args.sort_dir or args.sort:
+        sortby_index = None
+    else:
+        sortby_index = 0
+    utils.print_list(providers, key_list, exclude_unavailable=True,
+                     sortby_index=sortby_index)
