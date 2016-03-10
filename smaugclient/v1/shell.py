@@ -475,3 +475,115 @@ def do_provider_list(cs, args):
         sortby_index = 0
     utils.print_list(providers, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index)
+
+
+@utils.arg('provider_id',
+           metavar='<provider_id>',
+           help='ID of provider.')
+@utils.arg('plan_id',
+           metavar='<plan_id>',
+           help='ID of plan.')
+def do_checkpoint_create(cs, args):
+    """Create a checkpoint."""
+    checkpoint = cs.checkpoints.create(args.provider_id, args.plan_id)
+    utils.print_dict(checkpoint)
+
+
+@utils.arg('provider_id',
+           metavar='<provider_id>',
+           help='ID of provider.')
+@utils.arg('--status',
+           metavar='<status>',
+           default=None,
+           help='Filters results by a status. Default=None.')
+@utils.arg('--project_id',
+           metavar='<project_id>',
+           default=None,
+           help='Filters results by a project id. Default=None.')
+@utils.arg('--marker',
+           metavar='<marker>',
+           default=None,
+           help='Begin returning plans that appear later in the plan '
+                'list than that represented by this plan id. '
+                'Default=None.')
+@utils.arg('--limit',
+           metavar='<limit>',
+           default=None,
+           help='Maximum number of volumes to return. Default=None.')
+@utils.arg('--sort_key',
+           metavar='<sort_key>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort_dir',
+           metavar='<sort_dir>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort',
+           metavar='<key>[:<direction>]',
+           default=None,
+           help=(('Comma-separated list of sort keys and directions in the '
+                  'form of <key>[:<asc|desc>]. '
+                  'Valid keys: %s. '
+                  'Default=None.') % ', '.join(base.SORT_KEY_VALUES)))
+def do_checkpoint_list(cs, args):
+    """Lists all checkpoints."""
+
+    search_opts = {
+        'status': args.status,
+        'project_id': args.project_id,
+    }
+
+    if args.sort and (args.sort_key or args.sort_dir):
+        raise exceptions.CommandError(
+            'The --sort_key and --sort_dir arguments are deprecated and are '
+            'not supported with --sort.')
+
+    checkpoints = cs.checkpoints.list(
+        provider_id=args.provider_id, search_opts=search_opts,
+        marker=args.marker, limit=args.limit, sort_key=args.sort_key,
+        sort_dir=args.sort_dir, sort=args.sort)
+
+    key_list = ['Id', 'Project id', 'Status', 'Protection plan']
+
+    if args.sort_key or args.sort_dir or args.sort:
+        sortby_index = None
+    else:
+        sortby_index = 0
+    utils.print_list(checkpoints, key_list, exclude_unavailable=True,
+                     sortby_index=sortby_index)
+
+
+@utils.arg('provider_id',
+           metavar='<provider_id>',
+           help='Id of provider.')
+@utils.arg('checkpoint_id',
+           metavar='<checkpoint_id>',
+           help='Id of checkpoint.')
+def do_checkpoint_show(cs, args):
+    """Shows checkpoint details."""
+    checkpoint = cs.checkpoints.get(args.provider_id, args.checkpoint_id)
+    utils.print_dict(checkpoint.to_dict())
+
+
+@utils.arg('provider_id',
+           metavar='<provider_id>',
+           help='Id of provider.')
+@utils.arg('checkpoint',
+           metavar='<checkpoint>',
+           nargs="+",
+           help='ID of checkpoint.')
+def do_checkpoint_delete(cs, args):
+    """Delete checkpoints."""
+    failure_count = 0
+    for checkpoint_id in args.checkpoint:
+        try:
+            checkpoint = cs.checkpoints.get(args.provider_id,
+                                            checkpoint_id)
+            cs.checkpoints.delete(checkpoint.provider_id, checkpoint.id)
+        except exceptions.NotFound:
+            failure_count += 1
+            print("Failed to delete '{0}'; checkpoint not found".
+                  format(checkpoint_id))
+    if failure_count == len(args.checkpoint):
+        raise exceptions.CommandError("Unable to find and delete any of the "
+                                      "specified checkpoint.")

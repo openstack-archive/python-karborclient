@@ -13,6 +13,7 @@
 #    under the License.
 
 from smaugclient.common import http
+from smaugclient.v1 import checkpoints
 from smaugclient.v1 import plans
 from smaugclient.v1 import protectables
 from smaugclient.v1 import providers
@@ -35,3 +36,4 @@ class Client(object):
         self.restores = restores.RestoreManager(self.http_client)
         self.protectables = protectables.ProtectableManager(self.http_client)
         self.providers = providers.ProviderManager(self.http_client)
+        self.checkpoints = checkpoints.CheckpointManager(self.http_client)
