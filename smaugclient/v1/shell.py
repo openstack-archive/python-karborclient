@@ -587,3 +587,149 @@ def do_checkpoint_delete(cs, args):
     if failure_count == len(args.checkpoint):
         raise exceptions.CommandError("Unable to find and delete any of the "
                                       "specified checkpoint.")
+
+
+@utils.arg('--all-tenants',
+           dest='all_tenants',
+           metavar='<0|1>',
+           nargs='?',
+           type=int,
+           const=1,
+           default=0,
+           help='Shows details for all tenants. Admin only.')
+@utils.arg('--all_tenants',
+           nargs='?',
+           type=int,
+           const=1,
+           help=argparse.SUPPRESS)
+@utils.arg('--name',
+           metavar='<name>',
+           default=None,
+           help='Filters results by a name. Default=None.')
+@utils.arg('--type',
+           metavar='<type>',
+           default=None,
+           help='Filters results by a type. Default=None.')
+@utils.arg('--properties',
+           metavar='<properties>',
+           default=None,
+           help='Filters results by a properties. Default=None.')
+@utils.arg('--marker',
+           metavar='<marker>',
+           default=None,
+           help='Begin returning plans that appear later in the plan '
+                'list than that represented by this plan id. '
+                'Default=None.')
+@utils.arg('--limit',
+           metavar='<limit>',
+           default=None,
+           help='Maximum number of volumes to return. Default=None.')
+@utils.arg('--sort_key',
+           metavar='<sort_key>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort_dir',
+           metavar='<sort_dir>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort',
+           metavar='<key>[:<direction>]',
+           default=None,
+           help=(('Comma-separated list of sort keys and directions in the '
+                  'form of <key>[:<asc|desc>]. '
+                  'Valid keys: %s. '
+                  'Default=None.') % ', '.join(base.SORT_KEY_VALUES)))
+@utils.arg('--tenant',
+           type=str,
+           dest='tenant',
+           nargs='?',
+           metavar='<tenant>',
+           help='Display information from single tenant (Admin only).')
+def do_trigger_list(cs, args):
+    """Lists all triggers."""
+
+    all_tenants = 1 if args.tenant else \
+        int(os.environ.get("ALL_TENANTS", args.all_tenants))
+    search_opts = {
+        'all_tenants': all_tenants,
+        'project_id': args.tenant,
+        'name': args.name,
+        'type': args.type,
+        'properties': args.properties,
+    }
+
+    if args.sort and (args.sort_key or args.sort_dir):
+        raise exceptions.CommandError(
+            'The --sort_key and --sort_dir arguments are deprecated and are '
+            'not supported with --sort.')
+
+    triggers = cs.triggers.list(search_opts=search_opts, marker=args.marker,
+                                limit=args.limit, sort_key=args.sort_key,
+                                sort_dir=args.sort_dir, sort=args.sort)
+
+    key_list = ['Id', 'Name', 'Type', 'Properties']
+
+    if args.sort_key or args.sort_dir or args.sort:
+        sortby_index = None
+    else:
+        sortby_index = 0
+    utils.print_list(triggers, key_list, exclude_unavailable=True,
+                     sortby_index=sortby_index)
+
+
+@utils.arg('name',
+           metavar='<name>',
+           help='Trigger name.')
+@utils.arg('type',
+           metavar='<type>',
+           help='Type of trigger.')
+@utils.arg('properties',
+           metavar='<key=value;key=value>',
+           help='Properties of trigger.')
+def do_trigger_create(cs, args):
+    """Create a trigger."""
+    trigger_properties = _extract_properties(args)
+    trigger = cs.triggers.create(args.name, args.type, trigger_properties)
+    utils.print_dict(trigger)
+
+
+def _extract_properties(args):
+    properties = {}
+    for data in args.properties.split(':'):
+        if '=' in data:
+            (resource_key, resource_value) = data.split('=', 1)
+        else:
+            raise exceptions.CommandError(
+                "Unable to parse parameter properties.")
+
+        properties[resource_key] = resource_value
+    return properties
+
+
+@utils.arg('trigger',
+           metavar='<trigger>',
+           help='ID of trigger.')
+def do_trigger_show(cs, args):
+    """Shows trigger details."""
+    trigger = cs.triggers.get(args.trigger)
+    utils.print_dict(trigger.to_dict())
+
+
+@utils.arg('trigger',
+           metavar='<trigger>',
+           nargs="+",
+           help='ID of trigger.')
+def do_trigger_delete(cs, args):
+    """Delete trigger."""
+    failure_count = 0
+    for trigger_id in args.trigger:
+        try:
+            trigger = utils.find_resource(cs.triggers, trigger_id)
+            cs.triggers.delete(trigger.id)
+        except exceptions.NotFound:
+            failure_count += 1
+            print("Failed to delete '{0}'; trigger not found".
+                  format(trigger_id))
+    if failure_count == len(args.trigger):
+        raise exceptions.CommandError("Unable to find and delete any of the "
+                                      "specified trigger.")
