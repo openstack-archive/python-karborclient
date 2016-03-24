@@ -18,6 +18,7 @@ from smaugclient.v1 import plans
 from smaugclient.v1 import protectables
 from smaugclient.v1 import providers
 from smaugclient.v1 import restores
+from smaugclient.v1 import scheduled_operations
 from smaugclient.v1 import triggers
 
 
@@ -39,3 +40,5 @@ class Client(object):
         self.providers = providers.ProviderManager(self.http_client)
         self.checkpoints = checkpoints.CheckpointManager(self.http_client)
         self.triggers = triggers.TriggerManager(self.http_client)
+        self.scheduled_operations = \
+            scheduled_operations.ScheduledOperationManager(self.http_client)

@@ -733,3 +733,157 @@ def do_trigger_delete(cs, args):
     if failure_count == len(args.trigger):
         raise exceptions.CommandError("Unable to find and delete any of the "
                                       "specified trigger.")
+
+
+@utils.arg('--all-tenants',
+           dest='all_tenants',
+           metavar='<0|1>',
+           nargs='?',
+           type=int,
+           const=1,
+           default=0,
+           help='Shows details for all tenants. Admin only.')
+@utils.arg('--all_tenants',
+           nargs='?',
+           type=int,
+           const=1,
+           help=argparse.SUPPRESS)
+@utils.arg('--name',
+           metavar='<name>',
+           default=None,
+           help='Filters results by a name. Default=None.')
+@utils.arg('--operation_type',
+           metavar='<operation_type>',
+           default=None,
+           help='Filters results by a type. Default=None.')
+@utils.arg('--trigger_id',
+           metavar='<trigger_id>',
+           default=None,
+           help='Filters results by a trigger id. Default=None.')
+@utils.arg('--marker',
+           metavar='<marker>',
+           default=None,
+           help='Begin returning resources that appear later in the '
+                'list than that represented by this id. '
+                'Default=None.')
+@utils.arg('--limit',
+           metavar='<limit>',
+           default=None,
+           help='Maximum number to return. Default=None.')
+@utils.arg('--sort_key',
+           metavar='<sort_key>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort_dir',
+           metavar='<sort_dir>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort',
+           metavar='<key>[:<direction>]',
+           default=None,
+           help=(('Comma-separated list of sort keys and directions in the '
+                  'form of <key>[:<asc|desc>]. '
+                  'Valid keys: %s. '
+                  'Default=None.') % ', '.join(base.SORT_KEY_VALUES)))
+@utils.arg('--tenant',
+           type=str,
+           dest='tenant',
+           nargs='?',
+           metavar='<tenant>',
+           help='Display information from single tenant (Admin only).')
+def do_scheduledoperation_list(cs, args):
+    """Lists all scheduledoperations."""
+
+    all_tenants = 1 if args.tenant else \
+        int(os.environ.get("ALL_TENANTS", args.all_tenants))
+    search_opts = {
+        'all_tenants': all_tenants,
+        'project_id': args.tenant,
+        'name': args.name,
+        'operation_type': args.type,
+        'trigger_id': args.trigger_id,
+    }
+
+    if args.sort and (args.sort_key or args.sort_dir):
+        raise exceptions.CommandError(
+            'The --sort_key and --sort_dir arguments are deprecated and are '
+            'not supported with --sort.')
+
+    scheduledoperations = cs.scheduled_operations.list(
+        search_opts=search_opts, marker=args.marker, limit=args.limit,
+        sort_key=args.sort_key, sort_dir=args.sort_dir, sort=args.sort)
+
+    key_list = ['Id', 'Name', 'OperationType', 'TriggerId',
+                'OperationDefinition']
+
+    if args.sort_key or args.sort_dir or args.sort:
+        sortby_index = None
+    else:
+        sortby_index = 0
+    utils.print_list(scheduledoperations, key_list, exclude_unavailable=True,
+                     sortby_index=sortby_index)
+
+
+@utils.arg('name',
+           metavar='<name>',
+           help='Trigger name.')
+@utils.arg('operation_type',
+           metavar='<operation_type>',
+           help='Operation Type of scheduled operation.')
+@utils.arg('trigger_id',
+           metavar='<trigger_id>',
+           help='Trigger id of scheduled operation.')
+@utils.arg('operation_definition',
+           metavar='<key=value;key=value>',
+           help='Operation definition of scheduled operation.')
+def do_scheduledoperation_create(cs, args):
+    """Create a scheduled operation."""
+    operation_definition = _extract_operation_definition(args)
+    scheduledoperation = cs.scheduledoperations.create(args.name,
+                                                       args.operation_type,
+                                                       args.trigger_id,
+                                                       operation_definition)
+    utils.print_dict(scheduledoperation)
+
+
+def _extract_operation_definition(args):
+    operation_definition = {}
+    for data in args.operation_definition.split(':'):
+        if '=' in data:
+            (resource_key, resource_value) = data.split('=', 1)
+        else:
+            raise exceptions.CommandError(
+                "Unable to parse parameter operation_definition.")
+
+        operation_definition[resource_key] = resource_value
+    return operation_definition
+
+
+@utils.arg('scheduledoperation',
+           metavar='<scheduledoperation>',
+           help='ID of scheduled operation.')
+def do_scheduledoperation_show(cs, args):
+    """Shows scheduledoperation details."""
+    scheduledoperation = cs.scheduledoperations.get(args.scheduledoperation)
+    utils.print_dict(scheduledoperation.to_dict())
+
+
+@utils.arg('scheduledoperation',
+           metavar='<scheduledoperation>',
+           nargs="+",
+           help='ID of scheduled operation.')
+def do_scheduledoperation_delete(cs, args):
+    """Delete a scheduled operation."""
+    failure_count = 0
+    for scheduledoperation_id in args.scheduledoperation:
+        try:
+            scheduledoperation = utils.find_resource(cs.scheduledoperations,
+                                                     scheduledoperation_id)
+            cs.scheduledoperations.delete(scheduledoperation.id)
+        except exceptions.NotFound:
+            failure_count += 1
+            print("Failed to delete '{0}'; scheduledoperation not found".
+                  format(scheduledoperation_id))
+    if failure_count == len(args.scheduledoperation):
+        raise exceptions.CommandError("Unable to find and delete any of the "
+                                      "specified scheduled operation.")
