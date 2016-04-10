@@ -23,6 +23,14 @@ class Protectable(base.Resource):
         return self.manager.data(self, **kwargs)
 
 
+class Instances(base.Resource):
+    def __repr__(self):
+        return "<Instances %s>" % self._info
+
+    def data(self, **kwargs):
+        return self.manager.data(self, **kwargs)
+
+
 class ProtectableManager(base.ManagerWithFind):
     resource_class = Protectable
 
@@ -61,7 +69,7 @@ class ProtectableManager(base.ManagerWithFind):
         :param sort_dir: Sort direction, should be 'desc' or 'asc'; deprecated
                          in kilo
         :param sort: Sort information
-        :rtype: list of :class:`Protectable`
+        :rtype: list of :class:`Instances`
         """
 
         url = self._build_instances_list_url(
@@ -69,7 +77,7 @@ class ProtectableManager(base.ManagerWithFind):
             search_opts=search_opts, marker=marker,
             limit=limit, sort_key=sort_key,
             sort_dir=sort_dir, sort=sort)
-        return self._list(url, 'instances')
+        return self._list(url, response_key='instances', obj_class=Instances)
 
     def _build_instances_list_url(self, protectable_type,
                                   search_opts=None, marker=None, limit=None,
