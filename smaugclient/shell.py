@@ -380,13 +380,12 @@ class SmaugShell(object):
                 project_domain_name=args.os_project_domain_name)
 
             endpoint_type = args.os_endpoint_type or 'publicURL'
-            service_type = args.os_service_type or 'application-catalog'
+            service_type = args.os_service_type or 'data-protect'
 
-            if not endpoint:
-                endpoint = keystone_auth.get_endpoint(
-                    keystone_session,
-                    service_type=service_type,
-                    region_name=args.os_region_name)
+            endpoint = keystone_auth.get_endpoint(
+                keystone_session,
+                service_type=service_type,
+                region_name=args.os_region_name)
 
             kwargs = {
                 'session': keystone_session,

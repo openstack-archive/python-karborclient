@@ -29,8 +29,7 @@ class ProtectablesTest(base.TestCaseShell):
         cs.protectables.list()
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/protectables'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/protectables', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_get_protectables(self, mock_request):
@@ -38,8 +37,7 @@ class ProtectablesTest(base.TestCaseShell):
         cs.protectables.get('OS::Cinder::Volume')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/protectables/OS::Cinder::Volume'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/protectables/OS::Cinder::Volume', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_get_protectables_instance(self, mock_request):
@@ -47,8 +45,8 @@ class ProtectablesTest(base.TestCaseShell):
         cs.protectables.get_instance('OS::Cinder::Volume', '1')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/protectables/OS::Cinder::Volume/'
-            'instances/1'.format(project_id=fakes.PROJECT_ID), headers={})
+            '/protectables/OS::Cinder::Volume/'
+            'instances/1', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_protectables_instances(self, mock_request):
@@ -56,8 +54,8 @@ class ProtectablesTest(base.TestCaseShell):
         cs.protectables.list_instances('OS::Cinder::Volume')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/protectables/OS::Cinder::Volume/'
-            'instances'.format(project_id=fakes.PROJECT_ID), headers={})
+            '/protectables/OS::Cinder::Volume/'
+            'instances', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_protectables_instances_with_marker_limit(self, mock_request):
@@ -66,9 +64,8 @@ class ProtectablesTest(base.TestCaseShell):
                                        marker=1234, limit=2)
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/protectables/OS::Cinder::Volume/'
-            'instances?limit=2&marker=1234'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/protectables/OS::Cinder::Volume/'
+            'instances?limit=2&marker=1234', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_protectables_instances_with_sort_key_dir(self, mock_request):
@@ -77,9 +74,8 @@ class ProtectablesTest(base.TestCaseShell):
                                        sort_key='id', sort_dir='asc')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/protectables/OS::Cinder::Volume/'
-            'instances?sort_dir=asc&sort_key=id'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/protectables/OS::Cinder::Volume/'
+            'instances?sort_dir=asc&sort_key=id', headers={})
 
     def test_list_protectables_instances_with_invalid_sort_key(self):
         self.assertRaises(ValueError,

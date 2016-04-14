@@ -29,8 +29,7 @@ class ProviderManager(base.ManagerWithFind):
             headers = {'X-Configuration-Session': session_id}
         else:
             headers = {}
-        url = "/v1/{project_id}/providers/{provider_id}".format(
-            project_id=self.project_id,
+        url = "/providers/{provider_id}".format(
             provider_id=provider_id)
         return self._get(url, response_key="provider", headers=headers)
 

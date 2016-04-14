@@ -29,13 +29,11 @@ class TriggerManager(base.ManagerWithFind):
                                  'type': type,
                                  'properties': properties,
                                  }}
-        url = "/v1/{project_id}/triggers" .format(
-            project_id=self.project_id)
+        url = "/triggers"
         return self._create(url, body, 'trigger_info', return_raw=True)
 
     def delete(self, trigger_id):
-        path = '/v1/{project_id}/triggers/{trigger_id}'.format(
-            project_id=self.project_id,
+        path = '/triggers/{trigger_id}'.format(
             trigger_id=trigger_id)
         return self._delete(path)
 
@@ -44,8 +42,7 @@ class TriggerManager(base.ManagerWithFind):
             headers = {'X-Configuration-Session': session_id}
         else:
             headers = {}
-        url = "/v1/{project_id}/triggers/{trigger_id}".format(
-            project_id=self.project_id,
+        url = "/triggers/{trigger_id}".format(
             trigger_id=trigger_id)
         return self._get(url, response_key="trigger_info", headers=headers)
 

@@ -160,10 +160,9 @@ class Manager(object):
         if detailed:
             detail = "/detail"
 
-        return ("/v1/%(project_id)s/%(resource_type)s%(detail)s"
+        return ("/%(resource_type)s%(detail)s"
                 "%(query_string)s" %
-                {"project_id": self.project_id,
-                 "resource_type": resource_type, "detail": detail,
+                {"resource_type": resource_type, "detail": detail,
                  "query_string": query_string})
 
     def _format_sort_param(self, sort):

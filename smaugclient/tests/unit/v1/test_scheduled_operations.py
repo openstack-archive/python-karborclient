@@ -27,8 +27,7 @@ class ScheduledOperationsTest(base.TestCaseShell):
         cs.scheduled_operations.list(marker=1234, limit=2)
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/scheduled_operations?limit=2&marker=1234'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/scheduled_operations?limit=2&marker=1234', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list__scheduled_operations_with_sort_key_dir(self, mock_request):
@@ -36,9 +35,8 @@ class ScheduledOperationsTest(base.TestCaseShell):
         cs.scheduled_operations.list(sort_key='id', sort_dir='asc')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/scheduled_operations?'
-            'sort_dir=asc&sort_key=id'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/scheduled_operations?'
+            'sort_dir=asc&sort_key=id', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_scheduled_operations_with_invalid_sort_key(self,
@@ -56,7 +54,7 @@ class ScheduledOperationsTest(base.TestCaseShell):
             'operation_definition')
         mock_request.assert_called_with(
             'POST',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/scheduled_operations',
+            '/scheduled_operations',
             data={
                 'scheduled_operation': {
                     'name': 'name',
@@ -71,7 +69,7 @@ class ScheduledOperationsTest(base.TestCaseShell):
         cs.scheduled_operations.delete('1')
         mock_request.assert_called_with(
             'DELETE',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/scheduled_operations/1',
+            '/scheduled_operations/1',
             headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -80,7 +78,7 @@ class ScheduledOperationsTest(base.TestCaseShell):
         cs.scheduled_operations.get('1')
         mock_request.assert_called_with(
             'GET',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/scheduled_operations/1',
+            '/scheduled_operations/1',
             headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -89,5 +87,5 @@ class ScheduledOperationsTest(base.TestCaseShell):
         cs.scheduled_operations.get('1', session_id='fake_session_id')
         mock_request.assert_called_with(
             'GET',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/scheduled_operations/1',
+            '/scheduled_operations/1',
             headers={'X-Configuration-Session': 'fake_session_id'})

@@ -39,14 +39,12 @@ class ProtectableManager(base.ManagerWithFind):
             headers = {'X-Configuration-Session': session_id}
         else:
             headers = {}
-        url = "/v1/{project_id}/protectables/{protectable_type}".format(
-            project_id=self.project_id,
+        url = "/protectables/{protectable_type}".format(
             protectable_type=protectable_type)
         return self._get(url, response_key="protectable_type", headers=headers)
 
     def list(self):
-        url = "/v1/{project_id}/protectables".format(
-            project_id=self.project_id)
+        url = "/protectables"
         protectables = self._list(url, 'protectable_type', return_raw=True)
 
         protectables_list = []
@@ -84,9 +82,8 @@ class ProtectableManager(base.ManagerWithFind):
             headers = {'X-Configuration-Session': session_id}
         else:
             headers = {}
-        url = "/v1/{project_id}/protectables/{protectable_type}/" \
-              "instances/{protectable_id}".format(project_id=self.project_id,
-                                                  protectable_type=type,
+        url = "/protectables/{protectable_type}/" \
+              "instances/{protectable_id}".format(protectable_type=type,
                                                   protectable_id=id)
         return self._get(url, response_key="instance", headers=headers)
 
@@ -127,8 +124,7 @@ class ProtectableManager(base.ManagerWithFind):
             params = sorted(query_params.items(), key=lambda x: x[0])
             query_string = "?%s" % parse.urlencode(params)
 
-        return ("/v1/%(project_id)s/protectables/%(protectable_type)s"
+        return ("/protectables/%(protectable_type)s"
                 "/instances%(query_string)s" %
-                {"project_id": self.project_id,
-                 "protectable_type": protectable_type,
+                {"protectable_type": protectable_type,
                  "query_string": query_string})

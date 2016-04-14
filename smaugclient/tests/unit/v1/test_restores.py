@@ -27,8 +27,7 @@ class RestoresTest(base.TestCaseShell):
         cs.restores.list(marker=1234, limit=2)
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/restores?limit=2&marker=1234'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/restores?limit=2&marker=1234', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_restores_with_sort_key_dir(self, mock_request):
@@ -36,9 +35,8 @@ class RestoresTest(base.TestCaseShell):
         cs.restores.list(sort_key='id', sort_dir='asc')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/restores?'
-            'sort_dir=asc&sort_key=id'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/restores?'
+            'sort_dir=asc&sort_key=id', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_plans_with_invalid_sort_key(self, mock_request):
@@ -54,7 +52,7 @@ class RestoresTest(base.TestCaseShell):
                            '{"username": "admin"}')
         mock_request.assert_called_with(
             'POST',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/restores',
+            '/restores',
             data={
                 'restore':
                 {
@@ -70,7 +68,7 @@ class RestoresTest(base.TestCaseShell):
         cs.restores.get('1')
         mock_request.assert_called_with(
             'GET',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/restores/1',
+            '/restores/1',
             headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -79,5 +77,5 @@ class RestoresTest(base.TestCaseShell):
         cs.restores.get('1', session_id='fake_session_id')
         mock_request.assert_called_with(
             'GET',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/restores/1',
+            '/restores/1',
             headers={'X-Configuration-Session': 'fake_session_id'})
