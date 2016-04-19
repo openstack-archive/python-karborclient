@@ -48,14 +48,15 @@ class PlansTest(base.TestCaseShell):
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_create_plan(self, mock_request):
         mock_request.return_value = mock_request_return
-        cs.plans.create('Plan name', 'provider_id', '')
+        cs.plans.create('Plan name', 'provider_id', '', "")
         mock_request.assert_called_with(
             'POST',
             '/plans',
             data={
                 'plan': {'provider_id': 'provider_id',
                          'name': 'Plan name',
-                         'resources': ''}},
+                         'resources': '',
+                         'parameters': ''}},
             headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.raw_request')

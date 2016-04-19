@@ -24,10 +24,11 @@ class Plan(base.Resource):
 class PlanManager(base.ManagerWithFind):
     resource_class = Plan
 
-    def create(self, name, provider_id, resources):
+    def create(self, name, provider_id, resources, parameters):
         body = {'plan': {'name': name,
                          'provider_id': provider_id,
                          'resources': resources,
+                         'parameters': parameters
                          }}
         url = "/plans"
         return self._create(url, body, 'plan', return_raw=True)
