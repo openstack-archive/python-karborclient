@@ -18,6 +18,7 @@ from smaugclient.tests.unit.v1 import fakes
 cs = fakes.FakeClient()
 mock_request_return = ({}, {'protectable_type': {}})
 mock_instances_request_return = ({}, {'instances': {}})
+mock_instance_request_return = ({}, {'instance': {}})
 
 
 class ProtectablesTest(base.TestCaseShell):
@@ -39,6 +40,15 @@ class ProtectablesTest(base.TestCaseShell):
             'GET',
             '/v1/{project_id}/protectables/OS::Cinder::Volume'.format(
                 project_id=fakes.PROJECT_ID), headers={})
+
+    @mock.patch('smaugclient.common.http.HTTPClient.json_request')
+    def test_get_protectables_instance(self, mock_request):
+        mock_request.return_value = mock_instance_request_return
+        cs.protectables.get_instance('OS::Cinder::Volume', '1')
+        mock_request.assert_called_with(
+            'GET',
+            '/v1/{project_id}/protectables/OS::Cinder::Volume/'
+            'instances/1'.format(project_id=fakes.PROJECT_ID), headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_protectables_instances(self, mock_request):

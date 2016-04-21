@@ -348,6 +348,19 @@ def do_protectable_show(cs, args):
     utils.print_dict(protectable.to_dict())
 
 
+@utils.arg('protectable_id',
+           metavar='<protectable_id>',
+           help='Protectable instance id.')
+@utils.arg('protectable_type',
+           metavar='<protectable_type>',
+           help='Protectable type.')
+def do_protectable_show_instance(cs, args):
+    """Shows instance details."""
+    instance = cs.protectables.get_instance(args.protectable_type,
+                                            args.protectable_id)
+    utils.print_dict(instance.to_dict())
+
+
 @utils.arg('protectable_type',
            metavar='<protectable_type>',
            help='Type of protectable.')

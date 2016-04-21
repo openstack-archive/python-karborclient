@@ -79,6 +79,17 @@ class ProtectableManager(base.ManagerWithFind):
             sort_dir=sort_dir, sort=sort)
         return self._list(url, response_key='instances', obj_class=Instances)
 
+    def get_instance(self, type, id, session_id=None):
+        if session_id:
+            headers = {'X-Configuration-Session': session_id}
+        else:
+            headers = {}
+        url = "/v1/{project_id}/protectables/{protectable_type}/" \
+              "instances/{protectable_id}".format(project_id=self.project_id,
+                                                  protectable_type=type,
+                                                  protectable_id=id)
+        return self._get(url, response_key="instance", headers=headers)
+
     def _build_instances_list_url(self, protectable_type,
                                   search_opts=None, marker=None, limit=None,
                                   sort_key=None, sort_dir=None, sort=None):
