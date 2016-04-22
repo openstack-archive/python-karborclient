@@ -31,13 +31,11 @@ class RestoreManager(base.ManagerWithFind):
                             'parameters': parameters,
                             }
                 }
-        url = "/v1/{project_id}/restores" .format(
-            project_id=self.project_id)
+        url = "/restores"
         return self._create(url, body, 'restore', return_raw=True)
 
     def delete(self, restore_id):
-        path = '/v1/{project_id}/restores/{restore_id}'.format(
-            project_id=self.project_id,
+        path = '/restores/{restore_id}'.format(
             restore_id=restore_id)
         return self._delete(path)
 
@@ -46,8 +44,7 @@ class RestoreManager(base.ManagerWithFind):
             headers = {'X-Configuration-Session': session_id}
         else:
             headers = {}
-        url = "/v1/{project_id}/restores/{restore_id}".format(
-            project_id=self.project_id,
+        url = "/restores/{restore_id}".format(
             restore_id=restore_id)
         return self._get(url, response_key="restore", headers=headers)
 

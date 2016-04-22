@@ -30,8 +30,7 @@ class CheckpointsTest(base.TestCaseShell):
         cs.checkpoints.list(provider_id=FAKE_PROVIDER_ID)
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/providers/{provider_id}/checkpoints'.format(
-                project_id=fakes.PROJECT_ID,
+            '/providers/{provider_id}/checkpoints'.format(
                 provider_id=FAKE_PROVIDER_ID), headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -40,8 +39,7 @@ class CheckpointsTest(base.TestCaseShell):
         cs.checkpoints.get(FAKE_PROVIDER_ID, '1')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/providers/{provider_id}/checkpoints/1'.format(
-                project_id=fakes.PROJECT_ID,
+            '/providers/{provider_id}/checkpoints/1'.format(
                 provider_id=FAKE_PROVIDER_ID), headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.raw_request')
@@ -50,8 +48,7 @@ class CheckpointsTest(base.TestCaseShell):
         cs.checkpoints.delete(FAKE_PROVIDER_ID, '1')
         mock_request.assert_called_with(
             'DELETE',
-            '/v1/{project_id}/providers/{provider_id}/checkpoints/1'.format(
-                project_id=fakes.PROJECT_ID,
+            '/providers/{provider_id}/checkpoints/1'.format(
                 provider_id=FAKE_PROVIDER_ID), headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -61,10 +58,9 @@ class CheckpointsTest(base.TestCaseShell):
                             marker=1234, limit=2)
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/providers/{provider_id}/'
+            '/providers/{provider_id}/'
             'checkpoints?limit=2&marker=1234'.format(
-                provider_id=FAKE_PROVIDER_ID,
-                project_id=fakes.PROJECT_ID), headers={})
+                provider_id=FAKE_PROVIDER_ID), headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_checkpoints_with_sort_key_dir(self, mock_request):
@@ -73,10 +69,9 @@ class CheckpointsTest(base.TestCaseShell):
                             sort_key='id', sort_dir='asc')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/providers/{provider_id}/'
+            '/providers/{provider_id}/'
             'checkpoints?sort_dir=asc&sort_key=id'.format(
-                provider_id=FAKE_PROVIDER_ID,
-                project_id=fakes.PROJECT_ID), headers={})
+                provider_id=FAKE_PROVIDER_ID), headers={})
 
     def test_list_checkpoints_with_invalid_sort_key(self):
         self.assertRaises(ValueError,
@@ -89,10 +84,9 @@ class CheckpointsTest(base.TestCaseShell):
         cs.checkpoints.create(FAKE_PROVIDER_ID, FAKE_PLAN_ID)
         mock_request.assert_called_with(
             'POST',
-            '/v1/{project_id}/providers/{provider_id}/'
+            '/providers/{provider_id}/'
             'checkpoints'.format(
-                provider_id=FAKE_PROVIDER_ID,
-                project_id=fakes.PROJECT_ID),
+                provider_id=FAKE_PROVIDER_ID),
             data={
                 'checkpoint': {'plan_id': FAKE_PLAN_ID}},
             headers={})

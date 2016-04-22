@@ -27,8 +27,7 @@ class TriggersTest(base.TestCaseShell):
         cs.triggers.list(marker=1234, limit=2)
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/triggers?limit=2&marker=1234'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/triggers?limit=2&marker=1234', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_triggers_with_sort_key_dir(self, mock_request):
@@ -36,9 +35,8 @@ class TriggersTest(base.TestCaseShell):
         cs.triggers.list(sort_key='id', sort_dir='asc')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/triggers?'
-            'sort_dir=asc&sort_key=id'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/triggers?'
+            'sort_dir=asc&sort_key=id', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_triggers_with_invalid_sort_key(self, mock_request):
@@ -51,7 +49,7 @@ class TriggersTest(base.TestCaseShell):
         cs.triggers.create('name', 'time', 'properties')
         mock_request.assert_called_with(
             'POST',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/triggers',
+            '/triggers',
             data={
                 'trigger_info': {'name': 'name',
                                  'type': 'time',
@@ -64,7 +62,7 @@ class TriggersTest(base.TestCaseShell):
         cs.triggers.delete('1')
         mock_request.assert_called_with(
             'DELETE',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/triggers/1',
+            '/triggers/1',
             headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -73,7 +71,7 @@ class TriggersTest(base.TestCaseShell):
         cs.triggers.get('1')
         mock_request.assert_called_with(
             'GET',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/triggers/1',
+            '/triggers/1',
             headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -82,5 +80,5 @@ class TriggersTest(base.TestCaseShell):
         cs.triggers.get('1', session_id='fake_session_id')
         mock_request.assert_called_with(
             'GET',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/triggers/1',
+            '/triggers/1',
             headers={'X-Configuration-Session': 'fake_session_id'})

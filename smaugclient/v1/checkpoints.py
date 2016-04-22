@@ -28,15 +28,13 @@ class CheckpointManager(base.ManagerWithFind):
 
     def create(self, provider_id, plan_id):
         body = {'checkpoint': {'plan_id': plan_id}}
-        url = "/v1/{project_id}/providers/{provider_id}/" \
-              "checkpoints" .format(project_id=self.project_id,
-                                    provider_id=provider_id)
+        url = "/providers/{provider_id}/" \
+              "checkpoints" .format(provider_id=provider_id)
         return self._create(url, body, 'checkpoint', return_raw=True)
 
     def delete(self, provider_id, checkpoint_id):
-        path = '/v1/{project_id}/providers/{provider_id}/checkpoints/' \
-               '{checkpoint_id}'.format(project_id=self.project_id,
-                                        provider_id=provider_id,
+        path = '/providers/{provider_id}/checkpoints/' \
+               '{checkpoint_id}'.format(provider_id=provider_id,
                                         checkpoint_id=checkpoint_id)
         return self._delete(path)
 
@@ -45,9 +43,8 @@ class CheckpointManager(base.ManagerWithFind):
             headers = {'X-Configuration-Session': session_id}
         else:
             headers = {}
-        url = '/v1/{project_id}/providers/{provider_id}/checkpoints/' \
-            '{checkpoint_id}'.format(project_id=self.project_id,
-                                     provider_id=provider_id,
+        url = '/providers/{provider_id}/checkpoints/' \
+            '{checkpoint_id}'.format(provider_id=provider_id,
                                      checkpoint_id=checkpoint_id)
         return self._get(url, response_key="checkpoint", headers=headers)
 
@@ -111,8 +108,7 @@ class CheckpointManager(base.ManagerWithFind):
             params = sorted(query_params.items(), key=lambda x: x[0])
             query_string = "?%s" % parse.urlencode(params)
 
-        return ("/v1/%(project_id)s/providers/%(provider_id)s"
+        return ("/providers/%(provider_id)s"
                 "/checkpoints%(query_string)s" %
-                {"project_id": self.project_id,
-                 "provider_id": provider_id,
+                {"provider_id": provider_id,
                  "query_string": query_string})

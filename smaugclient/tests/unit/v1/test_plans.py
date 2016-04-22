@@ -27,7 +27,7 @@ class PlansTest(base.TestCaseShell):
         cs.plans.list(marker=1234, limit=2)
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/plans?limit=2&marker=1234'.format(
+            '/plans?limit=2&marker=1234'.format(
                 project_id=fakes.PROJECT_ID), headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -36,7 +36,7 @@ class PlansTest(base.TestCaseShell):
         cs.plans.list(sort_key='id', sort_dir='asc')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/plans?'
+            '/plans?'
             'sort_dir=asc&sort_key=id'.format(
                 project_id=fakes.PROJECT_ID), headers={})
 
@@ -51,7 +51,7 @@ class PlansTest(base.TestCaseShell):
         cs.plans.create('Plan name', 'provider_id', '')
         mock_request.assert_called_with(
             'POST',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/plans',
+            '/plans',
             data={
                 'plan': {'provider_id': 'provider_id',
                          'name': 'Plan name',
@@ -64,7 +64,7 @@ class PlansTest(base.TestCaseShell):
         cs.plans.delete('1')
         mock_request.assert_called_with(
             'DELETE',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/plans/1',
+            '/plans/1',
             headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -73,7 +73,7 @@ class PlansTest(base.TestCaseShell):
         cs.plans.update('1', {'name': 'Test name.'})
         mock_request.assert_called_with(
             'PUT',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/plans/1',
+            '/plans/1',
             data={'plan': {'name': 'Test name.'}}, headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -82,7 +82,7 @@ class PlansTest(base.TestCaseShell):
         cs.plans.get('1')
         mock_request.assert_called_with(
             'GET',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/plans/1',
+            '/plans/1',
             headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
@@ -91,5 +91,5 @@ class PlansTest(base.TestCaseShell):
         cs.plans.get('1', session_id='fake_session_id')
         mock_request.assert_called_with(
             'GET',
-            '/v1/efc6a88b-9096-4bb6-8634-cda182a6e12a/plans/1',
+            '/plans/1',
             headers={'X-Configuration-Session': 'fake_session_id'})

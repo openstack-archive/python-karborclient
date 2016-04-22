@@ -31,14 +31,12 @@ class ScheduledOperationManager(base.ManagerWithFind):
                                         'operation_definition':
                                             operation_definition,
                                         }}
-        url = "/v1/{project_id}/scheduled_operations" .format(
-            project_id=self.project_id)
+        url = "/scheduled_operations"
         return self._create(url, body, 'scheduled_operation', return_raw=True)
 
     def delete(self, scheduled_operation_id):
-        path = '/v1/{project_id}/scheduled_operations/{scheduled_operation_id}'.\
-            format(project_id=self.project_id,
-                   scheduled_operation_id=scheduled_operation_id)
+        path = '/scheduled_operations/{scheduled_operation_id}'.\
+            format(scheduled_operation_id=scheduled_operation_id)
         return self._delete(path)
 
     def get(self, scheduled_operation_id, session_id=None):
@@ -46,9 +44,8 @@ class ScheduledOperationManager(base.ManagerWithFind):
             headers = {'X-Configuration-Session': session_id}
         else:
             headers = {}
-        url = "/v1/{project_id}/scheduled_operations/{scheduled_operation_id}".\
-            format(project_id=self.project_id,
-                   scheduled_operation_id=scheduled_operation_id)
+        url = "/scheduled_operations/{scheduled_operation_id}".\
+            format(scheduled_operation_id=scheduled_operation_id)
         return self._get(url, response_key="scheduled_operation",
                          headers=headers)
 

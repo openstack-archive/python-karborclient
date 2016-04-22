@@ -27,9 +27,8 @@ class ProvidersTest(base.TestCaseShell):
         cs.providers.get('2220f8b1-975d-4621-a872-fa9afb43cb6c')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/providers/'
-            '2220f8b1-975d-4621-a872-fa9afb43cb6c'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/providers/'
+            '2220f8b1-975d-4621-a872-fa9afb43cb6c', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_providers(self, mock_request):
@@ -37,8 +36,7 @@ class ProvidersTest(base.TestCaseShell):
         cs.providers.list()
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/providers'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/providers', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_providers_with_marker_limit(self, mock_request):
@@ -46,8 +44,7 @@ class ProvidersTest(base.TestCaseShell):
         cs.providers.list(marker=1234, limit=2)
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/providers?limit=2&marker=1234'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/providers?limit=2&marker=1234', headers={})
 
     @mock.patch('smaugclient.common.http.HTTPClient.json_request')
     def test_list_providers_with_sort_key_dir(self, mock_request):
@@ -55,9 +52,8 @@ class ProvidersTest(base.TestCaseShell):
         cs.providers.list(sort_key='id', sort_dir='asc')
         mock_request.assert_called_with(
             'GET',
-            '/v1/{project_id}/providers?'
-            'sort_dir=asc&sort_key=id'.format(
-                project_id=fakes.PROJECT_ID), headers={})
+            '/providers?'
+            'sort_dir=asc&sort_key=id', headers={})
 
     def test_list_providers_with_invalid_sort_key(self):
         self.assertRaises(ValueError,

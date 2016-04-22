@@ -29,22 +29,19 @@ class PlanManager(base.ManagerWithFind):
                          'provider_id': provider_id,
                          'resources': resources,
                          }}
-        url = "/v1/{project_id}/plans" .format(
-            project_id=self.project_id)
+        url = "/plans"
         return self._create(url, body, 'plan', return_raw=True)
 
     def update(self, plan_id, data):
 
         body = {"plan": data}
 
-        return self._update('/v1/{project_id}/plans/{plan_id}'
-                            .format(project_id=self.project_id,
-                                    plan_id=plan_id),
+        return self._update('/plans/{plan_id}'
+                            .format(plan_id=plan_id),
                             body, "plan")
 
     def delete(self, plan_id):
-        path = '/v1/{project_id}/plans/{plan_id}'.format(
-            project_id=self.project_id,
+        path = '/plans/{plan_id}'.format(
             plan_id=plan_id)
         return self._delete(path)
 
@@ -53,8 +50,7 @@ class PlanManager(base.ManagerWithFind):
             headers = {'X-Configuration-Session': session_id}
         else:
             headers = {}
-        url = "/v1/{project_id}/plans/{plan_id}".format(
-            project_id=self.project_id,
+        url = "/plans/{plan_id}".format(
             plan_id=plan_id)
         return self._get(url, response_key="plan", headers=headers)
 
