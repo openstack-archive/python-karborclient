@@ -110,13 +110,25 @@ def do_plan_list(cs, args):
            metavar='<provider_id>',
            help='ID of provider.')
 @utils.arg('resources',
-           metavar='<id=type,id=type>',
+           metavar='<id=type=name,id=type=name>',
            help='Resource in list must be a dict when creating'
                 ' a plan.The keys of resource are id and type.')
+@utils.arg('--parameters',
+           type=str,
+           nargs='*',
+           metavar='<key=value>',
+           default=None,
+           help='The parameters of a plan.')
 def do_plan_create(cs, args):
     """Create a plan."""
     plan_resources = _extract_resources(args)
-    plan = cs.plans.create(args.name, args.provider_id, plan_resources)
+    if args.parameters is not None:
+        plan_parameters = _extract_parameters(args)
+    else:
+        raise exceptions.CommandError(
+            "parameters must be provided.")
+    plan = cs.plans.create(args.name, args.provider_id, plan_resources,
+                           plan_parameters)
     utils.print_dict(plan)
 
 
@@ -181,14 +193,16 @@ def _extract_resources(args):
     for data in args.resources.split(','):
         resource = {}
         if '=' in data:
-            (resource_id, resource_type) = data.split('=', 1)
+            (resource_id, resource_type, resource_name) = data.split('=', 2)
         else:
             raise exceptions.CommandError(
                 "Unable to parse parameter resources.")
 
         resource["id"] = resource_id
         resource["type"] = resource_type
+        resource["name"] = resource_name
         resources.append(resource)
+
     return resources
 
 
@@ -221,7 +235,7 @@ def do_restore_create(cs, args):
         restore_parameters = _extract_parameters(args)
     else:
         raise exceptions.CommandError(
-            "checkpoint_id must be provided.")
+            "parameters must be provided.")
     restore = cs.restores.create(args.provider_id, args.checkpoint_id,
                                  args.restore_target, restore_parameters)
     utils.print_dict(restore)
