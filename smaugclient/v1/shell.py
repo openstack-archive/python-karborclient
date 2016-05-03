@@ -866,10 +866,10 @@ def do_scheduledoperation_list(cs, args):
 def do_scheduledoperation_create(cs, args):
     """Create a scheduled operation."""
     operation_definition = _extract_operation_definition(args)
-    scheduledoperation = cs.scheduledoperations.create(args.name,
-                                                       args.operation_type,
-                                                       args.trigger_id,
-                                                       operation_definition)
+    scheduledoperation = cs.scheduled_operations.create(args.name,
+                                                        args.operation_type,
+                                                        args.trigger_id,
+                                                        operation_definition)
     utils.print_dict(scheduledoperation)
 
 
