@@ -125,8 +125,7 @@ def do_plan_create(cs, args):
     if args.parameters is not None:
         plan_parameters = _extract_parameters(args)
     else:
-        raise exceptions.CommandError(
-            "parameters must be provided.")
+        plan_parameters = {}
     plan = cs.plans.create(args.name, args.provider_id, plan_resources,
                            plan_parameters)
     utils.print_dict(plan)
