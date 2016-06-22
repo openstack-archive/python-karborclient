@@ -31,7 +31,7 @@ class PlanManager(base.ManagerWithFind):
                          'parameters': parameters
                          }}
         url = "/plans"
-        return self._create(url, body, 'plan', return_raw=True)
+        return self._create(url, body, 'plan')
 
     def update(self, plan_id, data):
 

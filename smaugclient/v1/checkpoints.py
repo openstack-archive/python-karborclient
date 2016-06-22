@@ -30,7 +30,7 @@ class CheckpointManager(base.ManagerWithFind):
         body = {'checkpoint': {'plan_id': plan_id}}
         url = "/providers/{provider_id}/" \
               "checkpoints" .format(provider_id=provider_id)
-        return self._create(url, body, 'checkpoint', return_raw=True)
+        return self._create(url, body, 'checkpoint')
 
     def delete(self, provider_id, checkpoint_id):
         path = '/providers/{provider_id}/checkpoints/' \
