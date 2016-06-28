@@ -128,7 +128,7 @@ def do_plan_create(cs, args):
         plan_parameters = {}
     plan = cs.plans.create(args.name, args.provider_id, plan_resources,
                            plan_parameters)
-    utils.print_dict(plan)
+    utils.print_dict(plan.to_dict())
 
 
 @utils.arg('plan',
@@ -237,7 +237,7 @@ def do_restore_create(cs, args):
             "parameters must be provided.")
     restore = cs.restores.create(args.provider_id, args.checkpoint_id,
                                  args.restore_target, restore_parameters)
-    utils.print_dict(restore)
+    utils.print_dict(restore.to_dict())
 
 
 def _extract_parameters(args):
@@ -512,7 +512,7 @@ def do_provider_list(cs, args):
 def do_checkpoint_create(cs, args):
     """Create a checkpoint."""
     checkpoint = cs.checkpoints.create(args.provider_id, args.plan_id)
-    utils.print_dict(checkpoint)
+    utils.print_dict(checkpoint.to_dict())
 
 
 @utils.arg('provider_id',
@@ -716,7 +716,7 @@ def do_trigger_create(cs, args):
     """Create a trigger."""
     trigger_properties = _extract_properties(args)
     trigger = cs.triggers.create(args.name, args.type, trigger_properties)
-    utils.print_dict(trigger)
+    utils.print_dict(trigger.to_dict())
 
 
 def _extract_properties(args):
@@ -869,7 +869,7 @@ def do_scheduledoperation_create(cs, args):
                                                         args.operation_type,
                                                         args.trigger_id,
                                                         operation_definition)
-    utils.print_dict(scheduledoperation)
+    utils.print_dict(scheduledoperation.to_dict())
 
 
 def _extract_operation_definition(args):

@@ -32,7 +32,7 @@ class ScheduledOperationManager(base.ManagerWithFind):
                                             operation_definition,
                                         }}
         url = "/scheduled_operations"
-        return self._create(url, body, 'scheduled_operation', return_raw=True)
+        return self._create(url, body, 'scheduled_operation')
 
     def delete(self, scheduled_operation_id):
         path = '/scheduled_operations/{scheduled_operation_id}'.\

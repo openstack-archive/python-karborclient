@@ -30,7 +30,7 @@ class TriggerManager(base.ManagerWithFind):
                                  'properties': properties,
                                  }}
         url = "/triggers"
-        return self._create(url, body, 'trigger_info', return_raw=True)
+        return self._create(url, body, 'trigger_info')
 
     def delete(self, trigger_id):
         path = '/triggers/{trigger_id}'.format(

@@ -32,7 +32,7 @@ class RestoreManager(base.ManagerWithFind):
                             }
                 }
         url = "/restores"
-        return self._create(url, body, 'restore', return_raw=True)
+        return self._create(url, body, 'restore')
 
     def delete(self, restore_id):
         path = '/restores/{restore_id}'.format(
