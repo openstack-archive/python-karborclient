@@ -710,7 +710,7 @@ def do_trigger_list(cs, args):
            metavar='<type>',
            help='Type of trigger.')
 @utils.arg('properties',
-           metavar='<key=value;key=value>',
+           metavar='<key=value:key=value>',
            help='Properties of trigger.')
 def do_trigger_create(cs, args):
     """Create a trigger."""
@@ -860,7 +860,7 @@ def do_scheduledoperation_list(cs, args):
            metavar='<trigger_id>',
            help='Trigger id of scheduled operation.')
 @utils.arg('operation_definition',
-           metavar='<key=value;key=value>',
+           metavar='<key=value:key=value>',
            help='Operation definition of scheduled operation.')
 def do_scheduledoperation_create(cs, args):
     """Create a scheduled operation."""
