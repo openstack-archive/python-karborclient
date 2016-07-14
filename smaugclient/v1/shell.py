@@ -826,7 +826,7 @@ def do_scheduledoperation_list(cs, args):
         'all_tenants': all_tenants,
         'project_id': args.tenant,
         'name': args.name,
-        'operation_type': args.type,
+        'operation_type': args.operation_type,
         'trigger_id': args.trigger_id,
     }
 
