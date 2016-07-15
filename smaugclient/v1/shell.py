@@ -890,7 +890,7 @@ def _extract_operation_definition(args):
            help='ID of scheduled operation.')
 def do_scheduledoperation_show(cs, args):
     """Shows scheduledoperation details."""
-    scheduledoperation = cs.scheduledoperations.get(args.scheduledoperation)
+    scheduledoperation = cs.scheduled_operations.get(args.scheduledoperation)
     utils.print_dict(scheduledoperation.to_dict())
 
 
@@ -903,9 +903,9 @@ def do_scheduledoperation_delete(cs, args):
     failure_count = 0
     for scheduledoperation_id in args.scheduledoperation:
         try:
-            scheduledoperation = utils.find_resource(cs.scheduledoperations,
+            scheduledoperation = utils.find_resource(cs.scheduled_operations,
                                                      scheduledoperation_id)
-            cs.scheduledoperations.delete(scheduledoperation.id)
+            cs.scheduled_operations.delete(scheduledoperation.id)
         except exceptions.NotFound:
             failure_count += 1
             print("Failed to delete '{0}'; scheduledoperation not found".
