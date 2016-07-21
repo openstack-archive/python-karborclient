@@ -14,6 +14,7 @@ import argparse
 
 import os
 
+from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 from smaugclient.common import base
 from smaugclient.common import utils
@@ -115,15 +116,14 @@ def do_plan_list(cs, args):
                 ' a plan.The keys of resource are id and type.')
 @utils.arg('--parameters',
            type=str,
-           nargs='*',
-           metavar='<key=value>',
+           metavar='<parameters>',
            default=None,
            help='The parameters of a plan.')
 def do_plan_create(cs, args):
     """Create a plan."""
     plan_resources = _extract_resources(args)
     if args.parameters is not None:
-        plan_parameters = _extract_parameters(args)
+        plan_parameters = jsonutils.loads(args.parameters)
     else:
         plan_parameters = {}
     plan = cs.plans.create(args.name, args.provider_id, plan_resources,
