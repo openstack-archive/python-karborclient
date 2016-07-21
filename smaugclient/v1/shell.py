@@ -605,7 +605,7 @@ def do_checkpoint_delete(cs, args):
         try:
             checkpoint = cs.checkpoints.get(args.provider_id,
                                             checkpoint_id)
-            cs.checkpoints.delete(checkpoint.provider_id, checkpoint.id)
+            cs.checkpoints.delete(args.provider_id, checkpoint.id)
         except exceptions.NotFound:
             failure_count += 1
             print("Failed to delete '{0}'; checkpoint not found".
