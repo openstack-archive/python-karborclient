@@ -18,15 +18,12 @@ import sys
 import six
 import uuid
 
-from oslo_log import log as logging
 from oslo_utils import encodeutils
 from oslo_utils import importutils
 
 import prettytable
 
 from smaugclient.openstack.common.apiclient import exceptions
-
-LOG = logging.getLogger(__name__)
 
 
 # Decorator for cli-args
