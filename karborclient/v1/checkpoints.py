@@ -26,8 +26,9 @@ class Checkpoint(base.Resource):
 class CheckpointManager(base.ManagerWithFind):
     resource_class = Checkpoint
 
-    def create(self, provider_id, plan_id):
-        body = {'checkpoint': {'plan_id': plan_id}}
+    def create(self, provider_id, plan_id, checkpoint_extra_info=None):
+        body = {'checkpoint': {'plan_id': plan_id,
+                               'extra-info': checkpoint_extra_info}}
         url = "/providers/{provider_id}/" \
               "checkpoints" .format(provider_id=provider_id)
         return self._create(url, body, 'checkpoint')
