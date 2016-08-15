@@ -1,16 +1,16 @@
-Smaug
+Karbor
 ======
 
-.. image:: https://img.shields.io/pypi/v/python-smaugclient.svg
-    :target: https://pypi.python.org/pypi/python-smaugclient/
+.. image:: https://img.shields.io/pypi/v/python-karborclient.svg
+    :target: https://pypi.python.org/pypi/python-karborclient/
     :alt: Latest Version
 
-.. image:: https://img.shields.io/pypi/dm/python-smaugclient.svg
-    :target: https://pypi.python.org/pypi/python-smaugclient/
+.. image:: https://img.shields.io/pypi/dm/python-karborclient.svg
+    :target: https://pypi.python.org/pypi/python-karborclient/
     :alt: Downloads
 
 
-Smaug Mission Statement
+Karbor Mission Statement
 
 * Formalize Application Data Protection in OpenStack (APIs, Services, Plugins, …)
 * Be able to protect Any Resource in OpenStack(as well as their dependencies)
@@ -25,37 +25,37 @@ Smaug Mission Statement
 * `Specs`_
 * `How to Contribute`_
 
-.. _PyPi: https://pypi.python.org/pypi/python-smaugclient
-.. _Launchpad project: https://launchpad.net/python-smaugclient
-.. _Blueprints: https://blueprints.launchpad.net/python-smaugclient
-.. _Bugs: https://bugs.launchpad.net/python-smaugclient
-.. _Source: https://git.openstack.org/cgit/openstack/python-smaugclient
+.. _PyPi: https://pypi.python.org/pypi/python-karborclient
+.. _Launchpad project: https://launchpad.net/python-karborclient
+.. _Blueprints: https://blueprints.launchpad.net/python-karborclient
+.. _Bugs: https://bugs.launchpad.net/python-karborclient
+.. _Source: https://git.openstack.org/cgit/openstack/python-karborclient
 .. _How to Contribute: http://docs.openstack.org/infra/manual/developers.html
 
 
-Python Smaugclient
+Python Karborclient
 -------------------
-python-smaugclient is a client library for Smaug built on the Smaug API.
-It provides a Python API (the ``smaugclient`` module) and a command-line tool
-(``smaug``).
+python-karborclient is a client library for karbor built on the karbor API.
+It provides a Python API (the ``karborclient`` module) and a command-line tool
+(``karbor``).
 Project Resources
 -----------------
 
 Project status, bugs, and blueprints are tracked on Launchpad:
 
 * Client bug tracker
-    * https://launchpad.net/python-smaugclient
+    * https://launchpad.net/python-karborclient
 
-* Smaug bug tracker
-    * https://launchpad.net/smaug
+* Karbor bug tracker
+    * https://launchpad.net/karbor
 
 Developer documentation can be found here:
 
-  http://docs.openstack.org/developer/smaug
+  http://docs.openstack.org/developer/karbor
 
 Additional resources are linked from the project wiki page:
 
-  https://wiki.openstack.org/wiki/Smaug
+  https://wiki.openstack.org/wiki/karbor
 
 License
 -------

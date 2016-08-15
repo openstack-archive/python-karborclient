@@ -1,4 +1,4 @@
-Welcome to smaugclient's documentation!
+Welcome to karborclient's documentation!
 ========================================================
 
 Contents:

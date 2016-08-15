@@ -2,6 +2,6 @@
 Usage
 ========
 
-To use smaugclient in a project::
+To use karborclient in a project::
 
-    import smaugclient
+    import karborclient
