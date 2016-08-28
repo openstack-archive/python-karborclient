@@ -16,4 +16,4 @@ import pbr.version
 
 
 __version__ = pbr.version.VersionInfo(
-    'python-karborclient').version_string()
+    'python-smaugclient').version_string()
