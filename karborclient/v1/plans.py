@@ -24,8 +24,10 @@ class Plan(base.Resource):
 class PlanManager(base.ManagerWithFind):
     resource_class = Plan
 
-    def create(self, name, provider_id, resources, parameters):
+    def create(self, name, provider_id, resources, parameters,
+               description=None):
         body = {'plan': {'name': name,
+                         'description': description,
                          'provider_id': provider_id,
                          'resources': resources,
                          'parameters': parameters
