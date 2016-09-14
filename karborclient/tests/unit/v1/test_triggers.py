@@ -66,7 +66,7 @@ class TriggersTest(base.TestCaseShell):
             headers={})
 
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
-    def test_show_plan(self, mock_request):
+    def test_show_trigger(self, mock_request):
         mock_request.return_value = mock_request_return
         cs.triggers.get('1')
         mock_request.assert_called_with(
@@ -82,3 +82,18 @@ class TriggersTest(base.TestCaseShell):
             'GET',
             '/triggers/1',
             headers={'X-Configuration-Session': 'fake_session_id'})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_update_trigger(self, mock_request):
+        mock_request.return_value = mock_request_return
+        trigger_id = '123'
+        data = {"name": "My Trigger",
+                "properties": {"pattern": "0 10 * * *", "format": "crontab"}}
+        body = {"trigger_info": data}
+        cs.triggers.update(trigger_id, data)
+        mock_request.assert_called_with(
+            'PUT',
+            '/triggers/123',
+            data=body,
+            headers={}
+        )

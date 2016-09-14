@@ -164,7 +164,7 @@ def do_plan_delete(cs, args):
            help="Id of plan to update.")
 @utils.arg("--name", metavar="<name>",
            help="A name to which the plan will be renamed.")
-@utils.arg("--resources", metavar="<id=type,id=type>",
+@utils.arg("--resources", metavar="<id=type=name,id=type=name>",
            help="Resources to which the plan will be updated.")
 @utils.arg("--status", metavar="<suspended|started>",
            help="status to which the plan will be updated.")
@@ -730,6 +730,22 @@ def _extract_properties(args):
 
         properties[resource_key] = resource_value
     return properties
+
+
+@utils.arg("trigger_id", metavar="<TRIGGER ID>",
+           help="Id of trigger to update.")
+@utils.arg("--name", metavar="<name>",
+           help="A new name to which the trigger will be renamed.")
+@utils.arg("--properties", metavar="<key=value:key=value>",
+           help="Properties of trigger which will be updated.")
+def do_trigger_update(cs, args):
+    """Update a trigger."""
+    trigger_info = {}
+    trigger_properties = _extract_properties(args)
+    trigger_info['name'] = args.name
+    trigger_info['properties'] = trigger_properties
+    trigger = cs.triggers.update(args.trigger_id, trigger_info)
+    utils.print_dict(trigger.to_dict())
 
 
 @utils.arg('trigger',
