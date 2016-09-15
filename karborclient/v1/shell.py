@@ -114,18 +114,25 @@ def do_plan_list(cs, args):
            metavar='<id=type=name,id=type=name>',
            help='Resource in list must be a dict when creating'
                 ' a plan.The keys of resource are id and type.')
-@utils.arg('--parameters',
+@utils.arg('--parameters-json',
            type=str,
+           dest='parameters_json',
            metavar='<parameters>',
            default=None,
-           help='The parameters of a plan.')
+           help='Plan parameters in json format.')
+@utils.arg('--parameters',
+           action='append',
+           metavar='resource_type=<type>[,resource_id=<id>,key=val,...]',
+           default=[],
+           help='Plan parameters, may be specified multiple times. '
+           'resource_type: type of resource to apply parameters. '
+           'resource_id: limit the parameters to a specific resource. '
+           'Other keys and values: according to provider\'s protect schema.'
+           )
 def do_plan_create(cs, args):
     """Create a plan."""
     plan_resources = _extract_resources(args)
-    if args.parameters is not None:
-        plan_parameters = jsonutils.loads(args.parameters)
-    else:
-        plan_parameters = {}
+    plan_parameters = _extract_parameters(args)
     plan = cs.plans.create(args.name, args.provider_id, plan_resources,
                            plan_parameters)
     utils.print_dict(plan.to_dict())
@@ -214,12 +221,21 @@ def _extract_resources(args):
 @utils.arg('restore_target',
            metavar='<restore_target>',
            help='Restore target.')
-@utils.arg('--parameters',
+@utils.arg('--parameters-json',
            type=str,
-           nargs='*',
-           metavar='<key=value>',
+           dest='parameters_json',
+           metavar='<parameters>',
            default=None,
-           help='The parameters of a restore target.')
+           help='Restore parameters in json format.')
+@utils.arg('--parameters',
+           action='append',
+           metavar='resource_type=<type>[,resource_id=<id>,key=val,...]',
+           default=[],
+           help='Restore parameters, may be specified multiple times. '
+           'resource_type: type of resource to apply parameters. '
+           'resource_id: limit the parameters to a specific resource. '
+           'Other keys and values: according to provider\'s restore schema.'
+           )
 def do_restore_create(cs, args):
     """Create a restore."""
     if not uuidutils.is_uuid_like(args.provider_id):
@@ -230,27 +246,50 @@ def do_restore_create(cs, args):
         raise exceptions.CommandError(
             "Invalid checkpoint id provided.")
 
-    if args.parameters is not None:
-        restore_parameters = _extract_parameters(args)
-    else:
-        raise exceptions.CommandError(
-            "parameters must be provided.")
+    restore_parameters = _extract_parameters(args)
     restore = cs.restores.create(args.provider_id, args.checkpoint_id,
                                  args.restore_target, restore_parameters)
     utils.print_dict(restore.to_dict())
 
 
 def _extract_parameters(args):
-    parameters = {}
-    for data in args.parameters:
-        # unset doesn't require a val, so we have the if/else
-        if '=' in data:
-            (key, value) = data.split('=', 1)
-        else:
-            key = data
-            value = None
+    if all((args.parameters, args.parameters_json)):
+        raise exceptions.CommandError(
+            "Must provide parameters or parameters-json, not both")
+    if not any((args.parameters, args.parameters_json)):
+        return {}
 
-        parameters[key] = value
+    if args.parameters_json:
+        return jsonutils.loads(args.parameters_json)
+    parameters = {}
+    for resource_params in args.parameters:
+        resource_type = None
+        resource_id = None
+        parameter = {}
+        for param_kv in resource_params.split(','):
+            try:
+                key, value = param_kv.split('=')
+            except Exception:
+                raise exceptions.CommandError(
+                    'parameters must be in the form: key1=val1,key2=val2,...'
+                )
+            if key == "resource_type":
+                resource_type = value
+            if key == "resource_id":
+                if not uuidutils.is_uuid_like(value):
+                    raise exceptions.CommandError('resource_id must be a uuid')
+                resource_id = value
+            parameters[key] = value
+        if resource_type is None:
+            raise exceptions.CommandError(
+                'Must specify resource_type for parameters'
+            )
+        if resource_id is None:
+            resource_key = resource_type
+        else:
+            resource_key = "%s#%s" % (resource_type, resource_id)
+        parameters[resource_key] = parameter
+
     return parameters
 
 
