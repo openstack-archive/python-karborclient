@@ -221,6 +221,14 @@ def _extract_resources(args):
 @utils.arg('restore_target',
            metavar='<restore_target>',
            help='Restore target.')
+@utils.arg('restore_username',
+           metavar='<username>',
+           default="",
+           help='Username to restore target.')
+@utils.arg('restore_password',
+           metavar='<password>',
+           default="",
+           help='Password to restore target.')
 @utils.arg('--parameters-json',
            type=str,
            dest='parameters_json',
@@ -247,8 +255,14 @@ def do_restore_create(cs, args):
             "Invalid checkpoint id provided.")
 
     restore_parameters = _extract_parameters(args)
+    restore_auth = {
+        'type': 'password',
+        'username': args.username,
+        'password': args.password,
+    }
     restore = cs.restores.create(args.provider_id, args.checkpoint_id,
-                                 args.restore_target, restore_parameters)
+                                 args.restore_target, restore_parameters,
+                                 restore_auth)
     utils.print_dict(restore.to_dict())
 
 

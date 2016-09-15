@@ -24,13 +24,17 @@ class Restore(base.Resource):
 class RestoreManager(base.ManagerWithFind):
     resource_class = Restore
 
-    def create(self, provider_id, checkpoint_id, restore_target, parameters):
-        body = {'restore': {'provider_id': provider_id,
-                            'checkpoint_id': checkpoint_id,
-                            'restore_target': restore_target,
-                            'parameters': parameters,
-                            }
-                }
+    def create(self, provider_id, checkpoint_id, restore_target, parameters,
+               restore_auth):
+        body = {
+            'restore': {
+                'provider_id': provider_id,
+                'checkpoint_id': checkpoint_id,
+                'restore_target': restore_target,
+                'restore_auth': restore_auth,
+                'parameters': parameters,
+            }
+        }
         url = "/restores"
         return self._create(url, body, 'restore')
 
