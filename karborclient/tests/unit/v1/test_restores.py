@@ -49,7 +49,9 @@ class RestoresTest(base.TestCaseShell):
         cs.restores.create('586cc6ce-e286-40bd-b2b5-dd32694d9944',
                            '2220f8b1-975d-4621-a872-fa9afb43cb6c',
                            '192.168.1.2:35357/v2.0',
-                           '{"username": "admin"}')
+                           '{}',
+                           '{"type": "password", "username": "admin", '
+                           '"password": "test"}')
         mock_request.assert_called_with(
             'POST',
             '/restores',
@@ -57,9 +59,11 @@ class RestoresTest(base.TestCaseShell):
                 'restore':
                 {
                     'checkpoint_id': '2220f8b1-975d-4621-a872-fa9afb43cb6c',
-                    'parameters': '{"username": "admin"}',
+                    'parameters': '{}',
                     'provider_id': '586cc6ce-e286-40bd-b2b5-dd32694d9944',
-                    'restore_target': '192.168.1.2:35357/v2.0'
+                    'restore_target': '192.168.1.2:35357/v2.0',
+                    'restore_auth': '{"type": "password", "username": '
+                                    '"admin", "password": "test"}'
                 }}, headers={})
 
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
