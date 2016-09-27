@@ -414,16 +414,28 @@ def do_protectable_show(cs, args):
     utils.print_dict(protectable.to_dict())
 
 
-@utils.arg('protectable_id',
-           metavar='<protectable_id>',
-           help='Protectable instance id.')
 @utils.arg('protectable_type',
            metavar='<protectable_type>',
            help='Protectable type.')
+@utils.arg('protectable_id',
+           metavar='<protectable_id>',
+           help='Protectable instance id.')
+@utils.arg('--parameters',
+           type=str,
+           nargs='*',
+           metavar='<key=value>',
+           default=None,
+           help='Show a instance by parameters key and value pair. '
+                'Default=None.')
 def do_protectable_show_instance(cs, args):
     """Shows instance details."""
+    search_opts = {
+        'parameters': (_extract_instances_parameters(args)
+                       if args.parameters else None),
+    }
     instance = cs.protectables.get_instance(args.protectable_type,
-                                            args.protectable_id)
+                                            args.protectable_id,
+                                            search_opts=search_opts)
     utils.print_dict(instance.to_dict())
 
 
@@ -459,11 +471,20 @@ def do_protectable_show_instance(cs, args):
                   'form of <key>[:<asc|desc>]. '
                   'Valid keys: %s. '
                   'Default=None.') % ', '.join(base.SORT_KEY_VALUES)))
+@utils.arg('--parameters',
+           type=str,
+           nargs='*',
+           metavar='<key=value>',
+           default=None,
+           help='List instances by parameters key and value pair. '
+                'Default=None.')
 def do_protectable_list_instances(cs, args):
     """Lists all protectable instances."""
 
     search_opts = {
         'type': args.type,
+        'parameters': (_extract_instances_parameters(args)
+                       if args.parameters else None),
     }
 
     if args.sort and (args.sort_key or args.sort_dir):
@@ -485,6 +506,19 @@ def do_protectable_list_instances(cs, args):
         sortby_index = 0
     utils.print_list(instances, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index)
+
+
+def _extract_instances_parameters(args):
+    parameters = {}
+    for parameter in args.parameters:
+        if '=' in parameter:
+            (key, value) = parameter.split('=', 1)
+        else:
+            key = parameter
+            value = None
+
+        parameters[key] = value
+    return parameters
 
 
 @utils.arg('provider_id',
