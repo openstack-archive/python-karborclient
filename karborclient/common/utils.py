@@ -23,7 +23,7 @@ from oslo_utils import importutils
 
 import prettytable
 
-from karborclient.openstack.common.apiclient import exceptions
+from karborclient.common.apiclient import exceptions
 
 
 # Decorator for cli-args

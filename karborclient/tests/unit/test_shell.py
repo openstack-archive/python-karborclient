@@ -23,7 +23,7 @@ from oslo_log import log
 import six
 from testtools import matchers
 
-from karborclient.openstack.common.apiclient import exceptions
+from karborclient.common.apiclient import exceptions
 import karborclient.shell
 from karborclient.tests.unit import base
 

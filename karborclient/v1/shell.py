@@ -11,14 +11,14 @@
 #    under the License.
 
 import argparse
-
 import os
 
-from karborclient.common import base
-from karborclient.common import utils
-from karborclient.openstack.common.apiclient import exceptions
 from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
+
+from karborclient.common.apiclient import exceptions
+from karborclient.common import base
+from karborclient.common import utils
 
 
 @utils.arg('--all-tenants',

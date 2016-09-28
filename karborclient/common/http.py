@@ -26,7 +26,7 @@ import requests
 import six
 from six.moves import urllib
 
-from karborclient.openstack.common.apiclient import exceptions as exc
+from karborclient.common.apiclient import exceptions as exc
 
 LOG = logging.getLogger(__name__)
 USER_AGENT = 'python-karborclient'

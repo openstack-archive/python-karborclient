@@ -16,8 +16,8 @@ import socket
 import mock
 import testtools
 
+from karborclient.common.apiclient import exceptions as exc
 from karborclient.common import http
-from karborclient.openstack.common.apiclient import exceptions as exc
 from karborclient.tests.unit import fakes
 
 
