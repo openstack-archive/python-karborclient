@@ -222,11 +222,11 @@ def _extract_resources(args):
            metavar='<restore_target>',
            help='Restore target.')
 @utils.arg('restore_username',
-           metavar='<username>',
+           metavar='<restore_username>',
            default="",
            help='Username to restore target.')
 @utils.arg('restore_password',
-           metavar='<password>',
+           metavar='<restore_password>',
            default="",
            help='Password to restore target.')
 @utils.arg('--parameters-json',
@@ -257,8 +257,8 @@ def do_restore_create(cs, args):
     restore_parameters = _extract_parameters(args)
     restore_auth = {
         'type': 'password',
-        'username': args.username,
-        'password': args.password,
+        'username': args.restore_username,
+        'password': args.restore_password,
     }
     restore = cs.restores.create(args.provider_id, args.checkpoint_id,
                                  args.restore_target, restore_parameters,
