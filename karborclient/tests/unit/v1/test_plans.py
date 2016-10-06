@@ -48,7 +48,7 @@ class PlansTest(base.TestCaseShell):
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
     def test_create_plan(self, mock_request):
         mock_request.return_value = mock_request_return
-        cs.plans.create('Plan name', 'provider_id', '', "")
+        cs.plans.create('Plan name', 'provider_id', '', "", '')
         mock_request.assert_called_with(
             'POST',
             '/plans',
@@ -56,7 +56,8 @@ class PlansTest(base.TestCaseShell):
                 'plan': {'provider_id': 'provider_id',
                          'name': 'Plan name',
                          'resources': '',
-                         'parameters': ''}},
+                         'parameters': '',
+                         'description': ''}},
             headers={})
 
     @mock.patch('karborclient.common.http.HTTPClient.raw_request')

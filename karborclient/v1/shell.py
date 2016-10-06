@@ -94,7 +94,7 @@ def do_plan_list(cs, args):
                           limit=args.limit, sort_key=args.sort_key,
                           sort_dir=args.sort_dir, sort=args.sort)
 
-    key_list = ['Id', 'Name', 'Provider id', 'Status']
+    key_list = ['Id', 'Name', 'Description', 'Provider id', 'Status']
 
     if args.sort_key or args.sort_dir or args.sort:
         sortby_index = None
@@ -129,12 +129,15 @@ def do_plan_list(cs, args):
            'resource_id: limit the parameters to a specific resource. '
            'Other keys and values: according to provider\'s protect schema.'
            )
+@utils.arg('--description',
+           metavar='<description>',
+           help='The description of a plan.')
 def do_plan_create(cs, args):
     """Create a plan."""
     plan_resources = _extract_resources(args)
     plan_parameters = _extract_parameters(args)
     plan = cs.plans.create(args.name, args.provider_id, plan_resources,
-                           plan_parameters)
+                           plan_parameters, description=args.description)
     utils.print_dict(plan.to_dict())
 
 
