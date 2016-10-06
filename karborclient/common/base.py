@@ -20,8 +20,9 @@ import copy
 import six
 from six.moves.urllib import parse
 
+from karborclient.common.apiclient import exceptions
 from karborclient.common import http
-from karborclient.openstack.common.apiclient import exceptions
+
 
 SORT_DIR_VALUES = ('asc', 'desc')
 SORT_KEY_VALUES = ('id', 'status', 'name', 'created_at')

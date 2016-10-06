@@ -33,8 +33,9 @@ import six.moves.urllib.parse as urlparse
 
 import karborclient
 from karborclient import client as karbor_client
+from karborclient.common.apiclient import exceptions as exc
 from karborclient.common import utils
-from karborclient.openstack.common.apiclient import exceptions as exc
+
 
 logger = logging.getLogger(__name__)
 
