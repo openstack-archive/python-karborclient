@@ -46,6 +46,14 @@ class TriggerManager(base.ManagerWithFind):
             trigger_id=trigger_id)
         return self._get(url, response_key="trigger_info", headers=headers)
 
+    def update(self, trigger_id, data):
+
+        body = {"trigger_info": data}
+
+        return self._update('/triggers/{trigger_id}'
+                            .format(trigger_id=trigger_id),
+                            body, "trigger_info")
+
     def list(self, detailed=False, search_opts=None, marker=None, limit=None,
              sort_key=None, sort_dir=None, sort=None):
         """Lists all triggers."""
