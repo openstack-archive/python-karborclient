@@ -118,9 +118,10 @@ def do_plan_list(cs, args):
            metavar='<provider_id>',
            help='ID of provider.')
 @utils.arg('resources',
-           metavar='<id=type=name,id=type=name>',
+           metavar='<id=type=name=extra_info,id=type=name=extra_info>',
            help='Resource in list must be a dict when creating'
-                ' a plan.The keys of resource are id and type.')
+                ' a plan. The keys of resource are id ,type, name and '
+                'extra_info. The extra_info field is optional.')
 @utils.arg('--parameters-json',
            type=str,
            dest='parameters_json',
@@ -210,18 +211,18 @@ def do_plan_update(cs, args):
 def _extract_resources(args):
     resources = []
     for data in args.resources.split(','):
-        resource = {}
-        if '=' in data:
-            (resource_id, resource_type, resource_name) = data.split('=', 2)
+        if '=' in data and len(data.split('=')) in [3, 4]:
+            resource = dict(zip(['id', 'type', 'name', 'extra_info'],
+                                data.split('=')))
+            if resource.get('extra_info'):
+                resource['extra_info'] = jsonutils.loads(
+                    resource.get('extra_info'))
         else:
             raise exceptions.CommandError(
-                "Unable to parse parameter resources.")
-
-        resource["id"] = resource_id
-        resource["type"] = resource_type
-        resource["name"] = resource_name
+                "Unable to parse parameter resources. "
+                "The keys of resource are id , type, name and "
+                "extra_info. The extra_info field is optional.")
         resources.append(resource)
-
     return resources
 
 
