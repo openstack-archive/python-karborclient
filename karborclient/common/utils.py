@@ -19,7 +19,6 @@ import six
 import uuid
 
 from oslo_utils import encodeutils
-from oslo_utils import importutils
 
 import prettytable
 
@@ -47,13 +46,6 @@ def env(*vars, **kwargs):
         if value:
             return value
     return kwargs.get('default', '')
-
-
-def import_versioned_module(version, submodule=None):
-    module = 'karborclient.v%s' % version
-    if submodule:
-        module = '.'.join((module, submodule))
-    return importutils.import_module(module)
 
 
 def _print(pt, order):
