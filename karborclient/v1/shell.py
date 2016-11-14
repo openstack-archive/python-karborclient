@@ -892,6 +892,10 @@ def do_trigger_delete(cs, args):
            metavar='<trigger_id>',
            default=None,
            help='Filters results by a trigger id. Default=None.')
+@utils.arg('--operation_definition',
+           metavar='<operation_definition>',
+           default=None,
+           help='Filters results by the operation_definition. Default=None.')
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
@@ -934,6 +938,7 @@ def do_scheduledoperation_list(cs, args):
         'name': args.name,
         'operation_type': args.operation_type,
         'trigger_id': args.trigger_id,
+        'operation_definition': args.operation_definition,
     }
 
     if args.sort and (args.sort_key or args.sort_dir):
