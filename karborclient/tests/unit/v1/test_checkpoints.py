@@ -88,5 +88,5 @@ class CheckpointsTest(base.TestCaseShell):
             'checkpoints'.format(
                 provider_id=FAKE_PROVIDER_ID),
             data={
-                'checkpoint': {'plan_id': FAKE_PLAN_ID}},
+                'checkpoint': {'plan_id': FAKE_PLAN_ID, 'extra-info': None}},
             headers={})

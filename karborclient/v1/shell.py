@@ -599,10 +599,35 @@ def do_provider_list(cs, args):
 @utils.arg('plan_id',
            metavar='<plan_id>',
            help='ID of plan.')
+@utils.arg('--extra_info',
+           type=str,
+           nargs='*',
+           metavar='<key=value>',
+           default=None,
+           help='The extra info of a checkpoint.')
 def do_checkpoint_create(cs, args):
     """Create a checkpoint."""
-    checkpoint = cs.checkpoints.create(args.provider_id, args.plan_id)
+
+    checkpoint_extra_info = None
+    if args.extra_info is not None:
+        checkpoint_extra_info = _extract_extra_info(args)
+    checkpoint = cs.checkpoints.create(args.provider_id, args.plan_id,
+                                       checkpoint_extra_info)
     utils.print_dict(checkpoint.to_dict())
+
+
+def _extract_extra_info(args):
+    checkpoint_extra_info = {}
+    for data in args.extra_info:
+        # unset doesn't require a val, so we have the if/else
+        if '=' in data:
+            (key, value) = data.split('=', 1)
+        else:
+            key = data
+            value = None
+
+        checkpoint_extra_info[key] = value
+    return checkpoint_extra_info
 
 
 @utils.arg('provider_id',
@@ -659,7 +684,7 @@ def do_checkpoint_list(cs, args):
         marker=args.marker, limit=args.limit, sort_key=args.sort_key,
         sort_dir=args.sort_dir, sort=args.sort)
 
-    key_list = ['Id', 'Project id', 'Status', 'Protection plan']
+    key_list = ['Id', 'Project id', 'Status', 'Protection plan', 'Metadata']
 
     if args.sort_key or args.sort_dir or args.sort:
         sortby_index = None
