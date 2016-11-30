@@ -38,6 +38,10 @@ from karborclient.common import utils
            metavar='<name>',
            default=None,
            help='Filters results by a name. Default=None.')
+@utils.arg('--description',
+           metavar='<description>',
+           default=None,
+           help='Filters results by a description. Default=None.')
 @utils.arg('--status',
            metavar='<status>',
            default=None,
@@ -82,6 +86,7 @@ def do_plan_list(cs, args):
         'all_tenants': all_tenants,
         'project_id': args.tenant,
         'name': args.name,
+        'description': args.description,
         'status': args.status,
     }
 
