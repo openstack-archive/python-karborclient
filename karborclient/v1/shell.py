@@ -684,7 +684,8 @@ def do_checkpoint_list(cs, args):
         marker=args.marker, limit=args.limit, sort_key=args.sort_key,
         sort_dir=args.sort_dir, sort=args.sort)
 
-    key_list = ['Id', 'Project id', 'Status', 'Protection plan', 'Metadata']
+    key_list = ['Id', 'Project id', 'Status', 'Protection plan', 'Metadata',
+                'Created at']
 
     if args.sort_key or args.sort_dir or args.sort:
         sortby_index = None
