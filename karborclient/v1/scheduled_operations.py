@@ -17,9 +17,6 @@ class ScheduledOperation(base.Resource):
     def __repr__(self):
         return "<ScheduledOperation %s>" % self._info
 
-    def data(self, **kwargs):
-        return self.manager.data(self, **kwargs)
-
 
 class ScheduledOperationManager(base.ManagerWithFind):
     resource_class = ScheduledOperation

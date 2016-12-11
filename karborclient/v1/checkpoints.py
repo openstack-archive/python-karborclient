@@ -19,9 +19,6 @@ class Checkpoint(base.Resource):
     def __repr__(self):
         return "<Checkpoint %s>" % self._info
 
-    def data(self, **kwargs):
-        return self.manager.data(self, **kwargs)
-
 
 class CheckpointManager(base.ManagerWithFind):
     resource_class = Checkpoint

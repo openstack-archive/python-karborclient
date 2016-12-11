@@ -17,9 +17,6 @@ class Provider(base.Resource):
     def __repr__(self):
         return "<Provider %s>" % self._info
 
-    def data(self, **kwargs):
-        return self.manager.data(self, **kwargs)
-
 
 class ProviderManager(base.ManagerWithFind):
     resource_class = Provider
