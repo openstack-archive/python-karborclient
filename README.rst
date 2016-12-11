@@ -4,6 +4,7 @@ Team and repository tags
 
 .. image:: http://governance.openstack.org/badges/python-karborclient.svg
     :target: http://governance.openstack.org/reference/tags/index.html
+    :remote:
 
 .. Change things from this point on
 
@@ -13,10 +14,12 @@ Karbor
 .. image:: https://img.shields.io/pypi/v/python-karborclient.svg
     :target: https://pypi.python.org/pypi/python-karborclient/
     :alt: Latest Version
+    :remote:
 
 .. image:: https://img.shields.io/pypi/dm/python-karborclient.svg
     :target: https://pypi.python.org/pypi/python-karborclient/
     :alt: Downloads
+    :remote:
 
 
 Karbor Mission Statement
