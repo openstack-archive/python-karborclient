@@ -13,6 +13,7 @@
 import argparse
 import os
 
+from datetime import datetime
 from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 
@@ -638,10 +639,18 @@ def _extract_extra_info(args):
 @utils.arg('provider_id',
            metavar='<provider_id>',
            help='ID of provider.')
-@utils.arg('--status',
-           metavar='<status>',
+@utils.arg('--plan_id',
+           metavar='<plan_id>',
            default=None,
-           help='Filters results by a status. Default=None.')
+           help='Filters results by a plan_id. Default=None.')
+@utils.arg('--start_date',
+           metavar='<start_date>',
+           default=None,
+           help='Filters results by a start_date("%Y-%m-%d"). Default=None.')
+@utils.arg('--end_date',
+           metavar='<end_date>',
+           default=None,
+           help='Filters results by a end_date("%Y-%m-%d"). Default=None.')
 @utils.arg('--project_id',
            metavar='<project_id>',
            default=None,
@@ -673,9 +682,30 @@ def _extract_extra_info(args):
                   'Default=None.') % ', '.join(base.SORT_KEY_VALUES)))
 def do_checkpoint_list(cs, args):
     """Lists all checkpoints."""
+    if args.plan_id is not None:
+        if not uuidutils.is_uuid_like(args.plan_id):
+            raise exceptions.CommandError('The plan_id must be a uuid')
+
+    if args.start_date:
+        try:
+            datetime.strptime(
+                args.start_date, "%Y-%m-%d")
+        except (ValueError, SyntaxError):
+            raise exceptions.CommandError(
+                "The format of start_date should be %Y-%m-%d")
+
+    if args.start_date:
+        try:
+            datetime.strptime(
+                args.end_date, "%Y-%m-%d")
+        except (ValueError, SyntaxError):
+            raise exceptions.CommandError(
+                "The format of end_date should be %Y-%m-%d")
 
     search_opts = {
-        'status': args.status,
+        'plan_id': args.plan_id,
+        'start_date': args.start_date,
+        'end_date': args.end_date,
         'project_id': args.project_id,
     }
 
