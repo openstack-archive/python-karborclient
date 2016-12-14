@@ -35,11 +35,6 @@ class RestoreManager(base.ManagerWithFind):
         url = "/restores"
         return self._create(url, body, 'restore')
 
-    def delete(self, restore_id):
-        path = '/restores/{restore_id}'.format(
-            restore_id=restore_id)
-        return self._delete(path)
-
     def get(self, restore_id, session_id=None):
         if session_id:
             headers = {'X-Configuration-Session': session_id}
