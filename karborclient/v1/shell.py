@@ -540,7 +540,7 @@ def do_protectable_list_instances(cs, args):
         sort_key=args.sort_key,
         sort_dir=args.sort_dir, sort=args.sort)
 
-    key_list = ['Id', 'Type', 'Dependent resources']
+    key_list = ['Id', 'Type', 'Name', 'Dependent resources', 'Extra info']
 
     if args.sort_key or args.sort_dir or args.sort:
         sortby_index = None
