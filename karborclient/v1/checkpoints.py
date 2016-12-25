@@ -19,6 +19,19 @@ class Checkpoint(base.Resource):
     def __repr__(self):
         return "<Checkpoint %s>" % self._info
 
+    def get(self):
+        self.set_loaded(True)
+        if not hasattr(self.manager, 'get'):
+            return
+        plan = self.protection_plan
+        if plan is not None:
+            provider_id = plan.get("provider_id", None)
+            new = self.manager.get(provider_id, self.id)
+            if new:
+                self._add_details(new._info)
+        else:
+            return
+
 
 class CheckpointManager(base.ManagerWithFind):
     resource_class = Checkpoint
