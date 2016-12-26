@@ -644,13 +644,15 @@ def _extract_extra_info(args):
            default=None,
            help='Filters results by a plan_id. Default=None.')
 @utils.arg('--start_date',
+           type=str,
            metavar='<start_date>',
            default=None,
-           help='Filters results by a start_date("%Y-%m-%d"). Default=None.')
+           help='Filters results by a start_date("Y-m-d"). Default=None.')
 @utils.arg('--end_date',
+           type=str,
            metavar='<end_date>',
            default=None,
-           help='Filters results by a end_date("%Y-%m-%d"). Default=None.')
+           help='Filters results by a end_date("Y-m-d"). Default=None.')
 @utils.arg('--project_id',
            metavar='<project_id>',
            default=None,
@@ -694,7 +696,7 @@ def do_checkpoint_list(cs, args):
             raise exceptions.CommandError(
                 "The format of start_date should be %Y-%m-%d")
 
-    if args.start_date:
+    if args.end_date:
         try:
             datetime.strptime(
                 args.end_date, "%Y-%m-%d")
