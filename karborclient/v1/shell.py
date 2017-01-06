@@ -227,16 +227,16 @@ def _extract_resources(args):
 @utils.arg('checkpoint_id',
            metavar='<checkpoint_id>',
            help='Checkpoint id.')
-@utils.arg('restore_target',
+@utils.arg('--restore_target',
            metavar='<restore_target>',
            help='Restore target.')
-@utils.arg('restore_username',
+@utils.arg('--restore_username',
            metavar='<restore_username>',
-           default="",
+           default=None,
            help='Username to restore target.')
-@utils.arg('restore_password',
+@utils.arg('--restore_password',
            metavar='<restore_password>',
-           default="",
+           default=None,
            help='Password to restore target.')
 @utils.arg('--parameters-json',
            type=str,
@@ -264,11 +264,19 @@ def do_restore_create(cs, args):
             "Invalid checkpoint id provided.")
 
     restore_parameters = _extract_parameters(args)
-    restore_auth = {
-        'type': 'password',
-        'username': args.restore_username,
-        'password': args.restore_password,
-    }
+    restore_auth = None
+    if args.restore_target is not None:
+        if args.restore_username is None:
+            raise exceptions.CommandError(
+                "Must specify username for restore_target.")
+        if args.restore_password is None:
+            raise exceptions.CommandError(
+                "Must specify password for restore_target.")
+        restore_auth = {
+            'type': 'password',
+            'username': args.restore_username,
+            'password': args.restore_password,
+        }
     restore = cs.restores.create(args.provider_id, args.checkpoint_id,
                                  args.restore_target, restore_parameters,
                                  restore_auth)
