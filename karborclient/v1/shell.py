@@ -141,6 +141,7 @@ def do_plan_list(cs, args):
 def do_plan_create(cs, args):
     """Create a plan."""
     plan_resources = _extract_resources(args)
+    _check_resources(cs, plan_resources)
     plan_parameters = _extract_parameters(args)
     plan = cs.plans.create(args.name, args.provider_id, plan_resources,
                            plan_parameters, description=args.description)
@@ -219,6 +220,21 @@ def _extract_resources(args):
         resources.append(resource)
 
     return resources
+
+
+def _check_resources(cs, resources):
+    # check the resource whether it is available
+    for resource in resources:
+        try:
+            instance = cs.protectables.get_instance(
+                resource["type"], resource["id"])
+        except exceptions.NotFound:
+            raise exceptions.CommandError(
+                "The resource: %s can not be found." % resource["id"])
+        else:
+            if instance is None:
+                raise exceptions.CommandError(
+                    "The resource: %s is invalid." % resource["id"])
 
 
 @utils.arg('provider_id',
