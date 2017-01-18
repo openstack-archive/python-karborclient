@@ -11,6 +11,7 @@
 #    under the License.
 
 import argparse
+import json
 import os
 
 from datetime import datetime
@@ -560,7 +561,10 @@ def _extract_instances_parameters(args):
 def do_provider_show(cs, args):
     """Shows provider details."""
     provider = cs.providers.get(args.provider_id)
-    utils.print_dict(provider.to_dict())
+    provider_dict = provider.to_dict()
+    provider_dict["extended_info_schema"] = json.dumps(
+        provider_dict["extended_info_schema"], indent=4, sort_keys=True)
+    utils.print_dict(provider_dict)
 
 
 @utils.arg('--name',
@@ -613,7 +617,7 @@ def do_provider_list(cs, args):
                                   limit=args.limit, sort_key=args.sort_key,
                                   sort_dir=args.sort_dir, sort=args.sort)
 
-    key_list = ['Id', 'Name', 'Description', 'Extended_info_schema']
+    key_list = ['Id', 'Name', 'Description']
 
     if args.sort_key or args.sort_dir or args.sort:
         sortby_index = None

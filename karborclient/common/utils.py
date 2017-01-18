@@ -104,7 +104,7 @@ def print_list(objs, fields, exclude_unavailable=False, formatters=None,
         fields.remove(f)
 
     pt = prettytable.PrettyTable((f for f in fields), caching=False)
-    pt.aligns = ['l' for f in fields]
+    pt.align = 'l'
     for row in rows:
         pt.add_row(row)
 
@@ -117,7 +117,7 @@ def print_list(objs, fields, exclude_unavailable=False, formatters=None,
 
 def print_dict(d, property="Property"):
     pt = prettytable.PrettyTable([property, 'Value'], caching=False)
-    pt.aligns = ['l', 'l']
+    pt.align = 'l'
     for r in six.iteritems(d):
         r = list(r)
         if isinstance(r[1], six.string_types) and "\r" in r[1]:
