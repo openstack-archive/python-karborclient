@@ -11,7 +11,6 @@
 #    under the License.
 
 import argparse
-import json
 import os
 
 from datetime import datetime
@@ -145,7 +144,8 @@ def do_plan_create(cs, args):
     plan_parameters = _extract_parameters(args)
     plan = cs.plans.create(args.name, args.provider_id, plan_resources,
                            plan_parameters, description=args.description)
-    utils.print_dict(plan.to_dict())
+    dict_format_list = {"resources", "parameters"}
+    utils.print_dict(plan.to_dict(), dict_format_list=dict_format_list)
 
 
 @utils.arg('plan',
@@ -154,7 +154,8 @@ def do_plan_create(cs, args):
 def do_plan_show(cs, args):
     """Shows plan details."""
     plan = cs.plans.get(args.plan)
-    utils.print_dict(plan.to_dict())
+    dict_format_list = {"resources", "parameters"}
+    utils.print_dict(plan.to_dict(), dict_format_list=dict_format_list)
 
 
 @utils.arg('plan',
@@ -545,10 +546,8 @@ def _extract_instances_parameters(args):
 def do_provider_show(cs, args):
     """Shows provider details."""
     provider = cs.providers.get(args.provider_id)
-    provider_dict = provider.to_dict()
-    provider_dict["extended_info_schema"] = json.dumps(
-        provider_dict["extended_info_schema"], indent=4, sort_keys=True)
-    utils.print_dict(provider_dict)
+    dict_format_list = {"extended_info_schema"}
+    utils.print_dict(provider.to_dict(), dict_format_list=dict_format_list)
 
 
 @utils.arg('--name',
