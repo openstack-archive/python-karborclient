@@ -12,6 +12,7 @@
 
 from __future__ import print_function
 
+import json
 import os
 import sys
 
@@ -115,15 +116,26 @@ def print_list(objs, fields, exclude_unavailable=False, formatters=None,
     _print(pt, order_by)
 
 
-def print_dict(d, property="Property"):
+def print_dict(d, property="Property", dict_format_list=None):
     pt = prettytable.PrettyTable([property, 'Value'], caching=False)
     pt.align = 'l'
     for r in six.iteritems(d):
         r = list(r)
         if isinstance(r[1], six.string_types) and "\r" in r[1]:
             r[1] = r[1].replace("\r", " ")
+        if dict_format_list is not None and r[0] in dict_format_list:
+            r[1] = dict_prettyprint(r[1])
         pt.add_row(r)
     _print(pt, property)
+
+
+def dict_prettyprint(val):
+    """dict pretty print formatter.
+
+    :param val: dict.
+    :return: formatted json string.
+    """
+    return json.dumps(val, indent=2, sort_keys=True)
 
 
 def find_resource(manager, name_or_id, *args, **kwargs):
