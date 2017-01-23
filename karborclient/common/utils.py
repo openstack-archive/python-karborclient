@@ -116,7 +116,8 @@ def print_list(objs, fields, exclude_unavailable=False, formatters=None,
     _print(pt, order_by)
 
 
-def print_dict(d, property="Property", dict_format_list=None):
+def print_dict(d, property="Property", dict_format_list=None,
+               json_format_list=None):
     pt = prettytable.PrettyTable([property, 'Value'], caching=False)
     pt.align = 'l'
     for r in six.iteritems(d):
@@ -125,6 +126,8 @@ def print_dict(d, property="Property", dict_format_list=None):
             r[1] = r[1].replace("\r", " ")
         if dict_format_list is not None and r[0] in dict_format_list:
             r[1] = dict_prettyprint(r[1])
+        if json_format_list is not None and r[0] in json_format_list:
+            r[1] = json_prettyprint(r[1])
         pt.add_row(r)
     _print(pt, property)
 
@@ -136,6 +139,15 @@ def dict_prettyprint(val):
     :return: formatted json string.
     """
     return json.dumps(val, indent=2, sort_keys=True)
+
+
+def json_prettyprint(val):
+    """json pretty print formatter.
+
+    :param val: json string.
+    :return: formatted json string.
+    """
+    return val and json.dumps(json.loads(val), indent=2, sort_keys=True)
 
 
 def find_resource(manager, name_or_id, *args, **kwargs):

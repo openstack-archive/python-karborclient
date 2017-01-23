@@ -11,6 +11,7 @@
 #    under the License.
 
 import argparse
+import json
 import os
 
 from datetime import datetime
@@ -298,7 +299,8 @@ def do_restore_create(cs, args):
     restore = cs.restores.create(args.provider_id, args.checkpoint_id,
                                  args.restore_target, restore_parameters,
                                  restore_auth)
-    utils.print_dict(restore.to_dict())
+    dict_format_list = {"parameters"}
+    utils.print_dict(restore.to_dict(), dict_format_list=dict_format_list)
 
 
 def _extract_parameters(args):
@@ -417,8 +419,10 @@ def do_restore_list(cs, args):
         sortby_index = None
     else:
         sortby_index = 0
+    formatters = {"Parameters": lambda obj: json.dumps(
+        obj.parameters, indent=2, sort_keys=True)}
     utils.print_list(restores, key_list, exclude_unavailable=True,
-                     sortby_index=sortby_index)
+                     sortby_index=sortby_index, formatters=formatters)
 
 
 @utils.arg('restore',
@@ -427,7 +431,8 @@ def do_restore_list(cs, args):
 def do_restore_show(cs, args):
     """Shows restore details."""
     restore = cs.restores.get(args.restore)
-    utils.print_dict(restore.to_dict())
+    dict_format_list = {"parameters"}
+    utils.print_dict(restore.to_dict(), dict_format_list=dict_format_list)
 
 
 def do_protectable_list(cs, args):
@@ -471,7 +476,8 @@ def do_protectable_show_instance(cs, args):
     instance = cs.protectables.get_instance(args.protectable_type,
                                             args.protectable_id,
                                             search_opts=search_opts)
-    utils.print_dict(instance.to_dict())
+    dict_format_list = {"dependent_resources"}
+    utils.print_dict(instance.to_dict(), dict_format_list=dict_format_list)
 
 
 @utils.arg('protectable_type',
@@ -539,8 +545,11 @@ def do_protectable_list_instances(cs, args):
         sortby_index = None
     else:
         sortby_index = 0
+
+    formatters = {"Dependent resources": lambda obj: json.dumps(
+        obj.dependent_resources, indent=2, sort_keys=True)}
     utils.print_list(instances, key_list, exclude_unavailable=True,
-                     sortby_index=sortby_index)
+                     sortby_index=sortby_index, formatters=formatters)
 
 
 def _extract_instances_parameters(args):
@@ -646,7 +655,10 @@ def do_checkpoint_create(cs, args):
         checkpoint_extra_info = _extract_extra_info(args)
     checkpoint = cs.checkpoints.create(args.provider_id, args.plan_id,
                                        checkpoint_extra_info)
-    utils.print_dict(checkpoint.to_dict())
+    dict_format_list = {"protection_plan"}
+    json_format_list = {"resource_graph"}
+    utils.print_dict(checkpoint.to_dict(), dict_format_list=dict_format_list,
+                     json_format_list=json_format_list)
 
 
 def _extract_extra_info(args):
@@ -755,8 +767,10 @@ def do_checkpoint_list(cs, args):
         sortby_index = None
     else:
         sortby_index = 0
+    formatters = {"Protection plan": lambda obj: json.dumps(
+        obj.protection_plan, indent=2, sort_keys=True)}
     utils.print_list(checkpoints, key_list, exclude_unavailable=True,
-                     sortby_index=sortby_index)
+                     sortby_index=sortby_index, formatters=formatters)
 
 
 @utils.arg('provider_id',
@@ -768,7 +782,10 @@ def do_checkpoint_list(cs, args):
 def do_checkpoint_show(cs, args):
     """Shows checkpoint details."""
     checkpoint = cs.checkpoints.get(args.provider_id, args.checkpoint_id)
-    utils.print_dict(checkpoint.to_dict())
+    dict_format_list = {"protection_plan"}
+    json_format_list = {"resource_graph"}
+    utils.print_dict(checkpoint.to_dict(), dict_format_list=dict_format_list,
+                     json_format_list=json_format_list)
 
 
 @utils.arg('provider_id',
@@ -879,8 +896,11 @@ def do_trigger_list(cs, args):
         sortby_index = None
     else:
         sortby_index = 0
+
+    formatters = {"Properties": lambda obj: json.dumps(
+        obj.properties, indent=2, sort_keys=True)}
     utils.print_list(triggers, key_list, exclude_unavailable=True,
-                     sortby_index=sortby_index)
+                     sortby_index=sortby_index, formatters=formatters)
 
 
 @utils.arg('name',
@@ -896,12 +916,15 @@ def do_trigger_create(cs, args):
     """Create a trigger."""
     trigger_properties = _extract_properties(args)
     trigger = cs.triggers.create(args.name, args.type, trigger_properties)
-    utils.print_dict(trigger.to_dict())
+    dict_format_list = {"properties"}
+    utils.print_dict(trigger.to_dict(), dict_format_list=dict_format_list)
 
 
 def _extract_properties(args):
     properties = {}
-    for data in args.properties.split(':'):
+    if args.properties is None:
+        return properties
+    for data in args.properties.split(','):
         if '=' in data:
             (resource_key, resource_value) = data.split('=', 1)
         else:
@@ -925,7 +948,8 @@ def do_trigger_update(cs, args):
     trigger_info['name'] = args.name
     trigger_info['properties'] = trigger_properties
     trigger = cs.triggers.update(args.trigger_id, trigger_info)
-    utils.print_dict(trigger.to_dict())
+    dict_format_list = {"properties"}
+    utils.print_dict(trigger.to_dict(), dict_format_list=dict_format_list)
 
 
 @utils.arg('trigger',
@@ -934,7 +958,8 @@ def do_trigger_update(cs, args):
 def do_trigger_show(cs, args):
     """Shows trigger details."""
     trigger = cs.triggers.get(args.trigger)
-    utils.print_dict(trigger.to_dict())
+    dict_format_list = {"properties"}
+    utils.print_dict(trigger.to_dict(), dict_format_list=dict_format_list)
 
 
 @utils.arg('trigger',
@@ -1070,7 +1095,9 @@ def do_scheduledoperation_create(cs, args):
                                                         args.operation_type,
                                                         args.trigger_id,
                                                         operation_definition)
-    utils.print_dict(scheduledoperation.to_dict())
+    dict_format_list = {"operation_definition"}
+    utils.print_dict(scheduledoperation.to_dict(),
+                     dict_format_list=dict_format_list)
 
 
 def _extract_operation_definition(args):
@@ -1092,7 +1119,9 @@ def _extract_operation_definition(args):
 def do_scheduledoperation_show(cs, args):
     """Shows scheduledoperation details."""
     scheduledoperation = cs.scheduled_operations.get(args.scheduledoperation)
-    utils.print_dict(scheduledoperation.to_dict())
+    dict_format_list = {"operation_definition"}
+    utils.print_dict(scheduledoperation.to_dict(),
+                     dict_format_list=dict_format_list)
 
 
 @utils.arg('scheduledoperation',
