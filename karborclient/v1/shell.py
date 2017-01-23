@@ -910,7 +910,7 @@ def do_trigger_list(cs, args):
            metavar='<type>',
            help='Type of trigger.')
 @utils.arg('properties',
-           metavar='<key=value:key=value>',
+           metavar='<key=value,key=value>',
            help='Properties of trigger.')
 def do_trigger_create(cs, args):
     """Create a trigger."""
@@ -939,7 +939,7 @@ def _extract_properties(args):
            help="Id of trigger to update.")
 @utils.arg("--name", metavar="<name>",
            help="A new name to which the trigger will be renamed.")
-@utils.arg("--properties", metavar="<key=value:key=value>",
+@utils.arg("--properties", metavar="<key=value,key=value>",
            help="Properties of trigger which will be updated.")
 def do_trigger_update(cs, args):
     """Update a trigger."""
@@ -1086,7 +1086,7 @@ def do_scheduledoperation_list(cs, args):
            metavar='<trigger_id>',
            help='Trigger id of scheduled operation.')
 @utils.arg('operation_definition',
-           metavar='<key=value:key=value>',
+           metavar='<key=value,key=value>',
            help='Operation definition of scheduled operation.')
 def do_scheduledoperation_create(cs, args):
     """Create a scheduled operation."""
@@ -1102,7 +1102,7 @@ def do_scheduledoperation_create(cs, args):
 
 def _extract_operation_definition(args):
     operation_definition = {}
-    for data in args.operation_definition.split(':'):
+    for data in args.operation_definition.split(','):
         if '=' in data:
             (resource_key, resource_value) = data.split('=', 1)
         else:
