@@ -48,6 +48,7 @@ Python Karborclient
 python-karborclient is a client library for karbor built on the karbor API.
 It provides a Python API (the ``karborclient`` module) and a command-line tool
 (``karbor``).
+
 Project Resources
 -----------------
 
