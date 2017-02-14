@@ -57,7 +57,7 @@ from karborclient.common import utils
 @utils.arg('--limit',
            metavar='<limit>',
            default=None,
-           help='Maximum number of volumes to return. Default=None.')
+           help='Maximum number of plans to return. Default=None.')
 @utils.arg('--sort_key',
            metavar='<sort_key>',
            default=None,
@@ -364,13 +364,13 @@ def _extract_parameters(args):
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
-           help='Begin returning plans that appear later in the plan '
-                'list than that represented by this plan id. '
+           help='Begin returning restores that appear later in the restore '
+                'list than that represented by this restore id. '
                 'Default=None.')
 @utils.arg('--limit',
            metavar='<limit>',
            default=None,
-           help='Maximum number of volumes to return. Default=None.')
+           help='Maximum number of restores to return. Default=None.')
 @utils.arg('--sort_key',
            metavar='<sort_key>',
            default=None,
@@ -490,13 +490,13 @@ def do_protectable_show_instance(cs, args):
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
-           help='Begin returning plans that appear later in the plan '
-                'list than that represented by this plan id. '
+           help='Begin returning instances that appear later in the instance '
+                'list than that represented by this instance id. '
                 'Default=None.')
 @utils.arg('--limit',
            metavar='<limit>',
            default=None,
-           help='Maximum number of volumes to return. Default=None.')
+           help='Maximum number of instances to return. Default=None.')
 @utils.arg('--sort_key',
            metavar='<sort_key>',
            default=None,
@@ -699,13 +699,13 @@ def _extract_extra_info(args):
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
-           help='Begin returning plans that appear later in the plan '
-                'list than that represented by this plan id. '
+           help='Begin returning checkpoints that appear later in the '
+                'checkpoint list than that represented by this checkpoint id. '
                 'Default=None.')
 @utils.arg('--limit',
            metavar='<limit>',
            default=None,
-           help='Maximum number of volumes to return. Default=None.')
+           help='Maximum number of checkpoints to return. Default=None.')
 @utils.arg('--sort_key',
            metavar='<sort_key>',
            default=None,
@@ -840,13 +840,13 @@ def do_checkpoint_delete(cs, args):
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
-           help='Begin returning plans that appear later in the plan '
-                'list than that represented by this plan id. '
+           help='Begin returning triggers that appear later in the trigger '
+                'list than that represented by this trigger id. '
                 'Default=None.')
 @utils.arg('--limit',
            metavar='<limit>',
            default=None,
-           help='Maximum number of volumes to return. Default=None.')
+           help='Maximum number of triggers to return. Default=None.')
 @utils.arg('--sort_key',
            metavar='<sort_key>',
            default=None,
