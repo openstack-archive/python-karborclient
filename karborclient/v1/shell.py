@@ -586,13 +586,13 @@ def do_provider_show(cs, args):
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
-           help='Begin returning plans that appear later in the plan '
-                'list than that represented by this plan id. '
+           help='Begin returning providers that appear later in the provider '
+                'list than that represented by this provider id. '
                 'Default=None.')
 @utils.arg('--limit',
            metavar='<limit>',
            default=None,
-           help='Maximum number of volumes to return. Default=None.')
+           help='Maximum number of providers to return. Default=None.')
 @utils.arg('--sort_key',
            metavar='<sort_key>',
            default=None,
