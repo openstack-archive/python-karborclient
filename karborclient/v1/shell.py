@@ -436,7 +436,7 @@ def do_restore_show(cs, args):
 
 
 def do_protectable_list(cs, args):
-    """Lists all protectables type."""
+    """Lists all protectable types."""
 
     protectables = cs.protectables.list()
 
