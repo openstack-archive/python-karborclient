@@ -140,7 +140,7 @@ def do_plan_list(cs, args):
            metavar='<description>',
            help='The description of a plan.')
 def do_plan_create(cs, args):
-    """Create a plan."""
+    """Creates a plan."""
     plan_resources = _extract_resources(args)
     _check_resources(cs, plan_resources)
     plan_parameters = _extract_parameters(args)
@@ -165,7 +165,7 @@ def do_plan_show(cs, args):
            nargs="+",
            help='ID of plan.')
 def do_plan_delete(cs, args):
-    """Delete plan."""
+    """Deletes plan."""
     failure_count = 0
     for plan_id in args.plan:
         try:
@@ -189,7 +189,7 @@ def do_plan_delete(cs, args):
 @utils.arg("--status", metavar="<suspended|started>",
            help="status to which the plan will be updated.")
 def do_plan_update(cs, args):
-    """Updata a plan."""
+    """Updatas a plan."""
     data = {}
     if args.name is not None:
         data['name'] = args.name
@@ -273,7 +273,7 @@ def _check_resources(cs, resources):
            'Other keys and values: according to provider\'s restore schema.'
            )
 def do_restore_create(cs, args):
-    """Create a restore."""
+    """Creates a restore."""
     if not uuidutils.is_uuid_like(args.provider_id):
         raise exceptions.CommandError(
             "Invalid provider id provided.")
@@ -648,7 +648,7 @@ def do_provider_list(cs, args):
            default=None,
            help='The extra info of a checkpoint.')
 def do_checkpoint_create(cs, args):
-    """Create a checkpoint."""
+    """Creates a checkpoint."""
 
     checkpoint_extra_info = None
     if args.extra_info is not None:
@@ -796,7 +796,7 @@ def do_checkpoint_show(cs, args):
            nargs="+",
            help='ID of checkpoint.')
 def do_checkpoint_delete(cs, args):
-    """Delete checkpoints."""
+    """Deletes checkpoints."""
     failure_count = 0
     for checkpoint_id in args.checkpoint:
         try:
@@ -913,7 +913,7 @@ def do_trigger_list(cs, args):
            metavar='<key=value,key=value>',
            help='Properties of trigger.')
 def do_trigger_create(cs, args):
-    """Create a trigger."""
+    """Creates a trigger."""
     trigger_properties = _extract_properties(args)
     trigger = cs.triggers.create(args.name, args.type, trigger_properties)
     dict_format_list = {"properties"}
@@ -967,7 +967,7 @@ def do_trigger_show(cs, args):
            nargs="+",
            help='ID of trigger.')
 def do_trigger_delete(cs, args):
-    """Delete trigger."""
+    """Deletes trigger."""
     failure_count = 0
     for trigger_id in args.trigger:
         try:
@@ -1089,7 +1089,7 @@ def do_scheduledoperation_list(cs, args):
            metavar='<key=value,key=value>',
            help='Operation definition of scheduled operation.')
 def do_scheduledoperation_create(cs, args):
-    """Create a scheduled operation."""
+    """Creates a scheduled operation."""
     operation_definition = _extract_operation_definition(args)
     scheduledoperation = cs.scheduled_operations.create(args.name,
                                                         args.operation_type,
@@ -1129,7 +1129,7 @@ def do_scheduledoperation_show(cs, args):
            nargs="+",
            help='ID of scheduled operation.')
 def do_scheduledoperation_delete(cs, args):
-    """Delete a scheduled operation."""
+    """Deletes a scheduled operation."""
     failure_count = 0
     for scheduledoperation_id in args.scheduledoperation:
         try:
