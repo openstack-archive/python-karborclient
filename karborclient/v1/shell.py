@@ -681,21 +681,21 @@ def _extract_extra_info(args):
 @utils.arg('--plan_id',
            metavar='<plan_id>',
            default=None,
-           help='Filters results by a plan_id. Default=None.')
+           help='Filters results by a plan ID. Default=None.')
 @utils.arg('--start_date',
            type=str,
            metavar='<start_date>',
            default=None,
-           help='Filters results by a start_date("Y-m-d"). Default=None.')
+           help='Filters results by a start date("Y-m-d"). Default=None.')
 @utils.arg('--end_date',
            type=str,
            metavar='<end_date>',
            default=None,
-           help='Filters results by a end_date("Y-m-d"). Default=None.')
+           help='Filters results by a end date("Y-m-d"). Default=None.')
 @utils.arg('--project_id',
            metavar='<project_id>',
            default=None,
-           help='Filters results by a project id. Default=None.')
+           help='Filters results by a project ID. Default=None.')
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
@@ -1010,7 +1010,7 @@ def do_trigger_delete(cs, args):
 @utils.arg('--operation_definition',
            metavar='<operation_definition>',
            default=None,
-           help='Filters results by the operation_definition. Default=None.')
+           help='Filters results by a operation definition. Default=None.')
 @utils.arg('--marker',
            metavar='<marker>',
            default=None,
