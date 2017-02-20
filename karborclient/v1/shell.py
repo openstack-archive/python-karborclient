@@ -326,11 +326,12 @@ def _extract_parameters(args):
                 )
             if key == "resource_type":
                 resource_type = value
-            if key == "resource_id":
+            elif key == "resource_id":
                 if not uuidutils.is_uuid_like(value):
                     raise exceptions.CommandError('resource_id must be a uuid')
                 resource_id = value
-            parameters[key] = value
+            else:
+                parameter[key] = value
         if resource_type is None:
             raise exceptions.CommandError(
                 'Must specify resource_type for parameters'
