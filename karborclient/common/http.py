@@ -27,8 +27,6 @@ import six
 from six.moves import urllib
 
 from karborclient.common.apiclient import exceptions as exc
-from karborclient.i18n import _LE
-from karborclient.i18n import _LW
 
 LOG = logging.getLogger(__name__)
 USER_AGENT = 'python-karborclient'
@@ -50,7 +48,7 @@ def get_system_ca_file():
         if os.path.exists(ca):
             LOG.debug("Using ca file %s", ca)
             return ca
-    LOG.warning(_LW("System ca file could not be found."))
+    LOG.warning("System ca file could not be found.")
 
 
 class HTTPClient(object):
@@ -248,7 +246,7 @@ class HTTPClient(object):
             if 'data' in kwargs:
                 raise ValueError("Can't provide both 'data' and "
                                  "'body' to a request")
-            LOG.warning(_LW("Use of 'body' is deprecated; use 'data' instead"))
+            LOG.warning("Use of 'body' is deprecated; use 'data' instead")
             kwargs['data'] = kwargs.pop('body')
         if 'data' in kwargs:
             kwargs['data'] = jsonutils.dumps(kwargs['data'])
@@ -260,7 +258,7 @@ class HTTPClient(object):
             try:
                 body = resp.json()
             except ValueError:
-                LOG.error(_LE('Could not decode response body as JSON'))
+                LOG.error('Could not decode response body as JSON')
         else:
             body = None
 
@@ -271,7 +269,7 @@ class HTTPClient(object):
             if 'data' in kwargs:
                 raise ValueError("Can't provide both 'data' and "
                                  "'body' to a request")
-            LOG.warning(_LW("Use of 'body' is deprecated; use 'data' instead"))
+            LOG.warning("Use of 'body' is deprecated; use 'data' instead")
             kwargs['data'] = kwargs.pop('body')
         # Chunking happens automatically if 'body' is a
         # file-like object
@@ -328,7 +326,7 @@ class SessionClient(keystone_adapter.Adapter):
             if 'data' in kwargs:
                 raise ValueError("Can't provide both 'data' and "
                                  "'body' to a request")
-            LOG.warning(_LW("Use of 'body' is deprecated; use 'data' instead"))
+            LOG.warning("Use of 'body' is deprecated; use 'data' instead")
             kwargs['data'] = kwargs.pop('body')
         if 'data' in kwargs:
             kwargs['data'] = jsonutils.dumps(kwargs['data'])
@@ -353,7 +351,7 @@ class SessionClient(keystone_adapter.Adapter):
             if 'data' in kwargs:
                 raise ValueError("Can't provide both 'data' and "
                                  "'body' to a request")
-            LOG.warning(_LW("Use of 'body' is deprecated; use 'data' instead"))
+            LOG.warning("Use of 'body' is deprecated; use 'data' instead")
             kwargs['data'] = kwargs.pop('body')
         resp = keystone_adapter.Adapter.request(self,
                                                 url,
