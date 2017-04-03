@@ -120,7 +120,7 @@ def print_dict(d, property="Property", dict_format_list=None,
                json_format_list=None):
     pt = prettytable.PrettyTable([property, 'Value'], caching=False)
     pt.align = 'l'
-    for r in six.iteritems(d):
+    for r in d.items():
         r = list(r)
         if isinstance(r[1], six.string_types) and "\r" in r[1]:
             r[1] = r[1].replace("\r", " ")
