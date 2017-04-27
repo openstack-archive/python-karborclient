@@ -142,6 +142,9 @@ def do_plan_list(cs, args):
            help='The description of a plan.')
 def do_plan_create(cs, args):
     """Creates a plan."""
+    if not uuidutils.is_uuid_like(args.provider_id):
+        raise exceptions.CommandError(
+            "Invalid provider id provided.")
     plan_resources = _extract_resources(args)
     _check_resources(cs, plan_resources)
     plan_parameters = _extract_parameters(args)
