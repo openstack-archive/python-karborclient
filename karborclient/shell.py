@@ -17,14 +17,14 @@ Command-line interface to the karbor Project.
 from __future__ import print_function
 
 import argparse
+import copy
 import sys
 
-from keystoneclient.auth.identity.generic import password
-from keystoneclient.auth.identity.generic import token
-from keystoneclient.auth.identity import v3 as identity
-from keystoneclient import discover
-from keystoneclient import exceptions as ks_exc
-from keystoneclient import session as ksession
+from keystoneauth1 import discover
+from keystoneauth1 import exceptions as ks_exc
+from keystoneauth1.identity.generic import password
+from keystoneauth1.identity.generic import token
+from keystoneauth1 import loading
 from oslo_log import handlers
 from oslo_log import log as logging
 from oslo_utils import encodeutils
@@ -44,13 +44,20 @@ logger = logging.getLogger(__name__)
 
 class KarborShell(object):
 
-    def _append_global_identity_args(self, parser):
-        # Register the CLI arguments that have moved to the session object.
-        ksession.Session.register_cli_options(parser)
+    def _append_global_identity_args(self, parser, argv):
+        loading.register_session_argparse_arguments(parser)
+        # Peek into argv to see if os-auth-token (or the deprecated
+        # os_auth_token) or the new os-token or the environment variable
+        # OS_AUTH_TOKEN were given. In which case, the token auth plugin is
+        # what the user wants. Else, we'll default to password.
+        default_auth_plugin = 'password'
+        token_opts = ['os-token', 'os-auth-token', 'os_auth-token']
+        if argv and any(i in token_opts for i in argv):
+            default_auth_plugin = 'token'
+        loading.register_auth_argparse_arguments(
+            parser, argv, default=default_auth_plugin)
 
-        identity.Password.register_argparse_arguments(parser)
-
-    def get_base_parser(self):
+    def get_base_parser(self, argv):
 
         parser = argparse.ArgumentParser(
             prog='karbor',
@@ -99,11 +106,11 @@ class KarborShell(object):
                                  'API response, '
                                  'defaults to system socket timeout.')
 
-        parser.add_argument('--os-tenant-id',
+        parser.add_argument('--os_tenant_id',
                             default=utils.env('OS_TENANT_ID'),
                             help='Defaults to env[OS_TENANT_ID].')
 
-        parser.add_argument('--os-tenant-name',
+        parser.add_argument('--os_tenant_name',
                             default=utils.env('OS_TENANT_NAME'),
                             help='Defaults to env[OS_TENANT_NAME].')
 
@@ -143,12 +150,12 @@ class KarborShell(object):
                             action='store_true',
                             help='Send os-username and os-password to karbor.')
 
-        self._append_global_identity_args(parser)
+        self._append_global_identity_args(parser, argv)
 
         return parser
 
-    def get_subcommand_parser(self, version):
-        parser = self.get_base_parser()
+    def get_subcommand_parser(self, version, argv=None):
+        parser = self.get_base_parser(argv)
 
         self.subcommands = {}
         subparsers = parser.add_subparsers(metavar='<subcommand>')
@@ -197,7 +204,7 @@ class KarborShell(object):
         v2_auth_url = None
         v3_auth_url = None
         try:
-            ks_discover = discover.Discover(session=session, auth_url=auth_url)
+            ks_discover = discover.Discover(session=session, url=auth_url)
             v2_auth_url = ks_discover.url_for('2.0')
             v3_auth_url = ks_discover.url_for('3.0')
         except ks_exc.ClientException as e:
@@ -289,16 +296,17 @@ class KarborShell(object):
 
     def main(self, argv):
         # Parse args once to find version
-        parser = self.get_base_parser()
-        (options, args) = parser.parse_known_args(argv)
+        base_argv = copy.deepcopy(argv)
+        parser = self.get_base_parser(argv)
+        (options, args) = parser.parse_known_args(base_argv)
         self._setup_logging(options.debug)
 
         # build available subcommands based on version
         api_version = options.karbor_api_version
-        subcommand_parser = self.get_subcommand_parser(api_version)
+        subcommand_parser = self.get_subcommand_parser(api_version, argv)
         self.parser = subcommand_parser
 
-        keystone_session = None
+        ks_session = None
         keystone_auth = None
 
         # Handle top-level --help/-h before attempting to parse
@@ -366,12 +374,12 @@ class KarborShell(object):
                 kwargs['region_name'] = args.os_region_name
         else:
             # Create a keystone session and keystone auth
-            keystone_session = ksession.Session.load_from_cli_options(args)
+            ks_session = loading.load_session_from_argparse_arguments(args)
             project_id = args.os_project_id or args.os_tenant_id
             project_name = args.os_project_name or args.os_tenant_name
 
             keystone_auth = self._get_keystone_auth(
-                keystone_session,
+                ks_session,
                 args.os_auth_url,
                 username=args.os_username,
                 user_id=args.os_user_id,
@@ -388,12 +396,12 @@ class KarborShell(object):
             service_type = args.os_service_type or 'data-protect'
 
             endpoint = keystone_auth.get_endpoint(
-                keystone_session,
+                ks_session,
                 service_type=service_type,
                 region_name=args.os_region_name)
 
             kwargs = {
-                'session': keystone_session,
+                'session': ks_session,
                 'auth': keystone_auth,
                 'service_type': service_type,
                 'endpoint_type': endpoint_type,

@@ -18,7 +18,7 @@ import hashlib
 import os
 import socket
 
-import keystoneclient.adapter as keystone_adapter
+import keystoneauth1.adapter as keystone_adapter
 from oslo_log import log as logging
 from oslo_serialization import jsonutils
 from oslo_utils import encodeutils
@@ -299,7 +299,7 @@ class HTTPClient(object):
 
 
 class SessionClient(keystone_adapter.Adapter):
-    """karbor specific keystoneclient Adapter.
+    """karbor specific keystoneauth Adapter.
 
     """
 

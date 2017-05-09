@@ -15,8 +15,8 @@ import re
 import sys
 
 import fixtures
-from keystoneclient import fixture
-from keystoneclient.fixture import v2 as ks_v2_fixture
+from keystoneauth1 import fixture
+from keystoneauth1.fixture import v2 as ks_v2_fixture
 import mock
 from oslo_log import handlers
 from oslo_log import log
