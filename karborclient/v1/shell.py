@@ -15,12 +15,12 @@ import json
 import os
 
 from datetime import datetime
-from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 
 from karborclient.common.apiclient import exceptions
 from karborclient.common import base
 from karborclient.common import utils
+from karborclient import utils as arg_utils
 
 
 @utils.arg('--all-tenants',
@@ -145,9 +145,9 @@ def do_plan_create(cs, args):
     if not uuidutils.is_uuid_like(args.provider_id):
         raise exceptions.CommandError(
             "Invalid provider id provided.")
-    plan_resources = _extract_resources(args)
-    _check_resources(cs, plan_resources)
-    plan_parameters = _extract_parameters(args)
+    plan_resources = arg_utils.extract_resources(args)
+    arg_utils.check_resources(cs, plan_resources)
+    plan_parameters = arg_utils.extract_parameters(args)
     plan = cs.plans.create(args.name, args.provider_id, plan_resources,
                            plan_parameters, description=args.description)
     dict_format_list = {"resources", "parameters"}
@@ -198,7 +198,7 @@ def do_plan_update(cs, args):
     if args.name is not None:
         data['name'] = args.name
     if args.resources is not None:
-        plan_resources = _extract_resources(args)
+        plan_resources = arg_utils.extract_resources(args)
         data['resources'] = plan_resources
     if args.status is not None:
         data['status'] = args.status
@@ -209,39 +209,6 @@ def do_plan_update(cs, args):
         raise exceptions.CommandError("Plan %s not found" % args.plan_id)
     else:
         utils.print_dict(plan.to_dict())
-
-
-def _extract_resources(args):
-    resources = []
-    for data in args.resources.split(','):
-        if '=' in data and len(data.split('=')) in [3, 4]:
-            resource = dict(zip(['id', 'type', 'name', 'extra_info'],
-                                data.split('=')))
-            if resource.get('extra_info'):
-                resource['extra_info'] = jsonutils.loads(
-                    resource.get('extra_info'))
-        else:
-            raise exceptions.CommandError(
-                "Unable to parse parameter resources. "
-                "The keys of resource are id , type, name and "
-                "extra_info. The extra_info field is optional.")
-        resources.append(resource)
-    return resources
-
-
-def _check_resources(cs, resources):
-    # check the resource whether it is available
-    for resource in resources:
-        try:
-            instance = cs.protectables.get_instance(
-                resource["type"], resource["id"])
-        except exceptions.NotFound:
-            raise exceptions.CommandError(
-                "The resource: %s can not be found." % resource["id"])
-        else:
-            if instance is None:
-                raise exceptions.CommandError(
-                    "The resource: %s is invalid." % resource["id"])
 
 
 @utils.arg('provider_id',
@@ -286,7 +253,7 @@ def do_restore_create(cs, args):
         raise exceptions.CommandError(
             "Invalid checkpoint id provided.")
 
-    restore_parameters = _extract_parameters(args)
+    restore_parameters = arg_utils.extract_parameters(args)
     restore_auth = None
     if args.restore_target is not None:
         if args.restore_username is None:
@@ -305,48 +272,6 @@ def do_restore_create(cs, args):
                                  restore_auth)
     dict_format_list = {"parameters"}
     utils.print_dict(restore.to_dict(), dict_format_list=dict_format_list)
-
-
-def _extract_parameters(args):
-    if all((args.parameters, args.parameters_json)):
-        raise exceptions.CommandError(
-            "Must provide parameters or parameters-json, not both")
-    if not any((args.parameters, args.parameters_json)):
-        return {}
-
-    if args.parameters_json:
-        return jsonutils.loads(args.parameters_json)
-    parameters = {}
-    for resource_params in args.parameters:
-        resource_type = None
-        resource_id = None
-        parameter = {}
-        for param_kv in resource_params.split(','):
-            try:
-                key, value = param_kv.split('=')
-            except Exception:
-                raise exceptions.CommandError(
-                    'parameters must be in the form: key1=val1,key2=val2,...'
-                )
-            if key == "resource_type":
-                resource_type = value
-            elif key == "resource_id":
-                if not uuidutils.is_uuid_like(value):
-                    raise exceptions.CommandError('resource_id must be a uuid')
-                resource_id = value
-            else:
-                parameter[key] = value
-        if resource_type is None:
-            raise exceptions.CommandError(
-                'Must specify resource_type for parameters'
-            )
-        if resource_id is None:
-            resource_key = resource_type
-        else:
-            resource_key = "%s#%s" % (resource_type, resource_id)
-        parameters[resource_key] = parameter
-
-    return parameters
 
 
 @utils.arg('--all-tenants',
@@ -475,7 +400,7 @@ def do_protectable_show(cs, args):
 def do_protectable_show_instance(cs, args):
     """Shows instance details."""
     search_opts = {
-        'parameters': (_extract_instances_parameters(args)
+        'parameters': (arg_utils.extract_instances_parameters(args)
                        if args.parameters else None),
     }
     instance = cs.protectables.get_instance(args.protectable_type,
@@ -529,7 +454,7 @@ def do_protectable_list_instances(cs, args):
 
     search_opts = {
         'type': args.type,
-        'parameters': (_extract_instances_parameters(args)
+        'parameters': (arg_utils.extract_instances_parameters(args)
                        if args.parameters else None),
     }
 
@@ -555,19 +480,6 @@ def do_protectable_list_instances(cs, args):
         obj.dependent_resources, indent=2, sort_keys=True)}
     utils.print_list(instances, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index, formatters=formatters)
-
-
-def _extract_instances_parameters(args):
-    parameters = {}
-    for parameter in args.parameters:
-        if '=' in parameter:
-            (key, value) = parameter.split('=', 1)
-        else:
-            key = parameter
-            value = None
-
-        parameters[key] = value
-    return parameters
 
 
 @utils.arg('provider_id',
@@ -657,27 +569,13 @@ def do_checkpoint_create(cs, args):
 
     checkpoint_extra_info = None
     if args.extra_info is not None:
-        checkpoint_extra_info = _extract_extra_info(args)
+        checkpoint_extra_info = arg_utils.extract_extra_info(args)
     checkpoint = cs.checkpoints.create(args.provider_id, args.plan_id,
                                        checkpoint_extra_info)
     dict_format_list = {"protection_plan"}
     json_format_list = {"resource_graph"}
     utils.print_dict(checkpoint.to_dict(), dict_format_list=dict_format_list,
                      json_format_list=json_format_list)
-
-
-def _extract_extra_info(args):
-    checkpoint_extra_info = {}
-    for data in args.extra_info:
-        # unset doesn't require a val, so we have the if/else
-        if '=' in data:
-            (key, value) = data.split('=', 1)
-        else:
-            key = data
-            value = None
-
-        checkpoint_extra_info[key] = value
-    return checkpoint_extra_info
 
 
 @utils.arg('provider_id',
@@ -919,25 +817,10 @@ def do_trigger_list(cs, args):
            help='Properties of trigger.')
 def do_trigger_create(cs, args):
     """Creates a trigger."""
-    trigger_properties = _extract_properties(args)
+    trigger_properties = arg_utils.extract_properties(args)
     trigger = cs.triggers.create(args.name, args.type, trigger_properties)
     dict_format_list = {"properties"}
     utils.print_dict(trigger.to_dict(), dict_format_list=dict_format_list)
-
-
-def _extract_properties(args):
-    properties = {}
-    if args.properties is None:
-        return properties
-    for data in args.properties.split(','):
-        if '=' in data:
-            (resource_key, resource_value) = data.split('=', 1)
-        else:
-            raise exceptions.CommandError(
-                "Unable to parse parameter properties.")
-
-        properties[resource_key] = resource_value
-    return properties
 
 
 @utils.arg("trigger_id", metavar="<TRIGGER ID>",
@@ -949,7 +832,7 @@ def _extract_properties(args):
 def do_trigger_update(cs, args):
     """Update a trigger."""
     trigger_info = {}
-    trigger_properties = _extract_properties(args)
+    trigger_properties = arg_utils.extract_properties(args)
     trigger_info['name'] = args.name
     trigger_info['properties'] = trigger_properties
     trigger = cs.triggers.update(args.trigger_id, trigger_info)
@@ -1095,7 +978,7 @@ def do_scheduledoperation_list(cs, args):
            help='Operation definition of scheduled operation.')
 def do_scheduledoperation_create(cs, args):
     """Creates a scheduled operation."""
-    operation_definition = _extract_operation_definition(args)
+    operation_definition = arg_utils.extract_operation_definition(args)
     scheduledoperation = cs.scheduled_operations.create(args.name,
                                                         args.operation_type,
                                                         args.trigger_id,
@@ -1103,19 +986,6 @@ def do_scheduledoperation_create(cs, args):
     dict_format_list = {"operation_definition"}
     utils.print_dict(scheduledoperation.to_dict(),
                      dict_format_list=dict_format_list)
-
-
-def _extract_operation_definition(args):
-    operation_definition = {}
-    for data in args.operation_definition.split(','):
-        if '=' in data:
-            (resource_key, resource_value) = data.split('=', 1)
-        else:
-            raise exceptions.CommandError(
-                "Unable to parse parameter operation_definition.")
-
-        operation_definition[resource_key] = resource_value
-    return operation_definition
 
 
 @utils.arg('scheduledoperation',

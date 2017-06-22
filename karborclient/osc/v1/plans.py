@@ -12,11 +12,17 @@
 
 """Data protection V1 plan action implementations"""
 
+import six
+
+from oslo_utils import uuidutils
+
 from osc_lib.command import command
-from osc_lib import utils
+from osc_lib import utils as osc_utils
 from oslo_log import log as logging
 
+from karborclient.common.apiclient import exceptions
 from karborclient.i18n import _
+from karborclient import utils
 
 
 class ListPlans(command.Lister):
@@ -93,6 +99,170 @@ class ListPlans(command.Lister):
         column_headers = ['Id', 'Name', 'Description', 'Provider id', 'Status']
 
         return (column_headers,
-                (utils.get_item_properties(
+                (osc_utils.get_item_properties(
                     s, column_headers
                 ) for s in data))
+
+
+class ShowPlan(command.ShowOne):
+    _description = "Shows plan details"
+
+    def get_parser(self, prog_name):
+        parser = super(ShowPlan, self).get_parser(prog_name)
+        parser.add_argument(
+            'plan',
+            metavar="<plan>",
+            help="ID of plan."
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.data_protection
+        plan = osc_utils.find_resource(client.plans, parsed_args.plan)
+
+        plan._info.pop("links", None)
+        return zip(*sorted(six.iteritems(plan._info)))
+
+
+class CreatePlan(command.ShowOne):
+    _description = "Creates a plan"
+
+    def get_parser(self, prog_name):
+        parser = super(CreatePlan, self).get_parser(prog_name)
+        parser.add_argument(
+            'name',
+            metavar='<name>',
+            help='Plan name.'
+        )
+        parser.add_argument(
+            'provider_id',
+            metavar='<provider_id>',
+            help='ID of provider.'
+        )
+        parser.add_argument(
+            'resources',
+            metavar='<id=type=name=extra_info,id=type=name=extra_info>',
+            help='Resource in list must be a dict when creating'
+                 ' a plan. The keys of resource are id ,type, name and '
+                 'extra_info. The extra_info field is optional.'
+        )
+        parser.add_argument(
+            '--parameters-json',
+            type=str,
+            dest='parameters_json',
+            metavar='<parameters>',
+            default=None,
+            help='Plan parameters in json format.'
+        )
+        parser.add_argument(
+            '--parameters',
+            action='append',
+            metavar='resource_type=<type>[,resource_id=<id>,key=val,...]',
+            default=[],
+            help='Plan parameters, may be specified multiple times. '
+                 'resource_type: type of resource to apply parameters. '
+                 'resource_id: limit the parameters to a specific resource. '
+                 'Other keys and values: according to provider\'s protect '
+                 'schema.'
+        )
+        parser.add_argument(
+            '--description',
+            metavar='<description>',
+            help='The description of a plan.'
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.data_protection
+        if not uuidutils.is_uuid_like(parsed_args.provider_id):
+            raise exceptions.CommandError(
+                "Invalid provider id provided.")
+        plan_resources = utils.extract_resources(parsed_args)
+        utils.check_resources(client, plan_resources)
+        plan_parameters = utils.extract_parameters(parsed_args)
+        plan = client.plans.create(parsed_args.name, parsed_args.provider_id,
+                                   plan_resources, plan_parameters,
+                                   description=parsed_args.description)
+
+        plan._info.pop("links", None)
+        return zip(*sorted(six.iteritems(plan._info)))
+
+
+class UpdatePlan(command.ShowOne):
+    _description = "Update a plan"
+
+    def get_parser(self, prog_name):
+        parser = super(UpdatePlan, self).get_parser(prog_name)
+        parser.add_argument(
+            "plan_id",
+            metavar="<PLAN ID>",
+            help="Id of plan to update."
+        )
+        parser.add_argument(
+            "--name",
+            metavar="<name>",
+            help="A name to which the plan will be renamed."
+        )
+        parser.add_argument(
+            "--resources",
+            metavar="<id=type=name,id=type=name>",
+            help="Resources to which the plan will be updated."
+        )
+        parser.add_argument(
+            "--status",
+            metavar="<suspended|started>",
+            help="status to which the plan will be updated."
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.data_protection
+        data = {}
+        if parsed_args.name is not None:
+            data['name'] = parsed_args.name
+        if parsed_args.resources is not None:
+            plan_resources = utils.extract_resources(parsed_args)
+            data['resources'] = plan_resources
+        if parsed_args.status is not None:
+            data['status'] = parsed_args.status
+        try:
+            plan = osc_utils.find_resource(client.plans,
+                                           parsed_args.plan_id)
+            plan = client.plans.update(plan.id, data)
+        except exceptions.NotFound:
+            raise exceptions.CommandError(
+                "Plan %s not found" % parsed_args.plan_id)
+        else:
+            plan._info.pop("links", None)
+            return zip(*sorted(six.iteritems(plan._info)))
+
+
+class DeletePlan(command.Command):
+    _description = "Delete plan"
+
+    def get_parser(self, prog_name):
+        parser = super(DeletePlan, self).get_parser(prog_name)
+        parser.add_argument(
+            'plan',
+            metavar='<plan>',
+            nargs="+",
+            help='ID of plan.'
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.data_protection
+        failure_count = 0
+        for plan_id in parsed_args.plan:
+            try:
+                plan = osc_utils.find_resource(client.plans, plan_id)
+                client.plans.delete(plan.id)
+            except exceptions.NotFound:
+                failure_count += 1
+                raise exceptions.CommandError(
+                    "Failed to delete '{0}'; plan not found".
+                    format(plan_id))
+        if failure_count == len(parsed_args.plan):
+            raise exceptions.CommandError(
+                "Unable to find and delete any of the "
+                "specified plan.")

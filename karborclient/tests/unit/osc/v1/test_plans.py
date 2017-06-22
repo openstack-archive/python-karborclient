@@ -22,7 +22,10 @@ PLAN_INFO = {
     "description": "",
     "parameters": {},
     "id": "204c825e-eb2f-4609-95ab-70b3caa43ac8",
-    "resources": [],
+    "resources": [{
+        'type': 'OS::Cinder::Volume',
+        'id': '71bfe64a-e0b9-4a91-9e15-a7fc9ab31b14',
+        'name': 'testsinglevolume'}],
     "name": "OS Volume protection plan."
 }
 
@@ -63,3 +66,82 @@ class TestListPlans(TestPlans):
                           "cf56bd3e-97a7-4078-b6d5-f36246333fd9",
                           "suspended")]
         self.assertEqual(expected_data, list(data))
+
+
+class TestCreatePlan(TestPlans):
+    def setUp(self):
+        super(TestCreatePlan, self).setUp()
+        self.plans_mock.create.return_value = plans.Plan(
+            None, PLAN_INFO)
+        # Command to test
+        self.cmd = osc_plans.CreatePlan(self.app, None)
+
+    def test_plan_create(self):
+        arglist = ['OS Volume protection plan.',
+                   'cf56bd3e-97a7-4078-b6d5-f36246333fd9',
+                   "'71bfe64a-e0b9-4a91-9e15-a7fc9ab31b14'="
+                   "'OS::Cinder::Volume'='testsinglevolume'"]
+        verifylist = [('name', 'OS Volume protection plan.'),
+                      ('provider_id', 'cf56bd3e-97a7-4078-b6d5-f36246333fd9'),
+                      ('resources', "'71bfe64a-e0b9-4a91-9e15-a7fc9ab31b14'="
+                                    "'OS::Cinder::Volume'='testsinglevolume'")]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.cmd.take_action(parsed_args)
+
+        # Check that correct arguments were passed
+        self.plans_mock.create.assert_called_once_with(
+            'OS Volume protection plan.',
+            'cf56bd3e-97a7-4078-b6d5-f36246333fd9',
+            [{'id': "'71bfe64a-e0b9-4a91-9e15-a7fc9ab31b14'",
+              'type': "'OS::Cinder::Volume'",
+              'name': "'testsinglevolume'"}],
+            {}, description=None)
+
+
+class TestUpdatePlan(TestPlans):
+    def setUp(self):
+        super(TestUpdatePlan, self).setUp()
+        self.plans_mock.get.return_value = plans.Plan(
+            None, PLAN_INFO)
+        self.plans_mock.update.return_value = plans.Plan(
+            None, PLAN_INFO)
+        # Command to test
+        self.cmd = osc_plans.UpdatePlan(self.app, None)
+
+    def test_plan_update(self):
+        arglist = ['204c825e-eb2f-4609-95ab-70b3caa43ac8',
+                   '--status', 'started']
+        verifylist = [('plan_id', '204c825e-eb2f-4609-95ab-70b3caa43ac8'),
+                      ('status', 'started')]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.cmd.take_action(parsed_args)
+
+        # Check that correct arguments were passed
+        self.plans_mock.update.assert_called_once_with(
+            '204c825e-eb2f-4609-95ab-70b3caa43ac8',
+            {'status': 'started'})
+
+
+class TestDeletePlan(TestPlans):
+    def setUp(self):
+        super(TestDeletePlan, self).setUp()
+        self.plans_mock.get.return_value = plans.Plan(
+            None, PLAN_INFO)
+        # Command to test
+        self.cmd = osc_plans.DeletePlan(self.app, None)
+
+    def test_plan_create(self):
+        arglist = ['204c825e-eb2f-4609-95ab-70b3caa43ac8']
+        verifylist = [('plan', ['204c825e-eb2f-4609-95ab-70b3caa43ac8'])]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        self.cmd.take_action(parsed_args)
+
+        # Check that correct arguments were passed
+        self.plans_mock.delete.assert_called_once_with(
+            '204c825e-eb2f-4609-95ab-70b3caa43ac8')
