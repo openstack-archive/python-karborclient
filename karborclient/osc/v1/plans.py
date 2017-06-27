@@ -112,7 +112,7 @@ class ShowPlan(command.ShowOne):
         parser.add_argument(
             'plan',
             metavar="<plan>",
-            help="ID of plan."
+            help=_('The UUID of the plan.')
         )
         return parser
 
@@ -132,19 +132,19 @@ class CreatePlan(command.ShowOne):
         parser.add_argument(
             'name',
             metavar='<name>',
-            help='Plan name.'
+            help=_('The name of the plan.')
         )
         parser.add_argument(
             'provider_id',
             metavar='<provider_id>',
-            help='ID of provider.'
+            help=_('The UUID of the provider.')
         )
         parser.add_argument(
             'resources',
             metavar='<id=type=name=extra_info,id=type=name=extra_info>',
-            help='Resource in list must be a dict when creating'
-                 ' a plan. The keys of resource are id ,type, name and '
-                 'extra_info. The extra_info field is optional.'
+            help=_('Resource in list must be a dict when creating'
+                   ' a plan. The keys of resource are id ,type, name and '
+                   'extra_info. The extra_info field is optional.')
         )
         parser.add_argument(
             '--parameters-json',
@@ -152,23 +152,23 @@ class CreatePlan(command.ShowOne):
             dest='parameters_json',
             metavar='<parameters>',
             default=None,
-            help='Plan parameters in json format.'
+            help=_('Plan parameters in json format.')
         )
         parser.add_argument(
             '--parameters',
             action='append',
             metavar='resource_type=<type>[,resource_id=<id>,key=val,...]',
             default=[],
-            help='Plan parameters, may be specified multiple times. '
-                 'resource_type: type of resource to apply parameters. '
-                 'resource_id: limit the parameters to a specific resource. '
-                 'Other keys and values: according to provider\'s protect '
-                 'schema.'
+            help=_('Plan parameters, may be specified multiple times. '
+                   'resource_type: type of resource to apply parameters. '
+                   'resource_id: limit the parameters to a specific resource. '
+                   'Other keys and values: according to provider\'s protect '
+                   'schema.')
         )
         parser.add_argument(
             '--description',
             metavar='<description>',
-            help='The description of a plan.'
+            help=_('The description of the plan.')
         )
         return parser
 
@@ -196,22 +196,22 @@ class UpdatePlan(command.ShowOne):
         parser.add_argument(
             "plan_id",
             metavar="<PLAN ID>",
-            help="Id of plan to update."
+            help=_("Id of plan to update.")
         )
         parser.add_argument(
             "--name",
             metavar="<name>",
-            help="A name to which the plan will be renamed."
+            help=_("A name to which the plan will be renamed.")
         )
         parser.add_argument(
             "--resources",
             metavar="<id=type=name,id=type=name>",
-            help="Resources to which the plan will be updated."
+            help=_("Resources to which the plan will be updated.")
         )
         parser.add_argument(
             "--status",
             metavar="<suspended|started>",
-            help="status to which the plan will be updated."
+            help=_("status to which the plan will be updated.")
         )
         return parser
 
@@ -246,7 +246,7 @@ class DeletePlan(command.Command):
             'plan',
             metavar='<plan>',
             nargs="+",
-            help='ID of plan.'
+            help=_('ID of plan.')
         )
         return parser
 
