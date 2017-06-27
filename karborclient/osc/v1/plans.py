@@ -73,20 +73,20 @@ class ListPlans(command.Lister):
                    "specified separated by comma"),
         )
         parser.add_argument(
-            '--tenant',
-            metavar='<tenant>',
-            help=_('Filter results by a tenant(admin only)')
+            '--project',
+            metavar='<project>',
+            help=_('Filter results by a project(admin only)')
         )
         return parser
 
     def take_action(self, parsed_args):
         self.log.debug("take_action(%s)", parsed_args)
         data_protection_client = self.app.client_manager.data_protection
-        all_projects = bool(parsed_args.tenant) or parsed_args.all_projects
+        all_projects = bool(parsed_args.project) or parsed_args.all_projects
 
         search_opts = {
             'all_tenants': all_projects,
-            'project_id': parsed_args.tenant,
+            'project_id': parsed_args.project,
             'name': parsed_args.name,
             'description': parsed_args.description,
             'status': parsed_args.status,
