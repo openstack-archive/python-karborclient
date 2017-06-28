@@ -134,7 +134,7 @@ class TestDeletePlan(TestPlans):
         # Command to test
         self.cmd = osc_plans.DeletePlan(self.app, None)
 
-    def test_plan_create(self):
+    def test_plan_delete(self):
         arglist = ['204c825e-eb2f-4609-95ab-70b3caa43ac8']
         verifylist = [('plan', ['204c825e-eb2f-4609-95ab-70b3caa43ac8'])]
 
