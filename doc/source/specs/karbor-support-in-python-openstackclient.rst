@@ -48,19 +48,19 @@ initially suggesting these command names:
 .. code-block:: bash
 
     karbor plan-create <name> <provider_id> <resources>
-    openstack dataprotection plan create <name> <provider_id> <resources>
+    openstack data protection plan create <name> <provider_id> <resources>
 
     karbor plan-delete <plan>
-    openstack dataprotection plan delete <plan>
+    openstack data protection plan delete <plan>
 
     karbor plan-list
-    openstack dataprotection plan list
+    openstack data protection plan list
 
     karbor plan-show <plan>
-    openstack dataprotection backup plan <backup>
+    openstack data protection plan show <plan>
 
     karbor plan-update <name> <resources> <status>
-    openstack dataprotection plan update <name> <resources> <status>
+    openstack data protection plan update <name> <resources> <status>
 
 
 Configuration
