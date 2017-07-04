@@ -95,3 +95,40 @@ class TestCreateRestore(TestRestores):
             'cf56bd3e-97a7-4078-b6d5-f36246333fd9',
             'dcb20606-ad71-40a3-80e4-ef0fafdad0c3',
             None, {}, None)
+
+
+class TestShowRestore(TestRestores):
+    def setUp(self):
+        super(TestShowRestore, self).setUp()
+        self.restores_mock.get.return_value = restores.Restore(
+            None, RESTORE_INFO)
+
+        # Command to test
+        self.cmd = osc_restores.ShowRestore(self.app, None)
+
+    def test_restore_show(self):
+        arglist = ['22b82aa7-9179-4c71-bba2-caf5c0e68db7']
+        verifylist = [('restore', '22b82aa7-9179-4c71-bba2-caf5c0e68db7')]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        columns, data = self.cmd.take_action(parsed_args)
+
+        # Check that columns are correct
+        expected_columns = (
+            'checkpoint_id', 'id', 'parameters', 'project_id',
+            'provider_id', 'resources_reason', 'resources_status',
+            'restore_auth', 'restore_target', 'status')
+        self.assertEqual(expected_columns, columns)
+
+        # Check that data is correct
+        self.assertEqual(RESTORE_INFO['checkpoint_id'], data[0])
+        self.assertEqual(RESTORE_INFO['id'], data[1])
+        self.assertEqual(RESTORE_INFO['parameters'], data[2])
+        self.assertEqual(RESTORE_INFO['project_id'], data[3])
+        self.assertEqual(RESTORE_INFO['provider_id'], data[4])
+        self.assertEqual(RESTORE_INFO['resources_reason'], data[5])
+        self.assertEqual(RESTORE_INFO['resources_status'], data[6])
+        self.assertEqual(RESTORE_INFO['restore_auth'], data[7])
+        self.assertEqual(RESTORE_INFO['restore_target'], data[8])
+        self.assertEqual(RESTORE_INFO['status'], data[9])

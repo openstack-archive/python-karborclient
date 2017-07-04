@@ -145,3 +145,36 @@ class TestDeletePlan(TestPlans):
         # Check that correct arguments were passed
         self.plans_mock.delete.assert_called_once_with(
             '204c825e-eb2f-4609-95ab-70b3caa43ac8')
+
+
+class TestShowPlan(TestPlans):
+    def setUp(self):
+        super(TestShowPlan, self).setUp()
+        self.plans_mock.get.return_value = plans.Plan(
+            None, PLAN_INFO)
+
+        # Command to test
+        self.cmd = osc_plans.ShowPlan(self.app, None)
+
+    def test_plan_show(self):
+        arglist = ['204c825e-eb2f-4609-95ab-70b3caa43ac8']
+        verifylist = [('plan', '204c825e-eb2f-4609-95ab-70b3caa43ac8')]
+
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        columns, data = self.cmd.take_action(parsed_args)
+
+        # Check that columns are correct
+        expected_columns = (
+            'description', 'id', 'name', 'parameters', 'provider_id',
+            'resources', 'status')
+        self.assertEqual(expected_columns, columns)
+
+        # Check that data is correct
+        self.assertEqual(PLAN_INFO['description'], data[0])
+        self.assertEqual(PLAN_INFO['id'], data[1])
+        self.assertEqual(PLAN_INFO['name'], data[2])
+        self.assertEqual(PLAN_INFO['parameters'], data[3])
+        self.assertEqual(PLAN_INFO['provider_id'], data[4])
+        self.assertEqual(PLAN_INFO['resources'], data[5])
+        self.assertEqual(PLAN_INFO['status'], data[6])
