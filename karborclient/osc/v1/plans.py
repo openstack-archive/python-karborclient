@@ -259,9 +259,8 @@ class DeletePlan(command.Command):
                 client.plans.delete(plan.id)
             except exceptions.NotFound:
                 failure_count += 1
-                raise exceptions.CommandError(
-                    "Failed to delete '{0}'; plan not found".
-                    format(plan_id))
+                print("Failed to delete '{0}'; plan not "
+                      "found".format(plan_id))
         if failure_count == len(parsed_args.plan):
             raise exceptions.CommandError(
                 "Unable to find and delete any of the "
