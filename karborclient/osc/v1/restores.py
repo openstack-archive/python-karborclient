@@ -12,8 +12,6 @@
 
 """Data protection V1 restore action implementations"""
 
-import six
-
 from oslo_utils import uuidutils
 
 from osc_lib.command import command
@@ -110,7 +108,7 @@ class ShowRestore(command.ShowOne):
         restore = osc_utils.find_resource(client.restores, parsed_args.restore)
 
         restore._info.pop("links", None)
-        return zip(*sorted(six.iteritems(restore._info)))
+        return zip(*sorted(restore._info.items()))
 
 
 class CreateRestore(command.ShowOne):
@@ -194,4 +192,4 @@ class CreateRestore(command.ShowOne):
                                          parsed_args.restore_target,
                                          restore_parameters, restore_auth)
         restore._info.pop("links", None)
-        return zip(*sorted(six.iteritems(restore._info)))
+        return zip(*sorted(restore._info.items()))

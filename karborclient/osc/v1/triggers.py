@@ -12,8 +12,6 @@
 
 """Data protection V1 triggers action implementations"""
 
-import six
-
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
@@ -122,7 +120,7 @@ class ShowTrigger(command.ShowOne):
         trigger = osc_utils.find_resource(client.triggers, parsed_args.trigger)
 
         trigger._info.pop("links", None)
-        return zip(*sorted(six.iteritems(trigger._info)))
+        return zip(*sorted(trigger._info.items()))
 
 
 class CreateTrigger(command.ShowOne):
@@ -153,7 +151,7 @@ class CreateTrigger(command.ShowOne):
                                          parsed_args.properties)
 
         trigger._info.pop("links", None)
-        return zip(*sorted(six.iteritems(trigger._info)))
+        return zip(*sorted(trigger._info.items()))
 
 
 class UpdateTrigger(command.ShowOne):
@@ -195,7 +193,7 @@ class UpdateTrigger(command.ShowOne):
                 "Trigger %s not found" % parsed_args.trigger_id)
         else:
             trigger._info.pop("links", None)
-            return zip(*sorted(six.iteritems(trigger._info)))
+            return zip(*sorted(trigger._info.items()))
 
 
 class DeleteTrigger(command.Command):

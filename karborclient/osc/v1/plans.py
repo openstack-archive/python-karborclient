@@ -12,8 +12,6 @@
 
 """Data protection V1 plan action implementations"""
 
-import six
-
 from oslo_utils import uuidutils
 
 from osc_lib.command import command
@@ -121,7 +119,7 @@ class ShowPlan(command.ShowOne):
         plan = osc_utils.find_resource(client.plans, parsed_args.plan)
 
         plan._info.pop("links", None)
-        return zip(*sorted(six.iteritems(plan._info)))
+        return zip(*sorted(plan._info.items()))
 
 
 class CreatePlan(command.ShowOne):
@@ -185,7 +183,7 @@ class CreatePlan(command.ShowOne):
                                    description=parsed_args.description)
 
         plan._info.pop("links", None)
-        return zip(*sorted(six.iteritems(plan._info)))
+        return zip(*sorted(plan._info.items()))
 
 
 class UpdatePlan(command.ShowOne):
@@ -234,7 +232,7 @@ class UpdatePlan(command.ShowOne):
                 "Plan %s not found" % parsed_args.plan_id)
         else:
             plan._info.pop("links", None)
-            return zip(*sorted(six.iteritems(plan._info)))
+            return zip(*sorted(plan._info.items()))
 
 
 class DeletePlan(command.Command):

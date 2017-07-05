@@ -12,8 +12,6 @@
 
 """Data protection V1 protectables action implementations"""
 
-import six
-
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
@@ -63,7 +61,7 @@ class ShowProtectable(command.ShowOne):
                                               parsed_args.protectable_type)
 
         protectable._info.pop("links", None)
-        return zip(*sorted(six.iteritems(protectable._info)))
+        return zip(*sorted(protectable._info.items()))
 
 
 class ListProtectableInstances(command.Lister):
@@ -176,4 +174,4 @@ class ShowProtectableInstance(command.ShowOne):
             search_opts=search_opts)
 
         instance._info.pop("links", None)
-        return zip(*sorted(six.iteritems(instance._info)))
+        return zip(*sorted(instance._info.items()))

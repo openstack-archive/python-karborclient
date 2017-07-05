@@ -12,8 +12,6 @@
 
 """Data protection V1 provider action implementations"""
 
-import six
-
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
@@ -98,4 +96,4 @@ class ShowProvider(command.ShowOne):
                                            parsed_args.provider)
 
         provider._info.pop("links", None)
-        return zip(*sorted(six.iteritems(provider._info)))
+        return zip(*sorted(provider._info.items()))

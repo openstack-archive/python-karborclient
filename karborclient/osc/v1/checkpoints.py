@@ -12,8 +12,6 @@
 
 """Data protection V1 checkpoint action implementations"""
 
-import six
-
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
@@ -129,7 +127,7 @@ class ShowCheckpoint(command.ShowOne):
         checkpoint = client.checkpoints.get(parsed_args.provider_id,
                                             parsed_args.checkpoint_id)
         checkpoint._info.pop("links", None)
-        return zip(*sorted(six.iteritems(checkpoint._info)))
+        return zip(*sorted(checkpoint._info.items()))
 
 
 class CreateCheckpoint(command.ShowOne):
@@ -166,7 +164,7 @@ class CreateCheckpoint(command.ShowOne):
                                                parsed_args.plan_id,
                                                checkpoint_extra_info)
         checkpoint._info.pop("links", None)
-        return zip(*sorted(six.iteritems(checkpoint._info)))
+        return zip(*sorted(checkpoint._info.items()))
 
 
 class DeleteCheckpoint(command.Command):
