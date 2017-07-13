@@ -44,11 +44,11 @@ class TestResponse(requests.Response):
         self._text = None
         super(TestResponse, self)
         if isinstance(data, dict):
-            self.status_code = data.get('status_code', None)
-            self.headers = data.get('headers', None)
+            self.status_code = data.get('status_code')
+            self.headers = data.get('headers')
             self.reason = data.get('reason', '')
             # Fake the text attribute to streamline Response creation
-            self._text = data.get('text', None)
+            self._text = data.get('text')
         else:
             self.status_code = data
 

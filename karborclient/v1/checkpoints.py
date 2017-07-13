@@ -25,7 +25,7 @@ class Checkpoint(base.Resource):
             return
         plan = self.protection_plan
         if plan is not None:
-            provider_id = plan.get("provider_id", None)
+            provider_id = plan.get("provider_id")
             new = self.manager.get(provider_id, self.id)
             if new:
                 self._add_details(new._info)
