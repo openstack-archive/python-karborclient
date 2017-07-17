@@ -89,7 +89,7 @@ Python API
 None
 
 CLI (python-karborclient)
-------------------------
+-------------------------
 
 A new directory named osc will be created under /karborclient/osc
 for the ``OpenStackClient`` plugin and the commands mentioned above.
