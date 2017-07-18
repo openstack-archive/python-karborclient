@@ -14,6 +14,7 @@
 
 from karborclient.common import http
 from karborclient.v1 import checkpoints
+from karborclient.v1 import operation_logs
 from karborclient.v1 import plans
 from karborclient.v1 import protectables
 from karborclient.v1 import providers
@@ -42,3 +43,5 @@ class Client(object):
         self.triggers = triggers.TriggerManager(self.http_client)
         self.scheduled_operations = \
             scheduled_operations.ScheduledOperationManager(self.http_client)
+        self.operation_logs = \
+            operation_logs.OperationLogManager(self.http_client)
