@@ -158,7 +158,7 @@ OpenStack Client adoption list will be updated to include python-karborclient.
 References
 ==========
 
-http://docs.openstack.org/developer/python-openstackclient/commands.html
+https://docs.openstack.org/python-openstackclient/latest/
 
 Appendix
 ========
