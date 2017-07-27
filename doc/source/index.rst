@@ -4,12 +4,12 @@ Welcome to karborclient's documentation!
 Contents:
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
    readme
-   installation
-   usage
-   contributing
+   install/index
+   user/index
+   contributor/index
 
 Indices and tables
 ==================
