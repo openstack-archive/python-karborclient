@@ -1018,3 +1018,93 @@ def do_scheduledoperation_delete(cs, args):
     if failure_count == len(args.scheduledoperation):
         raise exceptions.CommandError("Unable to find and delete any of the "
                                       "specified scheduled operation.")
+
+
+@utils.arg('--all-tenants',
+           dest='all_tenants',
+           metavar='<0|1>',
+           nargs='?',
+           type=int,
+           const=1,
+           default=0,
+           help='Shows details for all tenants. Admin only.')
+@utils.arg('--all_tenants',
+           nargs='?',
+           type=int,
+           const=1,
+           help=argparse.SUPPRESS)
+@utils.arg('--status',
+           metavar='<status>',
+           default=None,
+           help='Filters results by a status. Default=None.')
+@utils.arg('--marker',
+           metavar='<marker>',
+           default=None,
+           help='Begin returning restores that appear later in the '
+                'operation_log list than that represented by this '
+                'operation_logs id. Default=None.')
+@utils.arg('--limit',
+           metavar='<limit>',
+           default=None,
+           help='Maximum number of operation_logs to return. Default=None.')
+@utils.arg('--sort_key',
+           metavar='<sort_key>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort_dir',
+           metavar='<sort_dir>',
+           default=None,
+           help=argparse.SUPPRESS)
+@utils.arg('--sort',
+           metavar='<key>[:<direction>]',
+           default=None,
+           help=(('Comma-separated list of sort keys and directions in the '
+                  'form of <key>[:<asc|desc>]. '
+                  'Valid keys: %s. '
+                  'Default=None.') % ', '.join(base.SORT_KEY_VALUES)))
+@utils.arg('--tenant',
+           type=str,
+           dest='tenant',
+           nargs='?',
+           metavar='<tenant>',
+           help='Display information from single tenant (Admin only).')
+def do_operationlog_list(cs, args):
+    """Lists all operation_logs."""
+
+    all_tenants = 1 if args.tenant else \
+        int(os.environ.get("ALL_TENANTS", args.all_tenants))
+    search_opts = {
+        'all_tenants': all_tenants,
+        'project_id': args.tenant,
+        'status': args.status,
+    }
+
+    if args.sort and (args.sort_key or args.sort_dir):
+        raise exceptions.CommandError(
+            'The --sort_key and --sort_dir arguments are deprecated and are '
+            'not supported with --sort.')
+
+    operation_logs = cs.operation_logs.list(
+        search_opts=search_opts, marker=args.marker,
+        limit=args.limit, sort_key=args.sort_key,
+        sort_dir=args.sort_dir, sort=args.sort)
+
+    key_list = ['Id', 'Operation Type', 'Checkpoint id', 'Plan Id',
+                'Provider id', 'Restore Id', 'Scheduled Operation Id',
+                'Status', 'Started At', 'Ended At', 'Error Info', 'Extra Info']
+
+    if args.sort_key or args.sort_dir or args.sort:
+        sortby_index = None
+    else:
+        sortby_index = 0
+    utils.print_list(operation_logs, key_list, exclude_unavailable=True,
+                     sortby_index=sortby_index)
+
+
+@utils.arg('operation_log',
+           metavar='<operation_log>',
+           help='ID of operation_log.')
+def do_operationlog_show(cs, args):
+    """Shows operation_log details."""
+    operation_log = cs.operation_logs.get(args.operation_log)
+    utils.print_dict(operation_log.to_dict())
