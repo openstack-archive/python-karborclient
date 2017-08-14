@@ -118,8 +118,8 @@ class TestListProtectableInstances(TestProtectables):
     def setUp(self):
         super(TestListProtectableInstances, self).setUp()
         pm = self.protectables_mock
-        pm.list_instances.return_value = protectables.Instances(
-            None, copy.deepcopy(PROTECTABLE_INSTANCE_LIST_INFO))
+        pm.list_instances.return_value = [protectables.Instances(
+            None, copy.deepcopy(PROTECTABLE_INSTANCE_LIST_INFO)), ]
         # Command to test
         self.cmd = osc_protectables.ListProtectableInstances(self.app, None)
 

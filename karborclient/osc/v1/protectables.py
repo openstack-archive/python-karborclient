@@ -12,6 +12,8 @@
 
 """Data protection V1 protectables action implementations"""
 
+import functools
+import json
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
@@ -131,7 +133,15 @@ class ListProtectableInstances(command.Lister):
         column_headers = ['Id', 'Type', 'Name', 'Dependent resources',
                           'Extra info']
 
-        return (column_headers, data)
+        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
+        formatters = {
+            "Extra info": json_dumps,
+            "Dependent resources": json_dumps,
+        }
+        return (column_headers,
+                (osc_utils.get_item_properties(
+                    s, column_headers, formatters=formatters,
+                ) for s in data))
 
 
 class ShowProtectableInstance(command.ShowOne):
@@ -173,5 +183,11 @@ class ShowProtectableInstance(command.ShowOne):
             parsed_args.protectable_id,
             search_opts=search_opts)
 
+        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
         instance._info.pop("links", None)
+        for key in ('extra_info', 'dependent_resources'):
+            if key not in instance._info:
+                continue
+            instance._info[key] = json_dumps(instance._info[key])
+
         return zip(*sorted(instance._info.items()))
