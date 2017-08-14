@@ -12,6 +12,8 @@
 
 """Data protection V1 provider action implementations"""
 
+import functools
+import json
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
@@ -94,6 +96,9 @@ class ShowProvider(command.ShowOne):
         client = self.app.client_manager.data_protection
         provider = osc_utils.find_resource(client.providers,
                                            parsed_args.provider)
-
+        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
         provider._info.pop("links", None)
+        if 'extended_info_schema' in provider._info:
+            provider._info['extended_info_schema'] = json_dumps(
+                provider._info['extended_info_schema'])
         return zip(*sorted(provider._info.items()))
