@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+
 from karborclient.osc.v1 import checkpoints as osc_checkpoints
 from karborclient.tests.unit.osc.v1 import fakes
 from karborclient.v1 import checkpoints
@@ -29,9 +31,11 @@ CHECKPOINT_INFO = {
             "type": "OS::Glance::Image",
             "name": "cirros-0.3.4-x86_64-uec"}]
     },
-    "resource_graph": "[{'0x0': ['OS::Glance::Image', "
-                      "'99777fdd-8a5b-45ab-ba2c-52420008103f', "
-                      "'cirros-0.3.4-x86_64-uec']}, [[['0x0']]]]"
+    "resource_graph": json.dumps(
+        "[{'0x0': ['OS::Glance::Image', "
+        "'99777fdd-8a5b-45ab-ba2c-52420008103f', "
+        "'cirros-0.3.4-x86_64-uec']}, [[['0x0']]]]"
+    ),
 }
 
 

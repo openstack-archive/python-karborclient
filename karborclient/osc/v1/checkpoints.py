@@ -12,6 +12,7 @@
 
 """Data protection V1 checkpoint action implementations"""
 
+import json
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
@@ -19,6 +20,17 @@ from oslo_log import log as logging
 from karborclient.common.apiclient import exceptions
 from karborclient.i18n import _
 from karborclient import utils
+
+
+def format_checkpoint(checkpoint_info):
+    if 'protection_plan' in checkpoint_info:
+        plan = checkpoint_info['protection_plan']
+        checkpoint_info['protection_plan'] = "Name: %s\nId: %s" % (
+            plan['name'], plan['id'])
+    if 'resource_graph' in checkpoint_info:
+        checkpoint_info['resource_graph'] = json.dumps(json.loads(
+            checkpoint_info['resource_graph']), indent=2, sort_keys=True)
+    checkpoint_info.pop("links", None)
 
 
 class ListCheckpoints(command.Lister):
@@ -130,7 +142,7 @@ class ShowCheckpoint(command.ShowOne):
         client = self.app.client_manager.data_protection
         checkpoint = client.checkpoints.get(parsed_args.provider_id,
                                             parsed_args.checkpoint_id)
-        checkpoint._info.pop("links", None)
+        format_checkpoint(checkpoint._info)
         return zip(*sorted(checkpoint._info.items()))
 
 
@@ -167,7 +179,7 @@ class CreateCheckpoint(command.ShowOne):
         checkpoint = client.checkpoints.create(parsed_args.provider_id,
                                                parsed_args.plan_id,
                                                checkpoint_extra_info)
-        checkpoint._info.pop("links", None)
+        format_checkpoint(checkpoint._info)
         return zip(*sorted(checkpoint._info.items()))
 
 
