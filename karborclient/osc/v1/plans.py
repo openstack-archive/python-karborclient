@@ -12,6 +12,7 @@
 
 """Data protection V1 plan action implementations"""
 
+import json
 from oslo_utils import uuidutils
 
 from osc_lib.command import command
@@ -21,6 +22,14 @@ from oslo_log import log as logging
 from karborclient.common.apiclient import exceptions
 from karborclient.i18n import _
 from karborclient import utils
+
+
+def format_plan(plan_info):
+    for key in ('resources', 'parameters'):
+        if key not in plan_info:
+            continue
+        plan_info[key] = json.dumps(plan_info[key], indent=2, sort_keys=True)
+    plan_info.pop("links", None)
 
 
 class ListPlans(command.Lister):
@@ -118,7 +127,7 @@ class ShowPlan(command.ShowOne):
         client = self.app.client_manager.data_protection
         plan = osc_utils.find_resource(client.plans, parsed_args.plan)
 
-        plan._info.pop("links", None)
+        format_plan(plan._info)
         return zip(*sorted(plan._info.items()))
 
 
@@ -182,7 +191,7 @@ class CreatePlan(command.ShowOne):
                                    plan_resources, plan_parameters,
                                    description=parsed_args.description)
 
-        plan._info.pop("links", None)
+        format_plan(plan._info)
         return zip(*sorted(plan._info.items()))
 
 
@@ -231,7 +240,7 @@ class UpdatePlan(command.ShowOne):
             raise exceptions.CommandError(
                 "Plan %s not found" % parsed_args.plan_id)
         else:
-            plan._info.pop("links", None)
+            format_plan(plan._info)
             return zip(*sorted(plan._info.items()))
 
 
