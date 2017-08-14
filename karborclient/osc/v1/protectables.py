@@ -63,6 +63,9 @@ class ShowProtectable(command.ShowOne):
                                               parsed_args.protectable_type)
 
         protectable._info.pop("links", None)
+        if 'dependent_types' in protectable._info:
+            protectable._info['dependent_types'] = "\n".join(
+                protectable._info['dependent_types'])
         return zip(*sorted(protectable._info.items()))
 
 
