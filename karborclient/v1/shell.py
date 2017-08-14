@@ -670,8 +670,11 @@ def do_checkpoint_list(cs, args):
         sortby_index = None
     else:
         sortby_index = 0
-    formatters = {"Protection plan": lambda obj: json.dumps(
-        obj.protection_plan, indent=2, sort_keys=True)}
+
+    def plan_formatter(obj):
+        return "Name: %s\nId: %s" % (obj.protection_plan['name'],
+                                     obj.protection_plan['id'])
+    formatters = {"Protection plan": plan_formatter}
     utils.print_list(checkpoints, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index, formatters=formatters)
 

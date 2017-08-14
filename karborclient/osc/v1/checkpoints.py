@@ -99,9 +99,13 @@ class ListCheckpoints(command.Lister):
         column_headers = ['Id', 'Project id', 'Status', 'Protection plan',
                           'Metadata', 'Created at']
 
+        def plan_formatter(plan):
+            return "Name: %s\nId: %s" % (plan['name'],
+                                         plan['id'])
+        formatters = {"Protection plan": plan_formatter}
         return (column_headers,
                 (osc_utils.get_item_properties(
-                    s, column_headers
+                    s, column_headers, formatters=formatters
                 ) for s in data))
 
 

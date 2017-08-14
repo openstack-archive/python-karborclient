@@ -71,14 +71,9 @@ class TestListCheckpoints(TestCheckpoints):
             "dcb20606-ad71-40a3-80e4-ef0fafdad0c3",
             "e486a2f49695423ca9c47e589b948108",
             "available",
-            {
+            "Name: %(name)s\nId: %(id)s" % {
                 "id": "3523a271-68aa-42f5-b9ba-56e5200a2ebb",
                 "name": "My application",
-                "provider_id": "cf56bd3e-97a7-4078-b6d5-f36246333fd9",
-                "resources": [{
-                    "id": "99777fdd-8a5b-45ab-ba2c-52420008103f",
-                    "type": "OS::Glance::Image",
-                    "name": "cirros-0.3.4-x86_64-uec"}]
             },
             '',
             '')]
