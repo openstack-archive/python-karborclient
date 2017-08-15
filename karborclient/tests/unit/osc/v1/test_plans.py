@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from karborclient.osc.v1 import plans as osc_plans
 from karborclient.tests.unit.osc.v1 import fakes
 from karborclient.v1 import plans
@@ -41,7 +43,7 @@ class TestListPlans(TestPlans):
     def setUp(self):
         super(TestListPlans, self).setUp()
         self.plans_mock.list.return_value = [plans.Plan(
-            None, PLAN_INFO)]
+            None, copy.deepcopy(PLAN_INFO))]
 
         # Command to test
         self.cmd = osc_plans.ListPlans(self.app, None)
@@ -72,7 +74,7 @@ class TestCreatePlan(TestPlans):
     def setUp(self):
         super(TestCreatePlan, self).setUp()
         self.plans_mock.create.return_value = plans.Plan(
-            None, PLAN_INFO)
+            None, copy.deepcopy(PLAN_INFO))
         # Command to test
         self.cmd = osc_plans.CreatePlan(self.app, None)
 
@@ -104,9 +106,9 @@ class TestUpdatePlan(TestPlans):
     def setUp(self):
         super(TestUpdatePlan, self).setUp()
         self.plans_mock.get.return_value = plans.Plan(
-            None, PLAN_INFO)
+            None, copy.deepcopy(PLAN_INFO))
         self.plans_mock.update.return_value = plans.Plan(
-            None, PLAN_INFO)
+            None, copy.deepcopy(PLAN_INFO))
         # Command to test
         self.cmd = osc_plans.UpdatePlan(self.app, None)
 
@@ -130,7 +132,7 @@ class TestDeletePlan(TestPlans):
     def setUp(self):
         super(TestDeletePlan, self).setUp()
         self.plans_mock.get.return_value = plans.Plan(
-            None, PLAN_INFO)
+            None, copy.deepcopy(PLAN_INFO))
         # Command to test
         self.cmd = osc_plans.DeletePlan(self.app, None)
 
@@ -150,8 +152,9 @@ class TestDeletePlan(TestPlans):
 class TestShowPlan(TestPlans):
     def setUp(self):
         super(TestShowPlan, self).setUp()
+        self._plan_info = copy.deepcopy(PLAN_INFO)
         self.plans_mock.get.return_value = plans.Plan(
-            None, PLAN_INFO)
+            None, self._plan_info)
 
         # Command to test
         self.cmd = osc_plans.ShowPlan(self.app, None)
@@ -171,10 +174,10 @@ class TestShowPlan(TestPlans):
         self.assertEqual(expected_columns, columns)
 
         # Check that data is correct
-        self.assertEqual(PLAN_INFO['description'], data[0])
-        self.assertEqual(PLAN_INFO['id'], data[1])
-        self.assertEqual(PLAN_INFO['name'], data[2])
-        self.assertEqual(PLAN_INFO['parameters'], data[3])
-        self.assertEqual(PLAN_INFO['provider_id'], data[4])
-        self.assertEqual(PLAN_INFO['resources'], data[5])
-        self.assertEqual(PLAN_INFO['status'], data[6])
+        self.assertEqual(self._plan_info['description'], data[0])
+        self.assertEqual(self._plan_info['id'], data[1])
+        self.assertEqual(self._plan_info['name'], data[2])
+        self.assertEqual(self._plan_info['parameters'], data[3])
+        self.assertEqual(self._plan_info['provider_id'], data[4])
+        self.assertEqual(self._plan_info['resources'], data[5])
+        self.assertEqual(self._plan_info['status'], data[6])

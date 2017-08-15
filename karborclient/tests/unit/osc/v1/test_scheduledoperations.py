@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from karborclient.osc.v1 import scheduled_operations as osc_so
 from karborclient.tests.unit.osc.v1 import fakes
 from karborclient.v1 import scheduled_operations
@@ -25,7 +27,7 @@ SCHEDULEDOPERATION_INFO = {
     "operation_definition": {
         "provider_id": "2a9ce1f3-cc1a-4516-9435-0ebb13caa399",
         "plan_id": "2a9ce1f3-cc1a-4516-9435-0ebb13caa398"
-        },
+    },
     "enabled": 1
 }
 
@@ -41,9 +43,10 @@ class TestScheduledOperations(fakes.TestDataProtection):
 class TestListScheduledOperations(TestScheduledOperations):
     def setUp(self):
         super(TestListScheduledOperations, self).setUp()
-        self.so_mock.list.return_value = \
-            [scheduled_operations.ScheduledOperation(None,
-                                                     SCHEDULEDOPERATION_INFO)]
+        self.so_mock.list.return_value = [
+            scheduled_operations.ScheduledOperation(
+                None, copy.deepcopy(SCHEDULEDOPERATION_INFO))
+        ]
 
         # Command to test
         self.cmd = osc_so.ListScheduledOperations(self.app, None)
@@ -80,7 +83,7 @@ class TestCreateScheduledOperation(TestScheduledOperations):
     def setUp(self):
         super(TestCreateScheduledOperation, self).setUp()
         self.so_mock.create.return_value = scheduled_operations.\
-            ScheduledOperation(None, SCHEDULEDOPERATION_INFO)
+            ScheduledOperation(None, copy.deepcopy(SCHEDULEDOPERATION_INFO))
         # Command to test
         self.cmd = osc_so.CreateScheduledOperation(self.app, None)
 
@@ -114,7 +117,7 @@ class TestDeleteScheduledOperation(TestScheduledOperations):
     def setUp(self):
         super(TestDeleteScheduledOperation, self).setUp()
         self.so_mock.get.return_value = scheduled_operations.\
-            ScheduledOperation(None, SCHEDULEDOPERATION_INFO)
+            ScheduledOperation(None, copy.deepcopy(SCHEDULEDOPERATION_INFO))
         # Command to test
         self.cmd = osc_so.DeleteScheduledOperation(self.app, None)
 
@@ -135,8 +138,9 @@ class TestDeleteScheduledOperation(TestScheduledOperations):
 class TestShowScheduledOperation(TestScheduledOperations):
     def setUp(self):
         super(TestShowScheduledOperation, self).setUp()
+        self._schedop_info = copy.deepcopy(SCHEDULEDOPERATION_INFO)
         self.so_mock.get.return_value = scheduled_operations.\
-            ScheduledOperation(None, SCHEDULEDOPERATION_INFO)
+            ScheduledOperation(None, self._schedop_info)
 
         # Command to test
         self.cmd = osc_so.ShowScheduledOperation(self.app, None)
@@ -157,11 +161,10 @@ class TestShowScheduledOperation(TestScheduledOperations):
         self.assertEqual(expected_columns, columns)
 
         # Check that data is correct
-        self.assertEqual(SCHEDULEDOPERATION_INFO['description'], data[0])
-        self.assertEqual(SCHEDULEDOPERATION_INFO['enabled'], data[1])
-        self.assertEqual(SCHEDULEDOPERATION_INFO['id'], data[2])
-        self.assertEqual(SCHEDULEDOPERATION_INFO['name'], data[3])
-        self.assertEqual(SCHEDULEDOPERATION_INFO['operation_definition'],
-                         data[4])
-        self.assertEqual(SCHEDULEDOPERATION_INFO['operation_type'], data[5])
-        self.assertEqual(SCHEDULEDOPERATION_INFO['trigger_id'], data[6])
+        self.assertEqual(self._schedop_info['description'], data[0])
+        self.assertEqual(self._schedop_info['enabled'], data[1])
+        self.assertEqual(self._schedop_info['id'], data[2])
+        self.assertEqual(self._schedop_info['name'], data[3])
+        self.assertEqual(self._schedop_info['operation_definition'], data[4])
+        self.assertEqual(self._schedop_info['operation_type'], data[5])
+        self.assertEqual(self._schedop_info['trigger_id'], data[6])

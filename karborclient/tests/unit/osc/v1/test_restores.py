@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from karborclient.osc.v1 import restores as osc_restores
 from karborclient.tests.unit.osc.v1 import fakes
 from karborclient.v1 import restores
@@ -41,7 +43,7 @@ class TestListRestores(TestRestores):
     def setUp(self):
         super(TestListRestores, self).setUp()
         self.restores_mock.list.return_value = [restores.Restore(
-            None, RESTORE_INFO)]
+            None, copy.deepcopy(RESTORE_INFO))]
 
         # Command to test
         self.cmd = osc_restores.ListRestores(self.app, None)
@@ -75,7 +77,7 @@ class TestCreateRestore(TestRestores):
     def setUp(self):
         super(TestCreateRestore, self).setUp()
         self.restores_mock.create.return_value = restores.Restore(
-            None, RESTORE_INFO)
+            None, copy.deepcopy(RESTORE_INFO))
         # Command to test
         self.cmd = osc_restores.CreateRestore(self.app, None)
 
@@ -100,8 +102,9 @@ class TestCreateRestore(TestRestores):
 class TestShowRestore(TestRestores):
     def setUp(self):
         super(TestShowRestore, self).setUp()
+        self._restore_info = copy.deepcopy(RESTORE_INFO)
         self.restores_mock.get.return_value = restores.Restore(
-            None, RESTORE_INFO)
+            None, self._restore_info)
 
         # Command to test
         self.cmd = osc_restores.ShowRestore(self.app, None)
@@ -122,13 +125,13 @@ class TestShowRestore(TestRestores):
         self.assertEqual(expected_columns, columns)
 
         # Check that data is correct
-        self.assertEqual(RESTORE_INFO['checkpoint_id'], data[0])
-        self.assertEqual(RESTORE_INFO['id'], data[1])
-        self.assertEqual(RESTORE_INFO['parameters'], data[2])
-        self.assertEqual(RESTORE_INFO['project_id'], data[3])
-        self.assertEqual(RESTORE_INFO['provider_id'], data[4])
-        self.assertEqual(RESTORE_INFO['resources_reason'], data[5])
-        self.assertEqual(RESTORE_INFO['resources_status'], data[6])
-        self.assertEqual(RESTORE_INFO['restore_auth'], data[7])
-        self.assertEqual(RESTORE_INFO['restore_target'], data[8])
-        self.assertEqual(RESTORE_INFO['status'], data[9])
+        self.assertEqual(self._restore_info['checkpoint_id'], data[0])
+        self.assertEqual(self._restore_info['id'], data[1])
+        self.assertEqual(self._restore_info['parameters'], data[2])
+        self.assertEqual(self._restore_info['project_id'], data[3])
+        self.assertEqual(self._restore_info['provider_id'], data[4])
+        self.assertEqual(self._restore_info['resources_reason'], data[5])
+        self.assertEqual(self._restore_info['resources_status'], data[6])
+        self.assertEqual(self._restore_info['restore_auth'], data[7])
+        self.assertEqual(self._restore_info['restore_target'], data[8])
+        self.assertEqual(self._restore_info['status'], data[9])

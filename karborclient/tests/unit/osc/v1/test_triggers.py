@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from karborclient.osc.v1 import triggers as osc_triggers
 from karborclient.tests.unit.osc.v1 import fakes
 from karborclient.v1 import triggers
@@ -41,7 +43,7 @@ class TestListTriggers(TestTriggers):
     def setUp(self):
         super(TestListTriggers, self).setUp()
         self.triggers_mock.list.return_value = [triggers.Trigger(
-            None, TRIGGER_INFO)]
+            None, copy.deepcopy(TRIGGER_INFO))]
 
         # Command to test
         self.cmd = osc_triggers.ListTriggers(self.app, None)
@@ -75,7 +77,7 @@ class TestCreateTrigger(TestTriggers):
     def setUp(self):
         super(TestCreateTrigger, self).setUp()
         self.triggers_mock.create.return_value = triggers.Trigger(
-            None, TRIGGER_INFO)
+            None, copy.deepcopy(TRIGGER_INFO))
         # Command to test
         self.cmd = osc_triggers.CreateTrigger(self.app, None)
 
@@ -114,9 +116,9 @@ class TestUpdateTrigger(TestTriggers):
     def setUp(self):
         super(TestUpdateTrigger, self).setUp()
         self.triggers_mock.get.return_value = triggers.Trigger(
-            None, TRIGGER_INFO)
+            None, copy.deepcopy(TRIGGER_INFO))
         self.triggers_mock.update.return_value = triggers.Trigger(
-            None, TRIGGER_INFO)
+            None, copy.deepcopy(TRIGGER_INFO))
         # Command to test
         self.cmd = osc_triggers.UpdateTrigger(self.app, None)
 
@@ -140,7 +142,7 @@ class TestDeleteTrigger(TestTriggers):
     def setUp(self):
         super(TestDeleteTrigger, self).setUp()
         self.triggers_mock.get.return_value = triggers.Trigger(
-            None, TRIGGER_INFO)
+            None, copy.deepcopy(TRIGGER_INFO))
         # Command to test
         self.cmd = osc_triggers.DeleteTrigger(self.app, None)
 
@@ -160,8 +162,9 @@ class TestDeleteTrigger(TestTriggers):
 class TestShowTrigger(TestTriggers):
     def setUp(self):
         super(TestShowTrigger, self).setUp()
+        self._trigger_info = copy.deepcopy(TRIGGER_INFO)
         self.triggers_mock.get.return_value = triggers.Trigger(
-            None, TRIGGER_INFO)
+            None, self._trigger_info)
 
         # Command to test
         self.cmd = osc_triggers.ShowTrigger(self.app, None)
@@ -180,7 +183,7 @@ class TestShowTrigger(TestTriggers):
         self.assertEqual(expected_columns, columns)
 
         # Check that data is correct
-        self.assertEqual(TRIGGER_INFO['id'], data[0])
-        self.assertEqual(TRIGGER_INFO['name'], data[1])
-        self.assertEqual(TRIGGER_INFO['properties'], data[2])
-        self.assertEqual(TRIGGER_INFO['type'], data[3])
+        self.assertEqual(self._trigger_info['id'], data[0])
+        self.assertEqual(self._trigger_info['name'], data[1])
+        self.assertEqual(self._trigger_info['properties'], data[2])
+        self.assertEqual(self._trigger_info['type'], data[3])

@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from karborclient.osc.v1 import operation_logs as osc_operation_logs
 from karborclient.tests.unit.osc.v1 import fakes
 from karborclient.v1 import operation_logs
@@ -45,7 +47,8 @@ class TestListOperationLogs(TestOperationLogs):
     def setUp(self):
         super(TestListOperationLogs, self).setUp()
         self.operation_logs_mock.list.return_value = [
-            operation_logs.OperationLog(None, OPERATIONLOG_INFO)]
+            operation_logs.OperationLog(None,
+                                        copy.deepcopy(OPERATIONLOG_INFO))]
 
         # Command to test
         self.cmd = osc_operation_logs.ListOperationLogs(self.app, None)
@@ -85,8 +88,9 @@ class TestListOperationLogs(TestOperationLogs):
 class TestShowOperationLog(TestOperationLogs):
     def setUp(self):
         super(TestShowOperationLog, self).setUp()
+        self._oplog_info = copy.deepcopy(OPERATIONLOG_INFO)
         self.operation_logs_mock.get.return_value = (
-            operation_logs.OperationLog(None, OPERATIONLOG_INFO))
+            operation_logs.OperationLog(None, self._oplog_info))
 
         # Command to test
         self.cmd = osc_operation_logs.ShowOperationLog(self.app, None)
@@ -109,16 +113,16 @@ class TestShowOperationLog(TestOperationLogs):
         self.assertEqual(expected_columns, columns)
 
         # Check that data is correct
-        self.assertEqual(OPERATIONLOG_INFO['checkpoint_id'], data[0])
-        self.assertEqual(OPERATIONLOG_INFO['ended_at'], data[1])
-        self.assertEqual(OPERATIONLOG_INFO['error_info'], data[2])
-        self.assertEqual(OPERATIONLOG_INFO['extra_info'], data[3])
-        self.assertEqual(OPERATIONLOG_INFO['id'], data[4])
-        self.assertEqual(OPERATIONLOG_INFO['operation_type'], data[5])
-        self.assertEqual(OPERATIONLOG_INFO['plan_id'], data[6])
-        self.assertEqual(OPERATIONLOG_INFO['project_id'], data[7])
-        self.assertEqual(OPERATIONLOG_INFO['provider_id'], data[8])
-        self.assertEqual(OPERATIONLOG_INFO['restore_id'], data[9])
-        self.assertEqual(OPERATIONLOG_INFO['scheduled_operation_id'], data[10])
-        self.assertEqual(OPERATIONLOG_INFO['started_at'], data[11])
-        self.assertEqual(OPERATIONLOG_INFO['status'], data[12])
+        self.assertEqual(self._oplog_info['checkpoint_id'], data[0])
+        self.assertEqual(self._oplog_info['ended_at'], data[1])
+        self.assertEqual(self._oplog_info['error_info'], data[2])
+        self.assertEqual(self._oplog_info['extra_info'], data[3])
+        self.assertEqual(self._oplog_info['id'], data[4])
+        self.assertEqual(self._oplog_info['operation_type'], data[5])
+        self.assertEqual(self._oplog_info['plan_id'], data[6])
+        self.assertEqual(self._oplog_info['project_id'], data[7])
+        self.assertEqual(self._oplog_info['provider_id'], data[8])
+        self.assertEqual(self._oplog_info['restore_id'], data[9])
+        self.assertEqual(self._oplog_info['scheduled_operation_id'], data[10])
+        self.assertEqual(self._oplog_info['started_at'], data[11])
+        self.assertEqual(self._oplog_info['status'], data[12])

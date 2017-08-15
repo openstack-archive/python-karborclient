@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from karborclient.osc.v1 import providers as osc_providers
 from karborclient.tests.unit.osc.v1 import fakes
 from karborclient.v1 import providers
@@ -87,7 +89,7 @@ class TestListProviders(TestProviders):
     def setUp(self):
         super(TestListProviders, self).setUp()
         self.providers_mock.list.return_value = [providers.Provider(
-            None, PROVIDER_INFO)]
+            None, copy.deepcopy(PROVIDER_INFO))]
 
         # Command to test
         self.cmd = osc_providers.ListProviders(self.app, None)
@@ -115,8 +117,9 @@ class TestListProviders(TestProviders):
 class TestShowProvider(TestProviders):
     def setUp(self):
         super(TestShowProvider, self).setUp()
+        self._provider_info = copy.deepcopy(PROVIDER_INFO)
         self.providers_mock.get.return_value = providers.Provider(
-            None, PROVIDER_INFO)
+            None, self._provider_info)
 
         # Command to test
         self.cmd = osc_providers.ShowProvider(self.app, None)
@@ -135,7 +138,7 @@ class TestShowProvider(TestProviders):
         self.assertEqual(expected_columns, columns)
 
         # Check that data is correct
-        self.assertEqual(PROVIDER_INFO['description'], data[0])
-        self.assertEqual(PROVIDER_INFO['extended_info_schema'], data[1])
-        self.assertEqual(PROVIDER_INFO['id'], data[2])
-        self.assertEqual(PROVIDER_INFO['name'], data[3])
+        self.assertEqual(self._provider_info['description'], data[0])
+        self.assertEqual(self._provider_info['extended_info_schema'], data[1])
+        self.assertEqual(self._provider_info['id'], data[2])
+        self.assertEqual(self._provider_info['name'], data[3])

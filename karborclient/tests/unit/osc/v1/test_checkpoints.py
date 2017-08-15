@@ -11,6 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
 import json
 
 from karborclient.osc.v1 import checkpoints as osc_checkpoints
@@ -51,7 +52,7 @@ class TestListCheckpoints(TestCheckpoints):
     def setUp(self):
         super(TestListCheckpoints, self).setUp()
         self.checkpoints_mock.list.return_value = [checkpoints.Checkpoint(
-            None, CHECKPOINT_INFO)]
+            None, copy.deepcopy(CHECKPOINT_INFO))]
 
         # Command to test
         self.cmd = osc_checkpoints.ListCheckpoints(self.app, None)
@@ -88,7 +89,7 @@ class TestCreateCheckpoint(TestCheckpoints):
     def setUp(self):
         super(TestCreateCheckpoint, self).setUp()
         self.checkpoints_mock.create.return_value = checkpoints.Checkpoint(
-            None, CHECKPOINT_INFO)
+            None, copy.deepcopy(CHECKPOINT_INFO))
         # Command to test
         self.cmd = osc_checkpoints.CreateCheckpoint(self.app, None)
 
@@ -113,7 +114,7 @@ class TestShowCheckpoint(TestCheckpoints):
     def setUp(self):
         super(TestShowCheckpoint, self).setUp()
         self.checkpoints_mock.get.return_value = checkpoints.Checkpoint(
-            None, CHECKPOINT_INFO)
+            None, copy.deepcopy(CHECKPOINT_INFO))
         # Command to test
         self.cmd = osc_checkpoints.ShowCheckpoint(self.app, None)
 
@@ -138,7 +139,7 @@ class TestDeleteCheckpoint(TestCheckpoints):
     def setUp(self):
         super(TestDeleteCheckpoint, self).setUp()
         self.checkpoints_mock.get.return_value = checkpoints.Checkpoint(
-            None, CHECKPOINT_INFO)
+            None, copy.deepcopy(CHECKPOINT_INFO))
         # Command to test
         self.cmd = osc_checkpoints.DeleteCheckpoint(self.app, None)
 

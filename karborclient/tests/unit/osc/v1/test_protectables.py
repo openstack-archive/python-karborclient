@@ -11,6 +11,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import copy
+
 from karborclient.osc.v1 import protectables as osc_protectables
 from karborclient.tests.unit.osc.v1 import fakes
 from karborclient.v1 import protectables
@@ -65,7 +67,7 @@ class TestListProtectables(TestProtectables):
     def setUp(self):
         super(TestListProtectables, self).setUp()
         self.protectables_mock.list.return_value = [protectables.Protectable(
-            None, PROTECTABLE_LIST_INFO)]
+            None, copy.deepcopy(PROTECTABLE_LIST_INFO))]
 
         # Command to test
         self.cmd = osc_protectables.ListProtectables(self.app, None)
@@ -95,7 +97,7 @@ class TestShowProtectable(TestProtectables):
     def setUp(self):
         super(TestShowProtectable, self).setUp()
         self.protectables_mock.get.return_value = protectables.Protectable(
-            None, PROTECTABLE_SHOW_INFO)
+            None, copy.deepcopy(PROTECTABLE_SHOW_INFO))
         # Command to test
         self.cmd = osc_protectables.ShowProtectable(self.app, None)
 
@@ -117,7 +119,7 @@ class TestListProtectableInstances(TestProtectables):
         super(TestListProtectableInstances, self).setUp()
         pm = self.protectables_mock
         pm.list_instances.return_value = protectables.Instances(
-            None, PROTECTABLE_INSTANCE_LIST_INFO)
+            None, copy.deepcopy(PROTECTABLE_INSTANCE_LIST_INFO))
         # Command to test
         self.cmd = osc_protectables.ListProtectableInstances(self.app, None)
 
@@ -141,7 +143,7 @@ class TestShowProtectableInstance(TestProtectables):
         super(TestShowProtectableInstance, self).setUp()
         pm = self.protectables_mock
         pm.get_instance.return_value = protectables.Instances(
-            None, PROTECTABLE_INSTANCE_SHOW_INFO)
+            None, copy.deepcopy(PROTECTABLE_INSTANCE_SHOW_INFO))
         # Command to test
         self.cmd = osc_protectables.ShowProtectableInstance(self.app, None)
 
