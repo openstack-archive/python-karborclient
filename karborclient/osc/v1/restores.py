@@ -12,6 +12,9 @@
 
 """Data protection V1 restore action implementations"""
 
+import functools
+import json
+
 from oslo_utils import uuidutils
 
 from osc_lib.command import command
@@ -21,6 +24,16 @@ from oslo_log import log as logging
 from karborclient.common.apiclient import exceptions
 from karborclient.i18n import _
 from karborclient import utils
+
+
+def format_restore(restore_info):
+    for key in ('parameters', 'resources_status',
+                'resources_reason'):
+        if key not in restore_info:
+            continue
+        restore_info[key] = json.dumps(restore_info[key],
+                                       indent=2, sort_keys=True)
+    restore_info.pop("links", None)
 
 
 class ListRestores(command.Lister):
@@ -85,9 +98,13 @@ class ListRestores(command.Lister):
         column_headers = ['Id', 'Project id', 'Provider id', 'Checkpoint id',
                           'Restore target', 'Parameters', 'Status']
 
+        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
+        formatters = {
+            "Parameters": json_dumps,
+        }
         return (column_headers,
                 (osc_utils.get_item_properties(
-                    s, column_headers
+                    s, column_headers, formatters=formatters,
                 ) for s in data))
 
 
@@ -107,7 +124,7 @@ class ShowRestore(command.ShowOne):
         client = self.app.client_manager.data_protection
         restore = osc_utils.find_resource(client.restores, parsed_args.restore)
 
-        restore._info.pop("links", None)
+        format_restore(restore._info)
         return zip(*sorted(restore._info.items()))
 
 
@@ -191,5 +208,5 @@ class CreateRestore(command.ShowOne):
                                          parsed_args.checkpoint_id,
                                          parsed_args.restore_target,
                                          restore_parameters, restore_auth)
-        restore._info.pop("links", None)
+        format_restore(restore._info)
         return zip(*sorted(restore._info.items()))
