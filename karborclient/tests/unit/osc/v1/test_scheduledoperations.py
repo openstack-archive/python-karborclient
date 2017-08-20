@@ -12,6 +12,7 @@
 # limitations under the License.
 
 import copy
+import json
 
 from karborclient.osc.v1 import scheduled_operations as osc_so
 from karborclient.tests.unit.osc.v1 import fakes
@@ -61,21 +62,23 @@ class TestListScheduledOperations(TestScheduledOperations):
 
         # Check that columns are correct
         expected_columns = (
-            ['Id', 'Name', 'OperationType', 'TriggerId',
-             'OperationDefinition'])
+            ['Id', 'Name', 'Operation Type', 'Trigger Id',
+             'Operation Definition'])
         self.assertEqual(expected_columns, columns)
+
+        operation_definition = {
+            "provider_id": "2a9ce1f3-cc1a-4516-9435-0ebb13caa399",
+            "plan_id": "2a9ce1f3-cc1a-4516-9435-0ebb13caa398"
+        }
 
         # Check that data is correct
         expected_data = [("1a2c0c3d-f402-4cd8-b5db-82e85cb51fad",
                           "My scheduled operation",
                           "protect",
                           "23902b02-5666-4ee6-8dfe-962ac09c3995",
-                          {
-                              "provider_id":
-                                  "2a9ce1f3-cc1a-4516-9435-0ebb13caa399",  # noqa
-                              "plan_id":
-                                  "2a9ce1f3-cc1a-4516-9435-0ebb13caa398"
-                          })]
+                          json.dumps(operation_definition,
+                                     indent=2, sort_keys=True)
+                          )]
         self.assertEqual(expected_data, data)
 
 

@@ -12,6 +12,8 @@
 
 """Data protection V1 scheduled_operations action implementations"""
 
+import functools
+import json
 import six
 
 from oslo_utils import uuidutils
@@ -22,6 +24,15 @@ from oslo_log import log as logging
 
 from karborclient.common.apiclient import exceptions
 from karborclient.i18n import _
+
+
+def format_scheduledoperation(scheduledoperation_info):
+    for key in ('operation_definition', ):
+        if key not in scheduledoperation_info:
+            continue
+        scheduledoperation_info[key] = json.dumps(scheduledoperation_info[key],
+                                                  indent=2, sort_keys=True)
+    scheduledoperation_info.pop("links", None)
 
 
 class ListScheduledOperations(command.Lister):
@@ -104,16 +115,17 @@ class ListScheduledOperations(command.Lister):
             search_opts=search_opts, marker=parsed_args.marker,
             limit=parsed_args.limit, sort=parsed_args.sort)
 
-        column_headers = ['Id', 'Name', 'OperationType', 'TriggerId',
-                          'OperationDefinition']
+        column_headers = ['Id', 'Name', 'Operation Type', 'Trigger Id',
+                          'Operation Definition']
 
-        scheduled_operations = []
-        for s in data:
-            scheduled_operation = (s.id, s.name, s.operation_type,
-                                   s.trigger_id, s.operation_definition)
-            scheduled_operations.append(scheduled_operation)
-
-        return (column_headers, scheduled_operations)
+        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
+        formatters = {
+            "Operation Definition": json_dumps,
+        }
+        return (column_headers,
+                list(osc_utils.get_item_properties(
+                    s, column_headers, formatters=formatters,
+                ) for s in data))
 
 
 class ShowScheduledOperation(command.ShowOne):
@@ -133,7 +145,7 @@ class ShowScheduledOperation(command.ShowOne):
         so = osc_utils.find_resource(client.scheduled_operations,
                                      parsed_args.scheduledoperation)
 
-        so._info.pop("links", None)
+        format_scheduledoperation(so._info)
         return zip(*sorted(six.iteritems(so._info)))
 
 
@@ -173,7 +185,7 @@ class CreateScheduledOperation(command.ShowOne):
             parsed_args.name, parsed_args.operation_type,
             parsed_args.trigger_id, parsed_args.operation_definition)
 
-        so._info.pop("links", None)
+        format_scheduledoperation(so._info)
         return zip(*sorted(six.iteritems(so._info)))
 
 
