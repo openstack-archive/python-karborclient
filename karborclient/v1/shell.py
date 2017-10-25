@@ -1245,3 +1245,45 @@ def do_operationlog_show(cs, args):
     """Shows operation_log details."""
     operation_log = cs.operation_logs.get(args.operation_log)
     utils.print_dict(operation_log.to_dict())
+
+
+@utils.arg('--host',
+           metavar='<hostname>',
+           default=None,
+           help='Name of host.')
+@utils.arg('--binary',
+           metavar='<binary>',
+           default=None,
+           help='Service binary.')
+def do_service_list(cs, args):
+    """Show a list of all running services. Filter by host & binary."""
+    result = cs.services.list(host=args.host, binary=args.binary)
+    columns = ["Id", "Binary", "Host", "Status", "State",
+               "Updated_at", "Disabled Reason"]
+    utils.print_list(result, columns)
+
+
+@utils.arg('service_id',
+           metavar='<service_id>',
+           help='ID of the service.')
+def do_service_enable(cs, args):
+    """Enable the service."""
+    result = cs.services.enable(args.service_id)
+    utils.print_list([result], ["Id", "Binary", "Host", "Status", "State",
+                                "Updated_at", "Disabled Reason"])
+
+
+@utils.arg('service_id',
+           metavar='<service_id>',
+           help='ID of the service.')
+@utils.arg('--reason',
+           metavar='<reason>',
+           help='Reason for disabling the service.')
+def do_service_disable(cs, args):
+    """Disable the service"""
+    if args.reason:
+        result = cs.services.disable_log_reason(args.service_id, args.reason)
+    else:
+        result = cs.services.disable(args.service_id)
+    utils.print_list([result], ["Id", "Binary", "Host", "Status", "State",
+                                "Updated_at", "Disabled Reason"])
