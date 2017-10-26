@@ -20,6 +20,7 @@ from karborclient.v1 import protectables
 from karborclient.v1 import providers
 from karborclient.v1 import restores
 from karborclient.v1 import scheduled_operations
+from karborclient.v1 import services
 from karborclient.v1 import triggers
 from karborclient.v1 import verifications
 
@@ -48,3 +49,4 @@ class Client(object):
             operation_logs.OperationLogManager(self.http_client)
         self.verifications = verifications.VerificationManager(
             self.http_client)
+        self.services = services.ServiceManager(self.http_client)
