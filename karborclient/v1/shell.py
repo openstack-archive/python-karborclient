@@ -1354,3 +1354,33 @@ def do_quota_defaults(cs, args):
 
     result = cs.quotas.defaults(project_id)
     _quota_set_pretty_show(result)
+
+
+@utils.arg(
+    'class_name',
+    metavar='<class_name>',
+    help='Name of quota class to list the quotas for.')
+def do_quota_class_show(cs, args):
+    """List the quotas for a quota class."""
+    result = cs.quota_classes.get(args.class_name)
+    _quota_set_pretty_show(result)
+
+
+@utils.arg(
+    'class_name',
+    metavar='<class_name>',
+    help='Name of quota class to set the quotas for.')
+@utils.arg(
+    '--plans',
+    metavar='<plans>',
+    type=int,
+    default=None,
+    help='New value for the "plans" quota.')
+def do_quota_class_update(cs, args):
+    """Update the quotas for a quota class (Admin only)."""
+    class_name = args.class_name
+    data = {
+        "plans": args.plans,
+    }
+    result = cs.quota_classes.update(class_name, data)
+    _quota_set_pretty_show(result)
