@@ -1287,3 +1287,70 @@ def do_service_disable(cs, args):
         result = cs.services.disable(args.service_id)
     utils.print_list([result], ["Id", "Binary", "Host", "Status", "State",
                                 "Updated_at", "Disabled Reason"])
+
+
+@utils.arg(
+    '--tenant',
+    metavar='<tenant>',
+    default=None,
+    help='ID of tenant to list the quotas for.')
+@utils.arg(
+    '--detail',
+    action='store_true',
+    help='Optional flag to indicate whether to show quota in detail. '
+         'Default false.')
+def do_quota_show(cs, args):
+    """List the quotas for a tenant."""
+    project_id = args.tenant or cs.http_client.get_project_id()
+    kwargs = {
+        "project_id": project_id,
+        "detail": args.detail,
+    }
+    result = cs.quotas.get(**kwargs)
+    _quota_set_pretty_show(result)
+
+
+def _quota_set_pretty_show(quotas):
+    """Convert quotas object to dict and display."""
+
+    new_quotas = {}
+    for quota_k, quota_v in sorted(quotas.to_dict().items()):
+        if isinstance(quota_v, dict):
+            quota_v = '\n'.join(
+                ['%s = %s' % (k, v) for k, v in sorted(quota_v.items())])
+        new_quotas[quota_k] = quota_v
+
+    utils.print_dict(new_quotas)
+
+
+@utils.arg(
+    'tenant',
+    metavar='<tenant>',
+    help='ID of tenant to set the quotas for.')
+@utils.arg(
+    '--plans',
+    metavar='<plans>',
+    type=int,
+    default=None,
+    help='New value for the "plans" quota.')
+def do_quota_update(cs, args):
+    """Update the quotas for a project (Admin only)."""
+    project_id = args.tenant
+    data = {
+        "plans": args.plans,
+    }
+    result = cs.quotas.update(project_id, data)
+    _quota_set_pretty_show(result)
+
+
+@utils.arg(
+    '--tenant',
+    metavar='<tenant>',
+    default=None,
+    help='ID of tenant to list the quotas for.')
+def do_quota_defaults(cs, args):
+    """List the default quotas for a tenant."""
+    project_id = args.tenant or cs.http_client.get_project_id()
+
+    result = cs.quotas.defaults(project_id)
+    _quota_set_pretty_show(result)
