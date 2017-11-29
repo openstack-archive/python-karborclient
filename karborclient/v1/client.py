@@ -18,6 +18,7 @@ from karborclient.v1 import operation_logs
 from karborclient.v1 import plans
 from karborclient.v1 import protectables
 from karborclient.v1 import providers
+from karborclient.v1 import quota_classes
 from karborclient.v1 import quotas
 from karborclient.v1 import restores
 from karborclient.v1 import scheduled_operations
@@ -52,3 +53,4 @@ class Client(object):
             self.http_client)
         self.services = services.ServiceManager(self.http_client)
         self.quotas = quotas.QuotaManager(self.http_client)
+        self.quota_classes = quota_classes.QuotaClassManager(self.http_client)
