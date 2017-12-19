@@ -22,7 +22,7 @@ Karbor
 
 Karbor Mission Statement
 
-* Formalize Application Data Protection in OpenStack (APIs, Services, Plugins, …)
+* Formalize Application Data Protection in OpenStack (APIs, Services, Plugins, ...)
 * Be able to protect Any Resource in OpenStack(as well as their dependencies)
 * Allow Diversity of vendor solutions, capabilities and implementations
   without compromising usability
