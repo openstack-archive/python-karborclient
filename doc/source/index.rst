@@ -1,7 +1,8 @@
 Welcome to karborclient's documentation!
-========================================================
+========================================
 
-Contents:
+Contents
+--------
 
 .. toctree::
    :maxdepth: 1
@@ -12,9 +13,8 @@ Contents:
    contributor/index
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
