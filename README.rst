@@ -12,11 +12,11 @@ Karbor
 ======
 
 .. image:: https://img.shields.io/pypi/v/python-karborclient.svg
-    :target: https://pypi.python.org/pypi/python-karborclient/
+    :target: https://pypi.org/project/python-karborclient/
     :alt: Latest Version
 
 .. image:: https://img.shields.io/pypi/dm/python-karborclient.svg
-    :target: https://pypi.python.org/pypi/python-karborclient/
+    :target: https://pypi.org/project/python-karborclient/
     :alt: Downloads
 
 
@@ -35,7 +35,8 @@ Karbor Mission Statement
 * `Specs`_
 * `How to Contribute`_
 
-.. _PyPi: https://pypi.python.org/pypi/python-karborclient
+.. _PyPi: https://pypi.org/project/python-karborclient
+
 .. _Launchpad project: https://launchpad.net/python-karborclient
 .. _Blueprints: https://blueprints.launchpad.net/python-karborclient
 .. _Bugs: https://bugs.launchpad.net/python-karborclient
