@@ -1,6 +1,6 @@
-========
+=====
 Usage
-========
+=====
 
 To use karborclient in a project::
 
