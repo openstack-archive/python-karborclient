@@ -15,10 +15,6 @@ Karbor
     :target: https://pypi.org/project/python-karborclient/
     :alt: Latest Version
 
-.. image:: https://img.shields.io/pypi/dm/python-karborclient.svg
-    :target: https://pypi.org/project/python-karborclient/
-    :alt: Downloads
-
 
 Karbor Mission Statement
 
