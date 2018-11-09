@@ -1106,7 +1106,9 @@ def do_scheduledoperation_list(cs, args):
            help='Trigger name.')
 @utils.arg('operation_type',
            metavar='<operation_type>',
-           help='Operation Type of scheduled operation.')
+           choices=['protect', 'retention_protect'],
+           help='Operation Type of scheduled operation. Valid values are '
+                '"protect" or "retention_protect."')
 @utils.arg('trigger_id',
            metavar='<trigger_id>',
            help='Trigger id of scheduled operation.')
