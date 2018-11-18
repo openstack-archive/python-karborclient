@@ -39,6 +39,26 @@ CHECKPOINT_INFO = {
     ),
 }
 
+CHECKPOINT_INFO_2 = {
+    "id": "a6fd95fe-0892-43b2-ad3c-e56f3a1b86b8",
+    "project_id": "79b35e99a6a541b3bcede40f590d6878",
+    "status": "available",
+    "protection_plan": {
+        "id": "3b47fd5d-21f9-4e63-8409-0acb1bffc038",
+        "name": "My application",
+        "provider_id": "cf56bd3e-97a7-4078-b6d5-f36246333fd9",
+        "resources": [{
+            "id": "99777fdd-8a5b-45ab-ba2c-52420008103f",
+            "type": "OS::Glance::Image",
+            "name": "cirros-0.3.4-x86_64-uec"}]
+    },
+    "resource_graph": json.dumps(
+        "[{'0x0': ['OS::Glance::Image', "
+        "'99777fdd-8a5b-45ab-ba2c-52420008103f', "
+        "'cirros-0.3.4-x86_64-uec']}, [[['0x0']]]]"
+    ),
+}
+
 
 class TestCheckpoints(fakes.TestDataProtection):
     def setUp(self):
@@ -51,13 +71,13 @@ class TestCheckpoints(fakes.TestDataProtection):
 class TestListCheckpoints(TestCheckpoints):
     def setUp(self):
         super(TestListCheckpoints, self).setUp()
-        self.checkpoints_mock.list.return_value = [checkpoints.Checkpoint(
-            None, copy.deepcopy(CHECKPOINT_INFO))]
 
         # Command to test
         self.cmd = osc_checkpoints.ListCheckpoints(self.app, None)
 
     def test_checkpoints_list(self):
+        self.checkpoints_mock.list.return_value = [checkpoints.Checkpoint(
+            None, copy.deepcopy(CHECKPOINT_INFO))]
         arglist = ['cf56bd3e-97a7-4078-b6d5-f36246333fd9']
         verifylist = [('provider_id', 'cf56bd3e-97a7-4078-b6d5-f36246333fd9')]
 
@@ -82,6 +102,44 @@ class TestListCheckpoints(TestCheckpoints):
             },
             '',
             '')]
+        self.assertEqual(expected_data, list(data))
+
+    def test_checkpoints_list_with_all_projects(self):
+        self.checkpoints_mock.list.return_value = [checkpoints.Checkpoint(
+            None, copy.deepcopy(CHECKPOINT_INFO)), checkpoints.Checkpoint(
+            None, copy.deepcopy(CHECKPOINT_INFO_2))]
+        arglist = ['cf56bd3e-97a7-4078-b6d5-f36246333fd9', '--all-projects']
+        verifylist = [('provider_id', 'cf56bd3e-97a7-4078-b6d5-f36246333fd9'),
+                      ('all_projects', True)]
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+
+        columns, data = self.cmd.take_action(parsed_args)
+
+        expected_columns = (
+            ['Id', 'Project id', 'Status', 'Protection plan', 'Metadata',
+             'Created at'])
+        self.assertEqual(expected_columns, columns)
+
+        expected_data = [(
+            "dcb20606-ad71-40a3-80e4-ef0fafdad0c3",
+            "e486a2f49695423ca9c47e589b948108",
+            "available",
+            "Name: %(name)s\nId: %(id)s" % {
+                "id": "3523a271-68aa-42f5-b9ba-56e5200a2ebb",
+                "name": "My application",
+            },
+            '',
+            ''), (
+            "a6fd95fe-0892-43b2-ad3c-e56f3a1b86b8",
+            "79b35e99a6a541b3bcede40f590d6878",
+            "available",
+            "Name: %(name)s\nId: %(id)s" % {
+                "id": "3b47fd5d-21f9-4e63-8409-0acb1bffc038",
+                "name": "My application",
+            },
+            '',
+            '')
+        ]
         self.assertEqual(expected_data, list(data))
 
 

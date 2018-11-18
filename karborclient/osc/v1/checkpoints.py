@@ -46,6 +46,12 @@ class ListCheckpoints(command.Lister):
             help=_('ID of provider.'),
         )
         parser.add_argument(
+            '--all-projects',
+            action='store_true',
+            default=False,
+            help=_('Include all projects (admin only)'),
+        )
+        parser.add_argument(
             '--plan_id',
             metavar='<plan_id>',
             default=None,
@@ -95,12 +101,13 @@ class ListCheckpoints(command.Lister):
     def take_action(self, parsed_args):
         self.log.debug("take_action(%s)", parsed_args)
         data_protection_client = self.app.client_manager.data_protection
-
+        all_projects = bool(parsed_args.project_id) or parsed_args.all_projects
         search_opts = {
             'plan_id': parsed_args.plan_id,
             'start_date': parsed_args.start_date,
             'end_date': parsed_args.end_date,
             'project_id': parsed_args.project_id,
+            'all_tenants': all_projects
         }
 
         data = data_protection_client.checkpoints.list(
