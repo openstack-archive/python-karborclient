@@ -34,6 +34,16 @@ class CheckpointsTest(base.TestCaseShell):
                 provider_id=FAKE_PROVIDER_ID), headers={})
 
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_list_checkpoints_with_all_tenants(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.checkpoints.list(provider_id=FAKE_PROVIDER_ID,
+                            search_opts={'all_tenants': 1})
+        mock_request.assert_called_with(
+            'GET',
+            '/providers/{provider_id}/checkpoints?all_tenants=1'.format(
+                provider_id=FAKE_PROVIDER_ID), headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
     def test_get_checkpoint(self, mock_request):
         mock_request.return_value = mock_request_return
         cs.checkpoints.get(FAKE_PROVIDER_ID, '1')

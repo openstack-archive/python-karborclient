@@ -712,6 +712,19 @@ def do_checkpoint_create(cs, args):
                      json_format_list=json_format_list)
 
 
+@utils.arg('--all-tenants',
+           dest='all_tenants',
+           metavar='<0|1>',
+           nargs='?',
+           type=int,
+           const=1,
+           default=0,
+           help='Shows details for all tenants. Admin only.')
+@utils.arg('--all_tenants',
+           nargs='?',
+           type=int,
+           const=1,
+           help=argparse.SUPPRESS)
 @utils.arg('provider_id',
            metavar='<provider_id>',
            help='ID of provider.')
@@ -785,6 +798,7 @@ def do_checkpoint_list(cs, args):
         'start_date': args.start_date,
         'end_date': args.end_date,
         'project_id': args.project_id,
+        'all_tenants': args.all_tenants
     }
 
     if args.sort and (args.sort_key or args.sort_dir):
