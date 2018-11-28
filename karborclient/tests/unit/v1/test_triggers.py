@@ -12,6 +12,7 @@
 
 import mock
 
+from karborclient.common.apiclient import exceptions
 from karborclient.tests.unit import base
 from karborclient.tests.unit.v1 import fakes
 
@@ -46,15 +47,20 @@ class TriggersTest(base.TestCaseShell):
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
     def test_create_trigger(self, mock_request):
         mock_request.return_value = mock_request_return
-        cs.triggers.create('name', 'time', 'properties')
+        cs.triggers.create('name', 'time', {})
         mock_request.assert_called_with(
             'POST',
             '/triggers',
             data={
                 'trigger_info': {'name': 'name',
                                  'type': 'time',
-                                 'properties': 'properties'}},
+                                 'properties': {}}},
             headers={})
+
+    def test_create_trigger_with_invalid_window(self):
+        self.assertRaises(exceptions.CommandError,
+                          cs.triggers.create,
+                          'name', 'time', {'window': 'fake'})
 
     @mock.patch('karborclient.common.http.HTTPClient.raw_request')
     def test_delete_trigger(self, mock_request):

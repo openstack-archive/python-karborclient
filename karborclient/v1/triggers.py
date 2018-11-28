@@ -10,6 +10,7 @@
 #    License for the specific language governing permissions and limitations
 #    under the License.
 
+from karborclient.common.apiclient import exceptions
 from karborclient.common import base
 
 
@@ -22,6 +23,12 @@ class TriggerManager(base.ManagerWithFind):
     resource_class = Trigger
 
     def create(self, name, type, properties):
+        if properties.get('window', None):
+            try:
+                properties['window'] = int(properties['window'])
+            except Exception:
+                msg = 'The trigger window is not integer'
+                raise exceptions.CommandError(msg)
         body = {'trigger_info': {'name': name,
                                  'type': type,
                                  'properties': properties,
