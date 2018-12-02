@@ -211,6 +211,11 @@ class UpdatePlan(command.ShowOne):
             help=_("A name to which the plan will be renamed.")
         )
         parser.add_argument(
+            "--description",
+            metavar="<description>",
+            help=_("Description to which the plan will be updated.")
+        )
+        parser.add_argument(
             "--resources",
             metavar="<id=type=name,id=type=name>",
             help=_("Resources to which the plan will be updated.")
@@ -227,6 +232,8 @@ class UpdatePlan(command.ShowOne):
         data = {}
         if parsed_args.name is not None:
             data['name'] = parsed_args.name
+        if parsed_args.description is not None:
+            data['description'] = parsed_args.description
         if parsed_args.resources is not None:
             plan_resources = utils.extract_resources(parsed_args)
             data['resources'] = plan_resources
