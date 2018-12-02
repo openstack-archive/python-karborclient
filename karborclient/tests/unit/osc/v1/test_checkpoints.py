@@ -216,3 +216,38 @@ class TestDeleteCheckpoint(TestCheckpoints):
         self.checkpoints_mock.delete.assert_called_once_with(
             'cf56bd3e-97a7-4078-b6d5-f36246333fd9',
             'dcb20606-ad71-40a3-80e4-ef0fafdad0c3')
+
+
+class TestResetCheckpointState(TestCheckpoints):
+    def setUp(self):
+        super(TestResetCheckpointState, self).setUp()
+        self.cmd = osc_checkpoints.ResetCheckpointState(self.app, None)
+
+    def test_reset_checkpoint_with_default_state(self):
+        arglist = ['cf56bd3e-97a7-4078-b6d5-f36246333fd9',
+                   'dcb20606-ad71-40a3-80e4-ef0fafdad0c3']
+        verifylist = [('provider_id', 'cf56bd3e-97a7-4078-b6d5-f36246333fd9'),
+                      ('checkpoint',
+                       ['dcb20606-ad71-40a3-80e4-ef0fafdad0c3']),
+                      ('state', 'error')]
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        self.cmd.take_action(parsed_args)
+        self.checkpoints_mock.reset_state.assert_called_once_with(
+            'cf56bd3e-97a7-4078-b6d5-f36246333fd9',
+            'dcb20606-ad71-40a3-80e4-ef0fafdad0c3',
+            'error')
+
+    def test_reset_checkpoint(self):
+        arglist = ['cf56bd3e-97a7-4078-b6d5-f36246333fd9',
+                   'dcb20606-ad71-40a3-80e4-ef0fafdad0c3',
+                   '--available']
+        verifylist = [('provider_id', 'cf56bd3e-97a7-4078-b6d5-f36246333fd9'),
+                      ('checkpoint',
+                       ['dcb20606-ad71-40a3-80e4-ef0fafdad0c3']),
+                      ('state', 'available')]
+        parsed_args = self.check_parser(self.cmd, arglist, verifylist)
+        self.cmd.take_action(parsed_args)
+        self.checkpoints_mock.reset_state.assert_called_once_with(
+            'cf56bd3e-97a7-4078-b6d5-f36246333fd9',
+            'dcb20606-ad71-40a3-80e4-ef0fafdad0c3',
+            'available')

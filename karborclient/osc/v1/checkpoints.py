@@ -226,3 +226,58 @@ class DeleteCheckpoint(command.Command):
             raise exceptions.CommandError(
                 "Unable to find and delete any of the "
                 "specified checkpoint.")
+
+
+class ResetCheckpointState(command.Command):
+    _description = "Reset checkpoint state"
+
+    log = logging.getLogger(__name__ + ".ResetCheckpointState")
+
+    def get_parser(self, prog_name):
+        parser = super(ResetCheckpointState, self).get_parser(prog_name)
+        parser.add_argument(
+            'provider_id',
+            metavar='<provider_id>',
+            help=_('Id of provider.')
+        )
+        parser.add_argument(
+            'checkpoint',
+            metavar='<checkpoint>',
+            nargs="+",
+            help=_('Id of checkpoint.')
+        )
+        parser.add_argument(
+            '--available',
+            action='store_const', dest='state',
+            default='error', const='available',
+            help=_('Request the checkpoint be reset to "available" state '
+                   'instead of "error" state(the default).'),
+        )
+        return parser
+
+    def take_action(self, parsed_args):
+        client = self.app.client_manager.data_protection
+        failure_count = 0
+        for checkpoint_id in parsed_args.checkpoint:
+            try:
+                client.checkpoints.reset_state(
+                    parsed_args.provider_id, checkpoint_id, parsed_args.state)
+            except exceptions.NotFound:
+                failure_count += 1
+                self.log.error(
+                    "Failed to reset state of '{0}'; checkpoint "
+                    "not found".format(checkpoint_id))
+            except exceptions.Forbidden:
+                failure_count += 1
+                self.log.error(
+                    "Failed to reset state of '{0}'; not "
+                    "allowed".format(checkpoint_id))
+            except exceptions.BadRequest:
+                failure_count += 1
+                self.log.error(
+                    "Failed to reset state of '{0}'; invalid input or "
+                    "current checkpoint state".format(checkpoint_id))
+        if failure_count == len(parsed_args.checkpoint):
+            raise exceptions.CommandError(
+                "Unable to find or reset any of the specified "
+                "checkpoint's state.")
