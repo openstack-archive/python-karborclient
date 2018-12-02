@@ -20,6 +20,7 @@ mock_request_return = ({}, {'checkpoint': {}})
 
 FAKE_PROVIDER_ID = "2220f8b1-975d-4621-a872-fa9afb43cb6c"
 FAKE_PLAN_ID = "3330f8b1-975d-4621-a872-fa9afb43cb6c"
+FAKE_CHECKPOINT_ID = "e4381b1a-905e-4fec-8104-b4419ccaf963"
 
 
 class CheckpointsTest(base.TestCaseShell):
@@ -99,4 +100,18 @@ class CheckpointsTest(base.TestCaseShell):
                 provider_id=FAKE_PROVIDER_ID),
             data={
                 'checkpoint': {'plan_id': FAKE_PLAN_ID, 'extra-info': None}},
+            headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_reset_checkpoint_state(self, mock_request):
+        mock_request.return_value = ({}, {})
+        cs.checkpoints.reset_state(
+            FAKE_PROVIDER_ID, FAKE_CHECKPOINT_ID, 'error')
+        mock_request.assert_called_with(
+            'PUT',
+            '/providers/{provider_id}/checkpoints/{checkpoint_id}'.format(
+                provider_id=FAKE_PROVIDER_ID,
+                checkpoint_id=FAKE_CHECKPOINT_ID
+            ),
+            data={'os-resetState': {'state': 'error'}},
             headers={})

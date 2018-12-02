@@ -43,6 +43,15 @@ class CheckpointManager(base.ManagerWithFind):
               "checkpoints" .format(provider_id=provider_id)
         return self._create(url, body, 'checkpoint')
 
+    def reset_state(self, provider_id, checkpoint_id, state):
+        body = {'os-resetState': {'state': state}}
+        return self.update(provider_id, checkpoint_id, body)
+
+    def update(self, provider_id, checkpoint_id, values):
+        url = '/providers/{provider_id}/checkpoints/{checkpoint_id}'.format(
+            provider_id=provider_id, checkpoint_id=checkpoint_id)
+        return self._update(url, values)
+
     def delete(self, provider_id, checkpoint_id):
         path = '/providers/{provider_id}/checkpoints/' \
                '{checkpoint_id}'.format(provider_id=provider_id,

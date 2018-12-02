@@ -866,6 +866,45 @@ def do_checkpoint_delete(cs, args):
                                       "specified checkpoint.")
 
 
+@utils.arg('provider_id',
+           metavar='<provider_id>',
+           help='Id of provider.')
+@utils.arg('checkpoint',
+           metavar='<checkpoint>',
+           nargs="+",
+           help='ID of checkpoint.')
+@utils.arg('--available',
+           action='store_const',
+           dest='state',
+           default='error',
+           const='available',
+           help='Request the checkpoint be reset to "available" state instead '
+                'of "error" state(the default).')
+def do_checkpoint_reset_state(cs, args):
+    """Reset state of a checkpoint."""
+    failure_count = 0
+
+    for checkpoint_id in args.checkpoint:
+        try:
+            cs.checkpoints.reset_state(args.provider_id, checkpoint_id,
+                                       args.state)
+        except exceptions.NotFound:
+            failure_count += 1
+            print("Failed to reset state of '{0}'; checkpoint not found".
+                  format(checkpoint_id))
+        except exceptions.Forbidden:
+            failure_count += 1
+            print("Failed to reset state of '{0}'; not allowed".
+                  format(checkpoint_id))
+        except exceptions.BadRequest:
+            failure_count += 1
+            print("Failed to reset state of '{0}'; invalid input or "
+                  "current checkpoint state".format(checkpoint_id))
+    if failure_count == len(args.checkpoint):
+        raise exceptions.CommandError("Unable to find or reset any of the "
+                                      "specified checkpoint's state.")
+
+
 @utils.arg('--all-tenants',
            dest='all_tenants',
            metavar='<0|1>',
