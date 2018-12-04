@@ -188,6 +188,8 @@ def do_plan_delete(cs, args):
            help="Id of plan to update.")
 @utils.arg("--name", metavar="<name>",
            help="A name to which the plan will be renamed.")
+@utils.arg("--description", metavar="<description>",
+           help="Description to which the plan will be updated.")
 @utils.arg("--resources", metavar="<id=type=name,id=type=name>",
            help="Resources to which the plan will be updated.")
 @utils.arg("--status", metavar="<suspended|started>",
@@ -197,6 +199,8 @@ def do_plan_update(cs, args):
     data = {}
     if args.name is not None:
         data['name'] = args.name
+    if args.description is not None:
+            data['description'] = args.description
     if args.resources is not None:
         plan_resources = arg_utils.extract_resources(args)
         data['resources'] = plan_resources
