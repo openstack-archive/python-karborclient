@@ -1027,7 +1027,8 @@ def do_trigger_update(cs, args):
     """Update a trigger."""
     trigger_info = {}
     trigger_properties = arg_utils.extract_properties(args)
-    trigger_info['name'] = args.name
+    if args.name:
+        trigger_info['name'] = args.name
     trigger_info['properties'] = trigger_properties
     trigger = cs.triggers.update(args.trigger_id, trigger_info)
     dict_format_list = {"properties"}
