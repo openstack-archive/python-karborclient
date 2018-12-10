@@ -52,8 +52,14 @@ class TriggerManager(base.ManagerWithFind):
 
     def update(self, trigger_id, data):
 
+        if data['properties'].get('window', None):
+            try:
+                data['properties']['window'] = int(
+                    data['properties']['window'])
+            except Exception:
+                msg = 'The trigger window is not integer'
+                raise exceptions.CommandError(msg)
         body = {"trigger_info": data}
-
         return self._update('/triggers/{trigger_id}'
                             .format(trigger_id=trigger_id),
                             body, "trigger_info")
