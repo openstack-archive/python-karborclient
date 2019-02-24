@@ -12,7 +12,8 @@
 # limitations under the License.
 
 import copy
-import json
+
+from oslo_serialization import jsonutils
 
 from karborclient.osc.v1 import verifications as osc_verifications
 from karborclient.tests.unit.osc.v1 import fakes
@@ -67,7 +68,7 @@ class TestListVerifications(TestVerifications):
                           "e486a2f49695423ca9c47e589b948108",
                           "cf56bd3e-97a7-4078-b6d5-f36246333fd9",
                           "dcb20606-ad71-40a3-80e4-ef0fafdad0c3",
-                          json.dumps({}),
+                          jsonutils.dumps({}),
                           "success")]
         self.assertEqual(expected_data, list(data))
 

@@ -12,7 +12,7 @@
 
 """Data protection V1 plan action implementations"""
 
-import json
+from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 
 from osc_lib.command import command
@@ -28,7 +28,8 @@ def format_plan(plan_info):
     for key in ('resources', 'parameters'):
         if key not in plan_info:
             continue
-        plan_info[key] = json.dumps(plan_info[key], indent=2, sort_keys=True)
+        plan_info[key] = jsonutils.dumps(plan_info[key],
+                                         indent=2, sort_keys=True)
     plan_info.pop("links", None)
 
 

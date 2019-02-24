@@ -13,9 +13,9 @@
 """Data protection V1 scheduled_operations action implementations"""
 
 import functools
-import json
 import six
 
+from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 
 from osc_lib.command import command
@@ -30,8 +30,8 @@ def format_scheduledoperation(scheduledoperation_info):
     for key in ('operation_definition', ):
         if key not in scheduledoperation_info:
             continue
-        scheduledoperation_info[key] = json.dumps(scheduledoperation_info[key],
-                                                  indent=2, sort_keys=True)
+        scheduledoperation_info[key] = jsonutils.dumps(
+            scheduledoperation_info[key], indent=2, sort_keys=True)
     scheduledoperation_info.pop("links", None)
 
 
@@ -118,7 +118,9 @@ class ListScheduledOperations(command.Lister):
         column_headers = ['Id', 'Name', 'Operation Type', 'Trigger Id',
                           'Operation Definition']
 
-        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
+        json_dumps = functools.partial(jsonutils.dumps,
+                                       indent=2,
+                                       sort_keys=True)
         formatters = {
             "Operation Definition": json_dumps,
         }

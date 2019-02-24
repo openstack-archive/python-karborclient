@@ -12,10 +12,10 @@
 
 """Data protection V1 checkpoint action implementations"""
 
-import json
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
+from oslo_serialization import jsonutils
 
 from karborclient.common.apiclient import exceptions
 from karborclient.i18n import _
@@ -28,7 +28,7 @@ def format_checkpoint(checkpoint_info):
         checkpoint_info['protection_plan'] = "Name: %s\nId: %s" % (
             plan['name'], plan['id'])
     if 'resource_graph' in checkpoint_info:
-        checkpoint_info['resource_graph'] = json.dumps(json.loads(
+        checkpoint_info['resource_graph'] = jsonutils.dumps(jsonutils.loads(
             checkpoint_info['resource_graph']), indent=2, sort_keys=True)
     checkpoint_info.pop("links", None)
 

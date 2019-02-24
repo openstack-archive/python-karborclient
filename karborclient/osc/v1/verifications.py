@@ -13,13 +13,13 @@
 """Data protection V1 verification action implementations"""
 
 import functools
-import json
 
+from oslo_log import log as logging
+from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
-from oslo_log import log as logging
 
 from karborclient.common.apiclient import exceptions
 from karborclient.i18n import _
@@ -31,8 +31,8 @@ def format_verification(verification_info):
                 'resources_reason'):
         if key not in verification_info:
             continue
-        verification_info[key] = json.dumps(verification_info[key],
-                                            indent=2, sort_keys=True)
+        verification_info[key] = jsonutils.dumps(verification_info[key],
+                                                 indent=2, sort_keys=True)
     verification_info.pop("links", None)
 
 
@@ -98,7 +98,9 @@ class ListVerifications(command.Lister):
         column_headers = ['Id', 'Project id', 'Provider id', 'Checkpoint id',
                           'Parameters', 'Status']
 
-        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
+        json_dumps = functools.partial(jsonutils.dumps,
+                                       indent=2,
+                                       sort_keys=True)
         formatters = {
             "Parameters": json_dumps,
         }

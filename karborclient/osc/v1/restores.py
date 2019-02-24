@@ -13,8 +13,8 @@
 """Data protection V1 restore action implementations"""
 
 import functools
-import json
 
+from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 
 from osc_lib.command import command
@@ -31,8 +31,8 @@ def format_restore(restore_info):
                 'resources_reason'):
         if key not in restore_info:
             continue
-        restore_info[key] = json.dumps(restore_info[key],
-                                       indent=2, sort_keys=True)
+        restore_info[key] = jsonutils.dumps(restore_info[key],
+                                            indent=2, sort_keys=True)
     restore_info.pop("links", None)
 
 
@@ -98,7 +98,9 @@ class ListRestores(command.Lister):
         column_headers = ['Id', 'Project id', 'Provider id', 'Checkpoint id',
                           'Restore target', 'Parameters', 'Status']
 
-        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
+        json_dumps = functools.partial(jsonutils.dumps,
+                                       indent=2,
+                                       sort_keys=True)
         formatters = {
             "Parameters": json_dumps,
         }
