@@ -13,10 +13,10 @@
 """Data protection V1 protectables action implementations"""
 
 import functools
-import json
 from osc_lib.command import command
 from osc_lib import utils as osc_utils
 from oslo_log import log as logging
+from oslo_serialization import jsonutils
 
 from karborclient.i18n import _
 from karborclient import utils
@@ -136,7 +136,8 @@ class ListProtectableInstances(command.Lister):
         column_headers = ['Id', 'Type', 'Name', 'Dependent resources',
                           'Extra info']
 
-        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
+        json_dumps = functools.partial(jsonutils.dumps,
+                                       indent=2, sort_keys=True)
         formatters = {
             "Extra info": json_dumps,
             "Dependent resources": json_dumps,
@@ -186,7 +187,8 @@ class ShowProtectableInstance(command.ShowOne):
             parsed_args.protectable_id,
             search_opts=search_opts)
 
-        json_dumps = functools.partial(json.dumps, indent=2, sort_keys=True)
+        json_dumps = functools.partial(jsonutils.dumps,
+                                       indent=2, sort_keys=True)
         instance._info.pop("links", None)
         for key in ('extra_info', 'dependent_resources'):
             if key not in instance._info:

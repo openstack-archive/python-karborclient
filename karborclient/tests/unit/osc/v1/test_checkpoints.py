@@ -12,7 +12,8 @@
 # limitations under the License.
 
 import copy
-import json
+
+from oslo_serialization import jsonutils
 
 from karborclient.osc.v1 import checkpoints as osc_checkpoints
 from karborclient.tests.unit.osc.v1 import fakes
@@ -32,7 +33,7 @@ CHECKPOINT_INFO = {
             "type": "OS::Glance::Image",
             "name": "cirros-0.3.4-x86_64-uec"}]
     },
-    "resource_graph": json.dumps(
+    "resource_graph": jsonutils.dumps(
         "[{'0x0': ['OS::Glance::Image', "
         "'99777fdd-8a5b-45ab-ba2c-52420008103f', "
         "'cirros-0.3.4-x86_64-uec']}, [[['0x0']]]]"
@@ -52,7 +53,7 @@ CHECKPOINT_INFO_2 = {
             "type": "OS::Glance::Image",
             "name": "cirros-0.3.4-x86_64-uec"}]
     },
-    "resource_graph": json.dumps(
+    "resource_graph": jsonutils.dumps(
         "[{'0x0': ['OS::Glance::Image', "
         "'99777fdd-8a5b-45ab-ba2c-52420008103f', "
         "'cirros-0.3.4-x86_64-uec']}, [[['0x0']]]]"

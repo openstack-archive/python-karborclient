@@ -24,7 +24,7 @@ places where actual behavior differs from the spec.
 # W0102: Dangerous default value %s as argument
 # pylint: disable=W0102
 
-import json
+from oslo_serialization import jsonutils
 
 import requests
 import six
@@ -58,7 +58,7 @@ class TestResponse(requests.Response):
             # Fake the text attribute to streamline Response creation
             text = data.get('text', "")
             if isinstance(text, (dict, list)):
-                self._content = json.dumps(text)
+                self._content = jsonutils.dumps(text)
                 default_headers = {
                     "Content-Type": "application/json",
                 }

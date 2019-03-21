@@ -11,10 +11,10 @@
 #    under the License.
 
 import argparse
-import json
 import os
 
 from datetime import datetime
+from oslo_serialization import jsonutils
 from oslo_utils import uuidutils
 
 from karborclient.common.apiclient import exceptions
@@ -353,7 +353,7 @@ def do_restore_list(cs, args):
         sortby_index = None
     else:
         sortby_index = 0
-    formatters = {"Parameters": lambda obj: json.dumps(
+    formatters = {"Parameters": lambda obj: jsonutils.dumps(
         obj.parameters, indent=2, sort_keys=True)}
     utils.print_list(restores, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index, formatters=formatters)
@@ -486,7 +486,7 @@ def do_verification_list(cs, args):
         sortby_index = None
     else:
         sortby_index = 0
-    formatters = {"Parameters": lambda obj: json.dumps(
+    formatters = {"Parameters": lambda obj: jsonutils.dumps(
         obj.parameters, indent=2, sort_keys=True)}
     utils.print_list(verifications, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index, formatters=formatters)
@@ -614,7 +614,7 @@ def do_protectable_list_instances(cs, args):
     else:
         sortby_index = 0
 
-    formatters = {"Dependent resources": lambda obj: json.dumps(
+    formatters = {"Dependent resources": lambda obj: jsonutils.dumps(
         obj.dependent_resources, indent=2, sort_keys=True)}
     utils.print_list(instances, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index, formatters=formatters)
@@ -994,7 +994,7 @@ def do_trigger_list(cs, args):
     else:
         sortby_index = 0
 
-    formatters = {"Properties": lambda obj: json.dumps(
+    formatters = {"Properties": lambda obj: jsonutils.dumps(
         obj.properties, indent=2, sort_keys=True)}
     utils.print_list(triggers, key_list, exclude_unavailable=True,
                      sortby_index=sortby_index, formatters=formatters)

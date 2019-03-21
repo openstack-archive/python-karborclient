@@ -12,13 +12,13 @@
 
 from __future__ import print_function
 
-import json
 import os
 import sys
 
 import six
 import uuid
 
+from oslo_serialization import jsonutils
 from oslo_utils import encodeutils
 
 import prettytable
@@ -138,7 +138,7 @@ def dict_prettyprint(val):
     :param val: dict.
     :return: formatted json string.
     """
-    return json.dumps(val, indent=2, sort_keys=True)
+    return jsonutils.dumps(val, indent=2, sort_keys=True)
 
 
 def json_prettyprint(val):
@@ -147,7 +147,8 @@ def json_prettyprint(val):
     :param val: json string.
     :return: formatted json string.
     """
-    return val and json.dumps(json.loads(val), indent=2, sort_keys=True)
+    return val and jsonutils.dumps(jsonutils.loads(val),
+                                   indent=2, sort_keys=True)
 
 
 def find_resource(manager, name_or_id, *args, **kwargs):
