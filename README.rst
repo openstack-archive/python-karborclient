@@ -36,7 +36,7 @@ Karbor Mission Statement
 .. _Launchpad project: https://launchpad.net/python-karborclient
 .. _Blueprints: https://blueprints.launchpad.net/python-karborclient
 .. _Bugs: https://bugs.launchpad.net/python-karborclient
-.. _Source: https://git.openstack.org/cgit/openstack/python-karborclient
+.. _Source: https://opendev.org/openstack/python-karborclient
 .. _Specs: https://docs.openstack.org/karbor/latest/specs/index.html
 .. _How to Contribute: https://docs.openstack.org/infra/manual/developers.html
 
