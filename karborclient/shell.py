@@ -400,9 +400,9 @@ class KarborShell(object):
         if args.api_timeout:
             kwargs['timeout'] = args.api_timeout
 
-        client = karbor_client.Client(api_version, endpoint, **kwargs)
+        self.cs = karbor_client.Client(api_version, endpoint, **kwargs)
 
-        args.func(client, args)
+        args.func(self.cs, args)
 
     def do_bash_completion(self, args):
         """Prints all of the commands and options to stdout."""

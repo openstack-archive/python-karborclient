@@ -31,11 +31,6 @@ from karborclient import utils as arg_utils
            const=1,
            default=0,
            help='Shows details for all tenants. Admin only.')
-@utils.arg('--all_tenants',
-           nargs='?',
-           type=int,
-           const=1,
-           help=argparse.SUPPRESS)
 @utils.arg('--name',
            metavar='<name>',
            default=None,
@@ -286,11 +281,6 @@ def do_restore_create(cs, args):
            const=1,
            default=0,
            help='Shows details for all tenants. Admin only.')
-@utils.arg('--all_tenants',
-           nargs='?',
-           type=int,
-           const=1,
-           help=argparse.SUPPRESS)
 @utils.arg('--status',
            metavar='<status>',
            default=None,
@@ -416,11 +406,6 @@ def do_verification_create(cs, args):
            const=1,
            default=0,
            help='Shows details for all tenants. Admin only.')
-@utils.arg('--all_tenants',
-           nargs='?',
-           type=int,
-           const=1,
-           help=argparse.SUPPRESS)
 @utils.arg('--status',
            metavar='<status>',
            default=None,
@@ -724,11 +709,6 @@ def do_checkpoint_create(cs, args):
            const=1,
            default=0,
            help='Shows details for all tenants. Admin only.')
-@utils.arg('--all_tenants',
-           nargs='?',
-           type=int,
-           const=1,
-           help=argparse.SUPPRESS)
 @utils.arg('provider_id',
            metavar='<provider_id>',
            help='ID of provider.')
@@ -917,11 +897,6 @@ def do_checkpoint_reset_state(cs, args):
            const=1,
            default=0,
            help='Shows details for all tenants. Admin only.')
-@utils.arg('--all_tenants',
-           nargs='?',
-           type=int,
-           const=1,
-           help=argparse.SUPPRESS)
 @utils.arg('--name',
            metavar='<name>',
            default=None,
@@ -1073,11 +1048,6 @@ def do_trigger_delete(cs, args):
            const=1,
            default=0,
            help='Shows details for all tenants. Admin only.')
-@utils.arg('--all_tenants',
-           nargs='?',
-           type=int,
-           const=1,
-           help=argparse.SUPPRESS)
 @utils.arg('--name',
            metavar='<name>',
            default=None,
@@ -1225,11 +1195,6 @@ def do_scheduledoperation_delete(cs, args):
            const=1,
            default=0,
            help='Shows details for all tenants. Admin only.')
-@utils.arg('--all_tenants',
-           nargs='?',
-           type=int,
-           const=1,
-           help=argparse.SUPPRESS)
 @utils.arg('--status',
            metavar='<status>',
            default=None,

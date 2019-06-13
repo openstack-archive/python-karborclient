@@ -37,12 +37,13 @@ class FakeClient(fakes.FakeClient, client.Client):
             'project_id': PROJECT_ID,
         }
         client.Client.__init__(self, 'http://endpoint', **kwargs)
-        self.client = FakeHTTPClient(**kwargs)
+        self.client = self.http_client
 
 
 class FakeHTTPClient(base_client.HTTPClient):
 
-    def __init__(self, **kwargs):
+    def __init__(self, endpoint, **kwargs):
+        super(FakeHTTPClient, self)
         self.username = 'username'
         self.password = 'password'
         self.auth_url = 'auth_url'
@@ -50,6 +51,9 @@ class FakeHTTPClient(base_client.HTTPClient):
         self.management_url = 'http://10.0.2.15:8776/v1/fake'
         self.osapi_max_limit = 1000
         self.marker = None
+        self.project_id = 'project_id'
+        self.auth_token = 'auth_token'
+        self.region_name = 'region_name'
 
     def _cs_request(self, url, method, **kwargs):
         # Check that certain things are called correctly
@@ -92,3 +96,27 @@ class FakeHTTPClient(base_client.HTTPClient):
             "headers": headers,
         })
         return r, body
+
+    def json_request(self, method, url, **kwargs):
+        return self._cs_request(url, method, **kwargs)
+
+    def get_providers_1234_checkpoints(self, **kwargs):
+        return 200, {}, {"checkpoints": []}
+
+    def get_plans(self, **kwargs):
+        return 200, {}, {"plans": []}
+
+    def get_operation_logs(self, **kwargs):
+        return 200, {}, {"operation_logs": []}
+
+    def get_restores(self, **kwargs):
+        return 200, {}, {"restores": []}
+
+    def get_scheduled_operations(self, **kwargs):
+        return 200, {}, {"operations": []}
+
+    def get_triggers(self, **kwargs):
+        return 200, {}, {"triggers": []}
+
+    def get_verifications(self, **kwargs):
+        return 200, {}, {"verifications": []}
