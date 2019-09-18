@@ -31,6 +31,15 @@ class QuotasTest(base.TestCaseShell):
             data={'quota': {'plans': 50}}, headers={})
 
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_quota_update_with_none(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.quotas.update(fakes.PROJECT_ID, {'plans': None})
+        mock_request.assert_called_with(
+            'PUT',
+            '/quotas/{project_id}'.format(project_id=fakes.PROJECT_ID),
+            data={'quota': {'plans': 50}}, headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
     def test_show_quota(self, mock_request):
         mock_request.return_value = mock_request_return
         cs.quotas.get(fakes.PROJECT_ID, detail=False)

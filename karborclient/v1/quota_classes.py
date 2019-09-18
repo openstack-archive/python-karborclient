@@ -26,6 +26,9 @@ class QuotaClassManager(base.ManagerWithFind):
 
     def update(self, class_name, data):
 
+        if "plans" in data and data["plans"] is None:
+            data["plans"] = 50
+
         body = {"quota_class": data}
 
         return self._update('/quota_classes/{class_name}'

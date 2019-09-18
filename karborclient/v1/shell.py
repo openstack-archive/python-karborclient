@@ -1357,7 +1357,7 @@ def _quota_set_pretty_show(quotas):
     metavar='<plans>',
     type=int,
     default=None,
-    help='New value for the "plans" quota.')
+    help='New value for the "plans" quota. The default value is 50.')
 def do_quota_update(cs, args):
     """Update the quotas for a project (Admin only)."""
     project_id = args.tenant
@@ -1400,7 +1400,7 @@ def do_quota_class_show(cs, args):
     metavar='<plans>',
     type=int,
     default=None,
-    help='New value for the "plans" quota.')
+    help='New value for the "plans" quota. The default value is 50.')
 def do_quota_class_update(cs, args):
     """Update the quotas for a quota class (Admin only)."""
     class_name = args.class_name

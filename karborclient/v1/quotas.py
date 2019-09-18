@@ -26,6 +26,9 @@ class QuotaManager(base.ManagerWithFind):
 
     def update(self, project_id, data):
 
+        if "plans" in data and data["plans"] is None:
+            data["plans"] = 50
+
         body = {"quota": data}
 
         return self._update('/quotas/{project_id}'

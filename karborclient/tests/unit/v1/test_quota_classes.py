@@ -31,6 +31,15 @@ class QuotaClassesTest(base.TestCaseShell):
             data={'quota_class': {'plans': 50}}, headers={})
 
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_quota_class_update_with_none(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.quota_classes.update('default', {'plans': None})
+        mock_request.assert_called_with(
+            'PUT',
+            '/quota_classes/default',
+            data={'quota_class': {'plans': 50}}, headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
     def test_show_quota_class(self, mock_request):
         mock_request.return_value = mock_request_return
         cs.quota_classes.get('default')
