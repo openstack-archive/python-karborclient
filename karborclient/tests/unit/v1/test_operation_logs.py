@@ -22,6 +22,22 @@ mock_request_return = ({}, {'operation_log': {}})
 class OperationLogsTest(base.TestCaseShell):
 
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_list_operation_logs(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.operation_logs.list()
+        mock_request.assert_called_with(
+            'GET',
+            '/operation_logs', headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_list_operation_logs_with_all_tenants(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.operation_logs.list(search_opts={'all_tenants': 1})
+        mock_request.assert_called_with(
+            'GET',
+            '/operation_logs?all_tenants=1', headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
     def test_list_operation_logs_with_marker_limit(self, mock_request):
         mock_request.return_value = mock_request_return
         cs.operation_logs.list(marker=1234, limit=2)
