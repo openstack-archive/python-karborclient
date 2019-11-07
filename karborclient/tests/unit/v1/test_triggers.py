@@ -23,6 +23,22 @@ mock_request_return = ({}, {'trigger_info': {'name': 'fake_name'}})
 class TriggersTest(base.TestCaseShell):
 
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_list_triggers(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.triggers.list()
+        mock_request.assert_called_with(
+            'GET',
+            '/triggers', headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_list_triggers_with_all_tenants(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.triggers.list(search_opts={'all_tenants': 1})
+        mock_request.assert_called_with(
+            'GET',
+            '/triggers?all_tenants=1', headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
     def test_list_triggers_with_marker_limit(self, mock_request):
         mock_request.return_value = mock_request_return
         cs.triggers.list(marker=1234, limit=2)
@@ -103,3 +119,9 @@ class TriggersTest(base.TestCaseShell):
             data=body,
             headers={}
         )
+
+    def test_update_trigger_with_invalid_window(self):
+        trigger_id = '123'
+        self.assertRaises(exceptions.CommandError,
+                          cs.triggers.update,
+                          trigger_id, {'properties': {'window': 'fake'}})
