@@ -47,3 +47,12 @@ class QuotaClassesTest(base.TestCaseShell):
             'GET',
             '/quota_classes/default',
             headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_show_quota_class_with_headers(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.quota_classes.get('default', session_id='fake_session_id')
+        mock_request.assert_called_with(
+            'GET',
+            '/quota_classes/default',
+            headers={'X-Configuration-Session': 'fake_session_id'})

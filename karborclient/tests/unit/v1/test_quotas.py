@@ -49,6 +49,15 @@ class QuotasTest(base.TestCaseShell):
             headers={})
 
     @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_show_quota_with_headers(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.quotas.get(fakes.PROJECT_ID, False, session_id='fake_session_id')
+        mock_request.assert_called_with(
+            'GET',
+            '/quotas/{project_id}'.format(project_id=fakes.PROJECT_ID),
+            headers={'X-Configuration-Session': 'fake_session_id'})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
     def test_show_quota_with_detail(self, mock_request):
         mock_request.return_value = mock_request_return
         cs.quotas.get(fakes.PROJECT_ID, detail=True)
@@ -67,3 +76,13 @@ class QuotasTest(base.TestCaseShell):
             '/quotas/{project_id}/defaults'.format(
                 project_id=fakes.PROJECT_ID),
             headers={})
+
+    @mock.patch('karborclient.common.http.HTTPClient.json_request')
+    def test_show_quota_default_with_headers(self, mock_request):
+        mock_request.return_value = mock_request_return
+        cs.quotas.defaults(fakes.PROJECT_ID, session_id='fake_session_id')
+        mock_request.assert_called_with(
+            'GET',
+            '/quotas/{project_id}/defaults'.format(
+                project_id=fakes.PROJECT_ID),
+            headers={'X-Configuration-Session': 'fake_session_id'})
