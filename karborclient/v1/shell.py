@@ -195,7 +195,7 @@ def do_plan_update(cs, args):
     if args.name is not None:
         data['name'] = args.name
     if args.description is not None:
-            data['description'] = args.description
+        data['description'] = args.description
     if args.resources is not None:
         plan_resources = arg_utils.extract_resources(args)
         data['resources'] = plan_resources

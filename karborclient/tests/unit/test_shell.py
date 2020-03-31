@@ -133,9 +133,9 @@ class ShellCommandTest(ShellTest):
 
     def test_help(self):
         required = [
-            '.*?^usage: karbor',
-            '.*?^\s+plan-create\s+Creates a plan.',
-            '.*?^See "karbor help COMMAND" for help on a specific command',
+            r'.*?^usage: karbor',
+            r'.*?^\s+plan-create\s+Creates a plan.',
+            r'.*?^See "karbor help COMMAND" for help on a specific command',
         ]
         stdout, stderr = self.shell('help')
         for r in required:
@@ -144,8 +144,8 @@ class ShellCommandTest(ShellTest):
 
     def test_help_on_subcommand(self):
         required = [
-            '.*?^usage: karbor plan-create',
-            '.*?^Creates a plan.',
+            r'.*?^usage: karbor plan-create',
+            r'.*?^Creates a plan.',
         ]
         stdout, stderr = self.shell('help plan-create')
         for r in required:
@@ -154,9 +154,9 @@ class ShellCommandTest(ShellTest):
 
     def test_help_no_options(self):
         required = [
-            '.*?^usage: karbor',
-            '.*?^\s+plan-create\s+Creates a plan',
-            '.*?^See "karbor help COMMAND" for help on a specific command',
+            r'.*?^usage: karbor',
+            r'.*?^\s+plan-create\s+Creates a plan',
+            r'.*?^See "karbor help COMMAND" for help on a specific command',
         ]
         stdout, stderr = self.shell('')
         for r in required:
