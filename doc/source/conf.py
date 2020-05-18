@@ -48,7 +48,7 @@ add_function_parentheses = True
 add_module_names = True
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'native'
 
 # -- Options for HTML output --------------------------------------------------
 
@@ -59,10 +59,9 @@ html_theme = 'openstackdocs'
 # html_static_path = ['static']
 
 # openstackdocstheme options
-repository_name = 'openstack/python-karborclient'
-bug_project = 'python-karborclient'
-bug_tag = ''
-html_last_updated_fmt = '%Y-%m-%d %H:%M'
+openstackdocs_repo_name = 'openstack/python-karborclient'
+openstackdocs_bug_project = 'python-karborclient'
+openstackdocs_bug_tag = ''
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = '%sdoc' % project
