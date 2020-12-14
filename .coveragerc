@@ -1,7 +1,0 @@
-[run]
-branch = True
-source = karborclient
-omit = karborclient/tests/*,karborclient/openstack/*
-
-[report]
-ignore_errors = True
